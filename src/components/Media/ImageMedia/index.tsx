@@ -36,15 +36,20 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   let src: StaticImageData | string = srcFromProps || ''
 
   if (!src && resource && typeof resource === 'object') {
-    const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
+    try {
+      const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
 
-    width = fullWidth!
-    height = fullHeight!
-    alt = altFromResource || ''
+      width = fullWidth!
+      height = fullHeight!
+      alt = altFromResource || ''
 
-    const cacheTag = resource.updatedAt
+      const cacheTag = resource.updatedAt
 
-    src = getMediaUrl(url, cacheTag)
+      src = getMediaUrl(url, cacheTag)
+    } catch (error) {
+      console.error('Error processing media resource:', error)
+      return null
+    }
   }
 
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
@@ -53,8 +58,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   const sizes = sizeFromProps
     ? sizeFromProps
     : Object.entries(breakpoints)
-        .map(([, value]) => `(max-width: ${value}px) ${value * 2}w`)
-        .join(', ')
+      .map(([, value]) => `(max-width: ${value}px) ${value * 2}w`)
+      .join(', ')
 
   return (
     <picture className={cn(pictureClassName)}>
