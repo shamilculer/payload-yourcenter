@@ -39,14 +39,14 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    // Simple configuration for serverless environments
+    // Configure for local file storage in both development and production
     staticDir: path.resolve(dirname, '../../public/media'),
     adminThumbnail: 'thumbnail',
     focalPoint: true,
     // Add file size and type restrictions
     mimeTypes: ['image/*'],
-    // Disable image processing in production to avoid serverless issues
-    disableLocalStorage: true,
+    // Enable local storage for both development and production
+    disableLocalStorage: false,
     imageSizes: [
       {
         name: 'thumbnail',
