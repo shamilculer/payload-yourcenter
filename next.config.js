@@ -33,4 +33,8 @@ const nextConfig = {
   redirects,
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default withPayload(nextConfig, { 
+  devBundleServerPackages: false,
+  // Configure for serverless environments
+  disableLocalStorage: process.env.NODE_ENV === 'production'
+})

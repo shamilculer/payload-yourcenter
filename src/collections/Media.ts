@@ -39,12 +39,14 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
+    // Simple configuration for serverless environments
     staticDir: path.resolve(dirname, '../../public/media'),
     adminThumbnail: 'thumbnail',
     focalPoint: true,
     // Add file size and type restrictions
     mimeTypes: ['image/*'],
+    // Disable image processing in production to avoid serverless issues
+    disableLocalStorage: true,
     imageSizes: [
       {
         name: 'thumbnail',
