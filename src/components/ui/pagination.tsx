@@ -1,4 +1,4 @@
-import type { ButtonProps } from '@/components/ui/button'
+// Remove ButtonProps import since it doesn't exist
 
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
@@ -26,8 +26,8 @@ const PaginationItem: React.FC<
 
 type PaginationLinkProps = {
   isActive?: boolean
-} & Pick<ButtonProps, 'size'> &
-  React.ComponentProps<'button'>
+  size?: 'default' | 'sm' | 'lg' | 'icon'
+} & React.ComponentProps<'button'>
 
 const PaginationLink = ({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) => (
   <button

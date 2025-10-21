@@ -17,7 +17,7 @@ const blockComponents = {
   mediaBlock: MediaBlock,
   intro: IntroBlockComponent,
   servicesSection: ServicesBlock,
-  callOutForm: CalloutFormBlock,
+  calloutForm: CalloutFormBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -40,7 +40,7 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div key={index}>
-                  <Block {...block} disableInnerContainer />
+                  <Block {...(block as any)} />
                 </div>
               )
             }

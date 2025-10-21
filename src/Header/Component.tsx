@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import Link from "next/link";
-import { getCachedGlobal } from '@/utilities/getGlobals';
 import { getMediaUrl } from '@/utilities/getMediaUrl';
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
@@ -147,7 +146,7 @@ export async function Header() {
                 } : { type: 'custom' as const, url: '#' }
             };
         }
-    } catch (error) {
+    } catch {
         console.log('Could not fetch header data from Payload, using fallback');
     }
 

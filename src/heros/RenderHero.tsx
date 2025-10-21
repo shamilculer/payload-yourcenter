@@ -1,6 +1,5 @@
 import React from "react"
 
-import type { Page } from "@/payload-types"
 
 import { Hero } from "@/heros/MainHero"
 import { LowImpactHero } from "@/heros/PageTitle"
