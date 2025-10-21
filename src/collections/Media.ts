@@ -5,14 +5,8 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
-
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -38,15 +32,16 @@ export const Media: CollectionConfig = {
       }),
     },
   ],
-  upload: {
-    // Configure for local file storage in both development and production
-    staticDir: path.resolve(dirname, '../../public/media'),
-    adminThumbnail: 'thumbnail',
-    focalPoint: true,
-    // Add file size and type restrictions
+  upload: {    
+    // Disable local storage as we'll use cloud storage
+    disableLocalStorage: true,
+    
+    // Restricting file types
     mimeTypes: ['image/*'],
-    // Enable local storage for both development and production
-    disableLocalStorage: false,
+    
+    // Define the image sizes. The payload-cloudinary plugin will use these
+    // names to create corresponding Cloudinary-friendly transformations (e.g., using a named transform).
+    // The values (width, height, crop) help the plugin inform Cloudinary on how to resize.
     imageSizes: [
       {
         name: 'thumbnail',
@@ -56,6 +51,7 @@ export const Media: CollectionConfig = {
         name: 'square',
         width: 500,
         height: 500,
+        crop: 'center', // Added crop for square
       },
       {
         name: 'small',

@@ -1,5 +1,7 @@
 // storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
+// Cloudinary Import
+import { cloudinaryStorage } from 'payload-cloudinary'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -70,6 +72,23 @@ export default buildConfig({
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
+    // ⬇️ CLOUDINARY STORAGE PLUGIN CONFIGURATION ⬇️
+    cloudinaryStorage({
+      config: {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
+        api_key: process.env.CLOUDINARY_API_KEY || '',
+        api_secret: process.env.CLOUDINARY_API_SECRET || '',
+      },
+      collections: {
+        // Apply Cloudinary storage to the 'media' collection
+        [Media.slug]: true, 
+      },
+      // Optionally specify a folder in Cloudinary (will default to 'payload-media' if omitted)
+      folder: 'payload-cms-assets', 
+      // This is generally recommended to save disk space on your server
+      disableLocalStorage: true, 
+    }),
+    // ⬆️ CLOUDINARY STORAGE PLUGIN CONFIGURATION ⬆️
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
