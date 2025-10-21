@@ -36,20 +36,15 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   let src: StaticImageData | string = srcFromProps || ''
 
   if (!src && resource && typeof resource === 'object') {
-    try {
-      const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
+    const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
 
-      width = fullWidth!
-      height = fullHeight!
-      alt = altFromResource || ''
+    width = fullWidth!
+    height = fullHeight!
+    alt = altFromResource || ''
 
-      const cacheTag = resource.updatedAt
+    const cacheTag = resource.updatedAt
 
-      src = getMediaUrl(url, cacheTag)
-    } catch (error) {
-      console.error('Error processing media resource:', error)
-      return null
-    }
+    src = getMediaUrl(url, cacheTag)
   }
 
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
