@@ -3,13 +3,12 @@
 import Image from "next/image"
 import { PhoneCall } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getMediaUrl } from "@/utilities/getMediaUrl"
+import { Media } from "@/payload-types"
 
 type CalloutFormBlockProps = {
   contentGroup: {
-    backgroundImage?: {
-      url?: string
-      alt?: string
-    } | null
+    backgroundImage?: Media | string | null
     eyebrow?: string | null
     heading?: string | null
     description?: any
@@ -24,20 +23,9 @@ type CalloutFormBlockProps = {
 export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockProps) => {
   const backgroundUrl = (() => {
     const media = contentGroup?.backgroundImage;
-    if (typeof media === 'object' && media) {
-      // Use Cloudinary URL if available
-      if (media.cloudinary?.secure_url) {
-        return media.cloudinary.secure_url;
-      }
-      // Fallback to constructing from public_id
-      if (media.cloudinary?.public_id) {
-        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
-        return `https://res.cloudinary.com/${cloudName}/image/upload/${media.cloudinary.public_id}`;
-      }
-      // Final fallback to local URL
-      if (media.url) {
-        return media.url;
-      }
+    if (media) {
+      // Use the universal media URL utility
+      return getMediaUrl(media) || "/placeholder.jpg";
     }
     return "/placeholder.jpg";
   })()
@@ -49,7 +37,7 @@ export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockPr
           {/* Background Image */}
           <Image
             src={backgroundUrl}
-            alt={contentGroup?.backgroundImage?.alt || "Background"}
+            alt={typeof contentGroup?.backgroundImage === 'object' && contentGroup?.backgroundImage?.alt ? contentGroup.backgroundImage.alt : "Background"}
             fill
             className="object-cover"
           />
