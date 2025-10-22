@@ -16,6 +16,30 @@ export const Media: CollectionConfig = {
     read: anyone,
     update: authenticated,
   },
+  hooks: {
+    afterRead: [
+      ({ doc }) => {
+        // Ensure all URLs are Cloudinary URLs
+        if (doc.cloudinary?.secure_url) {
+          // Override the main URL with Cloudinary URL
+          doc.url = doc.cloudinary.secure_url
+          
+          // Override size URLs with Cloudinary URLs if they exist
+          if (doc.sizes) {
+            Object.keys(doc.sizes).forEach(sizeKey => {
+              const size = doc.sizes[sizeKey]
+              if (size && doc.cloudinary?.public_id) {
+                const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'dpycn77pf'
+                // Construct Cloudinary URL for this size
+                size.url = `https://res.cloudinary.com/${cloudName}/image/upload/w_${size.width || 'auto'},h_${size.height || 'auto'},c_fit/${doc.cloudinary.public_id}`
+              }
+            })
+          }
+        }
+        return doc
+      }
+    ],
+  },
   fields: [
     {
       name: 'alt',

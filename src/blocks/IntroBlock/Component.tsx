@@ -3,7 +3,7 @@ import Link from "next/link"
 import React from 'react'
 
 import { Button } from "@/components/ui/button"
-import RichText from '@/components/RichText' 
+import RichText from '@/components/RichText'
 import type { IntroBlock } from '@/payload-types' // Import generated type
 
 
@@ -17,15 +17,48 @@ export const IntroBlockComponent: React.FC<IntroBlock> = (props) => {
             <div className="container flex items-center max-lg:flex-col gap-10 sm:gap-24 z-10 relative">
                 <div className="w-full lg:w-1/2">
                     {/* Using the Payload-typed 'image' object */}
-                    {typeof image === 'object' && image !== null && 'url' in image && image.url && (
-                        <Image 
-                            src={image.url}
-                            width={800} 
-                            height={600}
-                            alt={image.alt || heading}
-                            className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
-                        />
-                    )}
+                    {(() => {
+                        if (typeof image === 'object' && image !== null) {
+                            // Use Cloudinary URL if available
+                            if (image.cloudinary?.secure_url) {
+                                return (
+                                    <Image
+                                        src={image.cloudinary.secure_url}
+                                        width={800}
+                                        height={600}
+                                        alt={image.alt || heading}
+                                        className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
+                                    />
+                                );
+                            }
+                            // Fallback to constructing from public_id
+                            if (image.cloudinary?.public_id) {
+                                const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
+                                return (
+                                    <Image
+                                        src={`https://res.cloudinary.com/${cloudName}/image/upload/${image.cloudinary.public_id}`}
+                                        width={800}
+                                        height={600}
+                                        alt={image.alt || heading}
+                                        className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
+                                    />
+                                );
+                            }
+                            // Final fallback to local URL
+                            if ('url' in image && image.url) {
+                                return (
+                                    <Image
+                                        src={image.url}
+                                        width={800}
+                                        height={600}
+                                        alt={image.alt || heading}
+                                        className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
+                                    />
+                                );
+                            }
+                        }
+                        return null;
+                    })()}
                 </div>
                 <div className="w-full lg:w-1/2 space-y-5">
                     <div>
@@ -45,8 +78,8 @@ export const IntroBlockComponent: React.FC<IntroBlock> = (props) => {
                             {links.map((btn, idx) => (
                                 <Button key={idx} className={idx === 1 ? "bg-accent" : undefined} asChild>
                                     {btn.link && (
-                                        <Link 
-                                            href={btn.link.url || '#'} 
+                                        <Link
+                                            href={btn.link.url || '#'}
                                         >
                                             {btn.link.label}
                                         </Link>

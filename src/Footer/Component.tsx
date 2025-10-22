@@ -2,8 +2,8 @@
 import Link from "next/link";
 // --- Essential Payload Imports ---
 import { getPayload } from 'payload';
-import configPromise from '@payload-config'; 
-import type { Media } from '@/payload-types'; 
+import configPromise from '@payload-config';
+import type { Media } from '@/payload-types';
 
 import type {
     Footer as FooterType,
@@ -21,10 +21,10 @@ interface FooterLinkItem {
         type: 'reference' | 'custom';
         // Note: Payload's auto-generated types often include 'null' for optional relationships
         reference?: { relationTo: string, value: string, slug: string } | any;
-        
+
         // FIX: Changed to string | null | undefined to resolve the type error (url is optional/nullable in Payload)
-        url?: string | null; 
-        
+        url?: string | null;
+
         newTab?: boolean;
         label: string;
     };
@@ -43,12 +43,24 @@ interface FooterNavBlock {
 // 2. HELPER FUNCTIONS
 // =================================================================
 
-// --- LOCAL MEDIA HELPER FUNCTION (Copied from Header fix) ---
+// --- CLOUDINARY MEDIA HELPER FUNCTION ---
 const getLocalMediaUrl = (media: Media | string | null | undefined): string => {
-    if (typeof media === 'object' && media && 'url' in media && media.url) {
-        return media.url;
+    if (typeof media === 'object' && media) {
+        // Use Cloudinary URL if available
+        if (media.cloudinary?.secure_url) {
+            return media.cloudinary.secure_url
+        }
+        // Fallback to constructing from public_id
+        if (media.cloudinary?.public_id) {
+            const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf'
+            return `https://res.cloudinary.com/${cloudName}/image/upload/${media.cloudinary.public_id}`
+        }
+        // Final fallback to local URL
+        if ('url' in media && media.url) {
+            return media.url;
+        }
     }
-    return ''; 
+    return '';
 };
 // -----------------------------------------------------------
 
@@ -59,17 +71,17 @@ const DynamicLink = ({ item }: { item: FooterLinkItem }) => {
 
     let href = '#';
     // FIX: Added explicit check for link.url to ensure it's not null before assignment
-    if (link.type === 'custom' && link.url) { 
+    if (link.type === 'custom' && link.url) {
         href = link.url;
     } else if (link.type === 'reference' && typeof link.reference === 'object' && link.reference?.slug) {
-        href = `/${link.reference.slug}`; 
+        href = `/${link.reference.slug}`;
     }
 
     return (
         <li className="hover:text-primary font-medium">
-            <Link 
-                href={href} 
-                target={link.newTab ? '_blank' : '_self'} 
+            <Link
+                href={href}
+                target={link.newTab ? '_blank' : '_self'}
                 rel={link.newTab ? 'noopener noreferrer' : undefined}
             >
                 {link.label}
@@ -92,7 +104,7 @@ const Footer = async () => {
 
         const [fetchedFooter, fetchedContact] = await Promise.all([
             // Casting to the auto-generated types
-            payload.findGlobal({ slug: 'footer', depth: 1 }) as Promise<FooterType>, 
+            payload.findGlobal({ slug: 'footer', depth: 1 }) as Promise<FooterType>,
             payload.findGlobal({ slug: 'contact-details', depth: 0 }) as Promise<ContactDetailsType>,
         ]);
 
@@ -102,17 +114,17 @@ const Footer = async () => {
     } catch (error) {
         console.error("Error fetching global data directly in Footer component:", error);
     }
-    
+
     // 1. Initial essential data check (No change)
     if (!footerData || !footerData.socialAndLogo) {
         return <footer className="border-t border-gray-300 py-4 text-center">Footer data not available.</footer>;
     }
-    
+
     // Destructure and process required fields
     const { socialAndLogo, columns } = footerData;
     // Use the reliable local helper for the logo URL
     // NOTE: Casting socialAndLogo.logo to Media ensures Media.url and Media.alt are treated correctly.
-    const logoUrl = getLocalMediaUrl(socialAndLogo.logo as Media); 
+    const logoUrl = getLocalMediaUrl(socialAndLogo.logo as Media);
     const contactInfo = contactData?.locationGroup;
 
 
@@ -122,7 +134,7 @@ const Footer = async () => {
                 <div>
                     {/* Top Section */}
                     <div className="flex flex-col gap-16 max-lg:flex-wrap md:flex-row lg:justify-between">
-                        
+
                         {/* 1. Logo + Tagline + Social (Fixed First Column) */}
                         <div className="w-full lg:w-[35%]">
                             <div className="flex items-center gap-2 lg:justify-start">
@@ -139,7 +151,7 @@ const Footer = async () => {
                             <p className="mt-4 text-sm">
                                 {socialAndLogo.description}
                             </p>
-                            
+
                             {/* Social Links */}
                             <ul className="mt-6 flex space-x-4">
                                 {socialAndLogo.socialLinks && socialAndLogo.socialLinks.map((social, index) => (
@@ -156,7 +168,7 @@ const Footer = async () => {
                         {/* Now uses the manually defined FooterNavBlock type internally for safety */}
                         {columns && columns.map((column, index) => {
                             // Cast the item as the manually defined block to access properties safely
-                            const navColumn = column as FooterNavBlock; 
+                            const navColumn = column as FooterNavBlock;
 
                             if (navColumn.blockType !== 'navBlock' || !navColumn.navItems?.length) {
                                 return null;
@@ -196,7 +208,7 @@ const Footer = async () => {
                                             </a>
                                         </li>
                                     )}
-                                    
+
                                     {/* Main Email */}
                                     {contactData.mainEmailAddress && (
                                         <li className="font-medium">
@@ -213,7 +225,7 @@ const Footer = async () => {
                                             <p className="mt-1">
                                                 {contactInfo.addressLine1}
                                                 {contactInfo.addressLine2 && `, ${contactInfo.addressLine2}`}
-                                                <br/>
+                                                <br />
                                                 {contactInfo.city}, {contactInfo.state} {contactInfo.zipCode}
                                             </p>
                                         </li>

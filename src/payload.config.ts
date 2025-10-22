@@ -86,7 +86,7 @@ export default buildConfig({
       // Optionally specify a folder in Cloudinary (will default to 'payload-media' if omitted)
       folder: 'payload-cms-assets', 
       // This is generally recommended to save disk space on your server
-      disableLocalStorage: true, 
+      disableLocalStorage: true,
     }),
     // ⬆️ CLOUDINARY STORAGE PLUGIN CONFIGURATION ⬆️
   ],

@@ -15,8 +15,20 @@ import { PayloadRedirects } from '@/components/PayloadRedirects' // From Post ex
 
 // Helper to safely get the image URL
 const getImageUrl = (media: Media | string | undefined | null): string | undefined => {
-  if (typeof media === 'object' && media !== null && 'url' in media) {
-    return `${process.env.NEXT_PUBLIC_SERVER_URL}${media.url}`
+  if (typeof media === 'object' && media !== null) {
+    // Use Cloudinary URL if available
+    if (media.cloudinary?.secure_url) {
+      return media.cloudinary.secure_url
+    }
+    // Fallback to constructing from public_id
+    if (media.cloudinary?.public_id) {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf'
+      return `https://res.cloudinary.com/${cloudName}/image/upload/${media.cloudinary.public_id}`
+    }
+    // Final fallback to local URL
+    if ('url' in media && media.url) {
+      return `${process.env.NEXT_PUBLIC_SERVER_URL}${media.url}`
+    }
   }
   return undefined
 }

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import Link from "next/link";
-import { getMediaUrl } from '@/utilities/getMediaUrl';
+import { getCloudinaryUrl } from '@/utilities/getCloudinaryUrl';
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
 import type { Header } from '@/payload-types';
@@ -90,13 +90,24 @@ export async function Header() {
             slug: 'header',
             depth: 1,
         }) as Header;
-        
-        
+
+
         // Get logo
         if (headerData?.logo && typeof headerData.logo === 'object') {
+            // Use Cloudinary URL if available
+            let logoSrc = "";
+            if (headerData.logo.cloudinary?.secure_url) {
+                logoSrc = headerData.logo.cloudinary.secure_url;
+            } else if (headerData.logo.cloudinary?.public_id) {
+                const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
+                logoSrc = `https://res.cloudinary.com/${cloudName}/image/upload/${headerData.logo.cloudinary.public_id}`;
+            } else {
+                logoSrc = headerData?.logo?.url || "";
+            }
+
             logo = {
                 url: "/",
-                src: headerData?.logo?.url || "",
+                src: logoSrc,
                 alt: (headerData.logo as any).alt || "yourcenter",
             };
         } else {
@@ -108,12 +119,15 @@ export async function Header() {
                     },
                     limit: 1
                 });
-                
+
                 if (logoMedia.docs.length > 0) {
                     const logoDoc = logoMedia.docs[0];
+                    // Log the media document and Cloudinary URL for debugging
+                    console.log('Logo media document:', logoDoc);
+                    console.log('Cloudinary secure_url:', logoDoc.cloudinary?.secure_url);
                     logo = {
                         url: "/",
-                        src: getMediaUrl(logoDoc as any),
+                        src: getCloudinaryUrl(logoDoc),
                         alt: logoDoc.alt || "yourcenter",
                     };
                 }
@@ -163,7 +177,7 @@ export async function Header() {
         return '#';
     };
 
-  return (
+    return (
         <header className="py-3 lg:py-4 w-full sticky top-0 shadow z-50 bg-white">
             <div className="container">
                 {/* Desktop Menu */}
@@ -266,7 +280,7 @@ export async function Header() {
                     </div>
                 </nav>
             </div>
-    </header>
+        </header>
     );
 }
 
@@ -280,8 +294,8 @@ const renderMenuItem = (item: MenuItem) => {
                     <ul className="grid w-[320px] gap-2 py-2">
                         {item.dropdownItems.map((subItem: any) => (
                             <li key={subItem.link.label}>
-                                <Link 
-                                    className="py-1.5 px-3 w-full inline-flex rounded-lg hover:bg-primary hover:text-primary-foreground text-sm font-medium" 
+                                <Link
+                                    className="py-1.5 px-3 w-full inline-flex rounded-lg hover:bg-primary hover:text-primary-foreground text-sm font-medium"
                                     href={getLinkUrl(subItem.link)}
                                     target={subItem.link.newTab ? '_blank' : undefined}
                                 >
@@ -317,9 +331,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
                 </AccordionTrigger>
                 <AccordionContent className="mt-2 flex flex-col gap-2 pl-2">
                     {item.dropdownItems.map((subItem: any) => (
-                        <Link 
-                            key={subItem.link.label} 
-                            href={getLinkUrl(subItem.link)} 
+                        <Link
+                            key={subItem.link.label}
+                            href={getLinkUrl(subItem.link)}
                             target={subItem.link.newTab ? '_blank' : undefined}
                             className="py-2 border-b border-gray-300 font-medium"
                         >
@@ -332,9 +346,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
     }
 
     return (
-        <Link 
-            key={item.label} 
-            href={getLinkUrl(item.link)} 
+        <Link
+            key={item.label}
+            href={getLinkUrl(item.link)}
             target={item.link.newTab ? '_blank' : undefined}
             className="text-md font-semibold"
         >

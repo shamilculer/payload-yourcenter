@@ -1,10 +1,10 @@
-import type { ServicesSectionBlock as ServicesSectionBlockData, Media } from '@/payload-types' 
+import type { ServicesSectionBlock as ServicesSectionBlockData, Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 
 import Image from "next/image"
-import Link from "next/link" 
+import Link from "next/link"
 import { Button } from '@/components/ui/button'
 import { CircleArrowOutUpRight } from "lucide-react"
 
@@ -26,7 +26,7 @@ interface ServiceType {
     slug: string;
     overview: {
         featuredImage: OptimizedMedia; // Use the optimized media type
-        linkLabel: string; 
+        linkLabel: string;
         overviewDescription: any; // RichText data (Lexical JSON)
     };
     publishedAt?: string;
@@ -51,12 +51,12 @@ export const ServicesBlock: React.FC<
 
         // The fetch is performed unconditionally
         const fetchedServices = await payload.find({
-            collection: 'services', 
+            collection: 'services',
             // We need depth 1 to populate overview.featuredImage and overview.linkLabel
-            depth: 1,               
+            depth: 1,
             limit,
             // Sort by 'createdAt' in ascending order (first added shows first)
-            sort: 'createdAt', 
+            sort: 'createdAt',
             where: {
                 _status: { equals: 'published' }
             }
@@ -92,7 +92,7 @@ export const ServicesBlock: React.FC<
     return (
         <section className="section-spacing-b" id={`block-${id}`}>
             <div className="container space-y-7 sm:space-y-12">
-                
+
                 {/* Dynamic Header Area */}
                 <div className="w-full flex items-end gap-20">
                     <div className="w-full lg:w-2/3">
@@ -110,17 +110,32 @@ export const ServicesBlock: React.FC<
                     {services.map((service) => {
                         const featuredMedia = service.overview?.featuredImage;
                         // Use medium size for performance, fall back to main URL
-                        const imageUrl = featuredMedia?.sizes?.medium?.url || featuredMedia?.url;
+                        const imageUrl = (() => {
+                            if (typeof featuredMedia === 'object' && featuredMedia) {
+                                // Use Cloudinary URL if available
+                                if (featuredMedia.cloudinary?.secure_url) {
+                                    return featuredMedia.cloudinary.secure_url;
+                                }
+                                // Fallback to constructing from public_id
+                                if (featuredMedia.cloudinary?.public_id) {
+                                    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
+                                    return `https://res.cloudinary.com/${cloudName}/image/upload/${featuredMedia.cloudinary.public_id}`;
+                                }
+                                // Fallback to size-specific URLs
+                                return featuredMedia?.sizes?.medium?.url || featuredMedia?.url;
+                            }
+                            return '';
+                        })();
                         const imageAlt = featuredMedia?.alt || service.title;
-                        
+
                         const serviceUrl = `/services/${service.slug}`;
                         const descriptionText = cleanDescription(service.overview?.overviewDescription);
                         // Get the link label from the service overview, defaulting if needed
-                        const linkLabel = service.overview?.linkLabel || 'Read More'; 
+                        const linkLabel = service.overview?.linkLabel || 'Read More';
 
                         return (
-                            <article 
-                                key={service.id} 
+                            <article
+                                key={service.id}
                                 className="group bg-accent min-h-96 rounded-4xl max-sm:py-5 max-sm:px-4 sm:p-5 space-y-5 sm:space-y-3 transition-all delay-200"
                             >
                                 {/* Image Wrapper */}
@@ -144,11 +159,11 @@ export const ServicesBlock: React.FC<
                                 <div className="mt-6 space-y-3 px-3">
                                     <h3 className="!text-white text-xl font-semibold">{service.title}</h3>
                                     <p className="text-gray-200 line-clamp-3">{descriptionText}</p>
-                                    
+
                                     {/* Button - Now uses the service's linkLabel */}
                                     <Link href={serviceUrl}>
                                         <Button className="bg-primary hover:bg-accent hover:shadow-lg transition-all">
-                                            {linkLabel} <CircleArrowOutUpRight className="ml-2 w-4 h-4"/>
+                                            {linkLabel} <CircleArrowOutUpRight className="ml-2 w-4 h-4" />
                                         </Button>
                                     </Link>
                                 </div>

@@ -22,7 +22,25 @@ type CalloutFormBlockProps = {
 }
 
 export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockProps) => {
-  const backgroundUrl = contentGroup?.backgroundImage?.url || "/placeholder.jpg"
+  const backgroundUrl = (() => {
+    const media = contentGroup?.backgroundImage;
+    if (typeof media === 'object' && media) {
+      // Use Cloudinary URL if available
+      if (media.cloudinary?.secure_url) {
+        return media.cloudinary.secure_url;
+      }
+      // Fallback to constructing from public_id
+      if (media.cloudinary?.public_id) {
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
+        return `https://res.cloudinary.com/${cloudName}/image/upload/${media.cloudinary.public_id}`;
+      }
+      // Final fallback to local URL
+      if (media.url) {
+        return media.url;
+      }
+    }
+    return "/placeholder.jpg";
+  })()
 
   return (
     <section className="section-spacing-b">
@@ -82,8 +100,8 @@ export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockPr
 
                 {/* Dynamic Form Rendering */}
                 {formGroup?.form ? (
-                //   <RenderForm form={formGroup.form} />
-                <p>Form</p>
+                  //   <RenderForm form={formGroup.form} />
+                  <p>Form</p>
                 ) : (
                   <p className="text-white/80 text-sm italic">No form selected.</p>
                 )}
