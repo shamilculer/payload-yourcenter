@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
+    branches: Branch;
     services: Service;
     posts: Post;
     media: Media;
@@ -84,6 +85,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
+    branches: BranchesSelect<false> | BranchesSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -168,6 +170,9 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    eyebrow?: string | null;
+    heading?: string | null;
+    description?: string | null;
     richText?: {
       root: {
         type: string;
@@ -183,6 +188,7 @@ export interface Page {
       };
       [k: string]: unknown;
     } | null;
+    title?: string | null;
     links?:
       | {
           link: {
@@ -221,6 +227,26 @@ export interface Page {
     | ContentBlock
     | MediaBlock
     | ArchiveBlock
+    | AccordionBlock
+    | IconListBlock
+    | IconBoxBlock
+    | GridBlock
+    | StepsBlock
+    | TestimonialsBlock
+    | BranchesBlock
+    | TitleBlock
+    | FAQBlock
+    | FAQItemsBlock
+    | CTACardBlock
+    | TwoColumnLayoutBlock
+    | PageCTABlock
+    | FeaturesBlock
+    | ProcessBlock
+    | WhyUsBlock
+    | PostGridBlock
+    | FormBlock
+    | MapBlock
+    | LayoutBlock
   )[];
   meta?: {
     title?: string | null;
@@ -400,6 +426,10 @@ export interface Media {
 export interface Service {
   id: string;
   title: string;
+  /**
+   * Leave empty for global services (homepage). Select a branch to make this service branch-specific.
+   */
+  branch?: (string | null) | Branch;
   overview: {
     featuredImage: string | Media;
     linkLabel?: string | null;
@@ -419,7 +449,129 @@ export interface Service {
       [k: string]: unknown;
     };
   };
-  layout: (IntroBlock | CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock)[];
+  serviceContent: {
+    /**
+     * Main image displayed on the service page
+     */
+    image: string | Media;
+    /**
+     * Main heading for the service page (e.g., "Advanced MRI Scanning for Unparalleled Diagnostic Clarity")
+     */
+    heading: string;
+    /**
+     * Comprehensive description of the service
+     */
+    longDescription: string;
+  };
+  whyChooseUs: {
+    /**
+     * Heading for the "Why Choose Us" section
+     */
+    heading: string;
+    /**
+     * Brief introduction before the benefits list
+     */
+    intro: string;
+    /**
+     * List of key benefits or reasons to choose this service
+     */
+    benefits: {
+      benefit: string;
+      id?: string | null;
+    }[];
+    /**
+     * Concluding paragraph after the benefits list
+     */
+    endingParagraph: string;
+  };
+  /**
+   * Optional: Add additional content blocks if needed
+   */
+  layout?: (IntroBlock | CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "branches".
+ */
+export interface Branch {
+  id: string;
+  /**
+   * Branch name (e.g., "Yourcenter Calicut")
+   */
+  name: string;
+  /**
+   * Background image for the hero section
+   */
+  image: string | Media;
+  /**
+   * Main heading displayed in hero section
+   */
+  heading: string;
+  /**
+   * Brief overview text in hero section
+   */
+  overview: string;
+  intro: {
+    image: string | Media;
+    /**
+     * Small label above the heading
+     */
+    subheading: string;
+    heading: string;
+    /**
+     * HTML content is supported
+     */
+    description: string;
+  };
+  /**
+   * Heading for the services section. Note: Services are automatically filtered based on their branch association. To add services to this branch, edit the service and select this branch in the "Branch Association" field.
+   */
+  serviceHeading: string;
+  whyChooseUs: {
+    image: string | Media;
+    subheading: string;
+    heading: string;
+    intro: string;
+    features: {
+      title: string;
+      text: string;
+      id?: string | null;
+    }[];
+  };
+  contact: {
+    phone: {
+      number: string;
+      id?: string | null;
+    }[];
+    address: string;
+    email: string;
+    /**
+     * Full Google Maps URL
+     */
+    mapLink: string;
+  };
+  ctaContent: {
+    subheading: string;
+    heading: string;
+    description: string;
+  };
   meta?: {
     title?: string | null;
     /**
@@ -996,6 +1148,678 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AccordionBlock".
+ */
+export interface AccordionBlock {
+  accordionItems?:
+    | {
+        title: string;
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'accordion';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconListBlock".
+ */
+export interface IconListBlock {
+  iconListItems?:
+    | {
+        iconType?: ('lucide' | 'upload') | null;
+        /**
+         * Find icon names at https://lucide.dev/icons (e.g., "ArrowRight", "CheckCircle")
+         */
+        iconName?: string | null;
+        iconImage?: (string | null) | Media;
+        text: string;
+        /**
+         * Optional link for this item
+         */
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'services';
+                value: string | Service;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'iconList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconBoxBlock".
+ */
+export interface IconBoxBlock {
+  iconType?: ('upload' | 'lucide') | null;
+  iconImage?: (string | null) | Media;
+  /**
+   * Find icon names at https://lucide.dev/icons (e.g., "Shield", "Zap")
+   */
+  iconName?: string | null;
+  title: string;
+  description?: string | null;
+  backgroundColor?: ('card' | 'orange' | 'cyan' | 'yellow' | 'green' | 'purple' | 'pink' | 'custom') | null;
+  customBackgroundColor?: string | null;
+  /**
+   * Leave empty for default primary color
+   */
+  iconColor?: string | null;
+  alignment?: ('left' | 'center') | null;
+  /**
+   * Changes background to hover color and text to white on hover
+   */
+  enableHoverEffect?: boolean | null;
+  hoverBackgroundColor?: ('primary' | 'secondary' | 'accent' | 'custom') | null;
+  customHoverColor?: string | null;
+  /**
+   * Optional link
+   */
+  link: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'iconBox';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridBlock".
+ */
+export interface GridBlock {
+  columns?:
+    | {
+        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        blocks?:
+          | (
+              | ContentBlock
+              | AccordionBlock
+              | IconListBlock
+              | IconBoxBlock
+              | CallToActionBlock
+              | MediaBlock
+              | CalloutFormBlock
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'grid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StepsBlock".
+ */
+export interface StepsBlock {
+  steps?:
+    | {
+        stepNumber: string;
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'steps';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  title?: string | null;
+  eyebrow?: string | null;
+  testimonials?:
+    | {
+        content: string;
+        author: string;
+        title?: string | null;
+        location?: string | null;
+        image?: (string | null) | Media;
+        rating?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BranchesBlock".
+ */
+export interface BranchesBlock {
+  title?: string | null;
+  description?: string | null;
+  eyebrow?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'branches';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TitleBlock".
+ */
+export interface TitleBlock {
+  eyebrow?: string | null;
+  title: string;
+  description?: string | null;
+  align?: ('center' | 'left' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'title';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  eyebrow?: string | null;
+  heading: string;
+  faqItems: {
+    question: string;
+    answer: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+  }[];
+  sidebarImage: string | Media;
+  showPattern?: boolean | null;
+  ctaHeading: string;
+  ctaDescription: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  ctaButton: {
+    label: string;
+    url: string;
+  };
+  theme?: ('primary' | 'secondary' | 'accent') | null;
+  ctaBackground?: ('primary' | 'secondary' | 'accent' | 'muted') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQItemsBlock".
+ */
+export interface FAQItemsBlock {
+  faqItems: {
+    question: string;
+    answer: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+  }[];
+  triggerStyle?: ('default' | 'primary' | 'secondary' | 'accent') | null;
+  contentBackground?: ('white' | 'muted' | 'transparent') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqItems';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CTACardBlock".
+ */
+export interface CTACardBlock {
+  image?: (string | null) | Media;
+  heading: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  ctaButton: {
+    label: string;
+    url: string;
+  };
+  backgroundColor?: ('primary' | 'secondary' | 'accent' | 'muted' | 'white') | null;
+  borderRadius?: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'ctaCard';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TwoColumnLayoutBlock".
+ */
+export interface TwoColumnLayoutBlock {
+  leftColumnBlocks?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  rightColumnBlocks?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  columnRatio?: ('1/3-2/3' | '1/2-1/2' | '2/3-1/3') | null;
+  gap?: ('sm' | 'md' | 'lg' | 'xl') | null;
+  verticalAlign?: ('top' | 'center' | 'bottom' | 'stretch') | null;
+  reverseOnMobile?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'twoColumnLayout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock".
+ */
+export interface FormBlock {
+  heading?: string | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Select the form directly to display.
+   */
+  form: string | Form;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock".
+ */
+export interface MapBlock {
+  /**
+   * Paste the "src" URL from the Google Maps Embed code here.
+   */
+  mapUrl: string;
+  height?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mapBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PageCTABlock".
+ */
+export interface PageCTABlock {
+  backgroundImage: string | Media;
+  eyebrow?: string | null;
+  heading: string;
+  description: string;
+  primaryButton: {
+    label: string;
+    /**
+     * Phone number in international format (e.g., +919061060000)
+     */
+    phoneNumber: string;
+  };
+  secondaryButton: {
+    label: string;
+    /**
+     * WhatsApp URL or any other messaging link
+     */
+    url: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pageCta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock".
+ */
+export interface FeaturesBlock {
+  columns?: ('2' | '3' | '4' | '6') | null;
+  gap?: ('sm' | 'md' | 'lg' | 'xl') | null;
+  features: {
+    iconType?: ('upload' | 'lucide') | null;
+    iconImage?: (string | null) | Media;
+    /**
+     * Find icon names at https://lucide.dev/icons (e.g., "Shield", "Zap")
+     */
+    iconName?: string | null;
+    title: string;
+    description: string;
+    backgroundColor?: ('orange' | 'cyan' | 'yellow' | 'green' | 'purple' | 'pink' | 'custom') | null;
+    customBackgroundColor?: string | null;
+    enableHoverEffect?: boolean | null;
+    hoverBackgroundColor?: ('primary' | 'secondary' | 'accent' | 'custom') | null;
+    customHoverColor?: string | null;
+    /**
+     * Optional link for this feature card
+     */
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'services';
+            value: string | Service;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null);
+      url?: string | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'features';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock".
+ */
+export interface ProcessBlock {
+  bannerImage: string | Media;
+  bannerEyebrow?: string | null;
+  bannerHeading: string;
+  bannerDescription: string;
+  bannerButton: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  processEyebrow?: string | null;
+  processHeading: string;
+  processDescription: string;
+  processImage: string | Media;
+  steps: {
+    number: string;
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'process';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WhyUsBlock".
+ */
+export interface WhyUsBlock {
+  eyebrow?: string | null;
+  heading: string;
+  description: string;
+  image: string | Media;
+  features?:
+    | {
+        icon: string | Media;
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'whyUs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PostGridBlock".
+ */
+export interface PostGridBlock {
+  categories?: (string | Category)[] | null;
+  limit: number;
+  columns?: ('2' | '3' | '4') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'postGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LayoutBlock".
+ */
+export interface LayoutBlock {
+  structure?: ('1' | '1/1' | '1/2' | '2/1' | '1/1/1' | '1/1/1/1') | null;
+  column1?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  column2?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  column3?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  column4?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | MediaBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  width?: ('boxed' | 'full') | null;
+  gap?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
+  paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
+  paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
+  backgroundColor?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+  reverseOnMobile?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'layoutBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1141,6 +1965,10 @@ export interface PayloadLockedDocument {
         value: string | Page;
       } | null)
     | ({
+        relationTo: 'branches';
+        value: string | Branch;
+      } | null)
+    | ({
         relationTo: 'services';
         value: string | Service;
       } | null)
@@ -1244,7 +2072,11 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               id?: T;
             };
+        eyebrow?: T;
+        heading?: T;
+        description?: T;
         richText?: T;
+        title?: T;
         links?:
           | T
           | {
@@ -1272,6 +2104,26 @@ export interface PagesSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        branches?: T | BranchesBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        twoColumnLayout?: T | TwoColumnLayoutBlockSelect<T>;
+        pageCta?: T | PageCTABlockSelect<T>;
+        features?: T | FeaturesBlockSelect<T>;
+        process?: T | ProcessBlockSelect<T>;
+        whyUs?: T | WhyUsBlockSelect<T>;
+        postGrid?: T | PostGridBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+        layoutBlock?: T | LayoutBlockSelect<T>;
       };
   meta?:
     | T
@@ -1423,16 +2275,600 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AccordionBlock_select".
+ */
+export interface AccordionBlockSelect<T extends boolean = true> {
+  accordionItems?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconListBlock_select".
+ */
+export interface IconListBlockSelect<T extends boolean = true> {
+  iconListItems?:
+    | T
+    | {
+        iconType?: T;
+        iconName?: T;
+        iconImage?: T;
+        text?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IconBoxBlock_select".
+ */
+export interface IconBoxBlockSelect<T extends boolean = true> {
+  iconType?: T;
+  iconImage?: T;
+  iconName?: T;
+  title?: T;
+  description?: T;
+  backgroundColor?: T;
+  customBackgroundColor?: T;
+  iconColor?: T;
+  alignment?: T;
+  enableHoverEffect?: T;
+  hoverBackgroundColor?: T;
+  customHoverColor?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridBlock_select".
+ */
+export interface GridBlockSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        size?: T;
+        blocks?:
+          | T
+          | {
+              content?: T | ContentBlockSelect<T>;
+              accordion?: T | AccordionBlockSelect<T>;
+              iconList?: T | IconListBlockSelect<T>;
+              iconBox?: T | IconBoxBlockSelect<T>;
+              cta?: T | CallToActionBlockSelect<T>;
+              mediaBlock?: T | MediaBlockSelect<T>;
+              calloutForm?: T | CalloutFormBlockSelect<T>;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StepsBlock_select".
+ */
+export interface StepsBlockSelect<T extends boolean = true> {
+  steps?:
+    | T
+    | {
+        stepNumber?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  title?: T;
+  eyebrow?: T;
+  testimonials?:
+    | T
+    | {
+        content?: T;
+        author?: T;
+        title?: T;
+        location?: T;
+        image?: T;
+        rating?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BranchesBlock_select".
+ */
+export interface BranchesBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  eyebrow?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TitleBlock_select".
+ */
+export interface TitleBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  align?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock_select".
+ */
+export interface FAQBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  faqItems?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  sidebarImage?: T;
+  showPattern?: T;
+  ctaHeading?: T;
+  ctaDescription?: T;
+  ctaButton?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  theme?: T;
+  ctaBackground?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQItemsBlock_select".
+ */
+export interface FAQItemsBlockSelect<T extends boolean = true> {
+  faqItems?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  triggerStyle?: T;
+  contentBackground?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CTACardBlock_select".
+ */
+export interface CTACardBlockSelect<T extends boolean = true> {
+  image?: T;
+  heading?: T;
+  description?: T;
+  ctaButton?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  backgroundColor?: T;
+  borderRadius?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TwoColumnLayoutBlock_select".
+ */
+export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
+  leftColumnBlocks?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  rightColumnBlocks?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  columnRatio?: T;
+  gap?: T;
+  verticalAlign?: T;
+  reverseOnMobile?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock_select".
+ */
+export interface FormBlockSelect<T extends boolean = true> {
+  heading?: T;
+  introContent?: T;
+  form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock_select".
+ */
+export interface MapBlockSelect<T extends boolean = true> {
+  mapUrl?: T;
+  height?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PageCTABlock_select".
+ */
+export interface PageCTABlockSelect<T extends boolean = true> {
+  backgroundImage?: T;
+  eyebrow?: T;
+  heading?: T;
+  description?: T;
+  primaryButton?:
+    | T
+    | {
+        label?: T;
+        phoneNumber?: T;
+      };
+  secondaryButton?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock_select".
+ */
+export interface FeaturesBlockSelect<T extends boolean = true> {
+  columns?: T;
+  gap?: T;
+  features?:
+    | T
+    | {
+        iconType?: T;
+        iconImage?: T;
+        iconName?: T;
+        title?: T;
+        description?: T;
+        backgroundColor?: T;
+        customBackgroundColor?: T;
+        enableHoverEffect?: T;
+        hoverBackgroundColor?: T;
+        customHoverColor?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock_select".
+ */
+export interface ProcessBlockSelect<T extends boolean = true> {
+  bannerImage?: T;
+  bannerEyebrow?: T;
+  bannerHeading?: T;
+  bannerDescription?: T;
+  bannerButton?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  processEyebrow?: T;
+  processHeading?: T;
+  processDescription?: T;
+  processImage?: T;
+  steps?:
+    | T
+    | {
+        number?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WhyUsBlock_select".
+ */
+export interface WhyUsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  description?: T;
+  image?: T;
+  features?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PostGridBlock_select".
+ */
+export interface PostGridBlockSelect<T extends boolean = true> {
+  categories?: T;
+  limit?: T;
+  columns?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LayoutBlock_select".
+ */
+export interface LayoutBlockSelect<T extends boolean = true> {
+  structure?: T;
+  column1?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  column2?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  column3?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  column4?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  width?: T;
+  gap?: T;
+  paddingTop?: T;
+  paddingBottom?: T;
+  backgroundColor?: T;
+  reverseOnMobile?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "branches_select".
+ */
+export interface BranchesSelect<T extends boolean = true> {
+  name?: T;
+  image?: T;
+  heading?: T;
+  overview?: T;
+  intro?:
+    | T
+    | {
+        image?: T;
+        subheading?: T;
+        heading?: T;
+        description?: T;
+      };
+  serviceHeading?: T;
+  whyChooseUs?:
+    | T
+    | {
+        image?: T;
+        subheading?: T;
+        heading?: T;
+        intro?: T;
+        features?:
+          | T
+          | {
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  contact?:
+    | T
+    | {
+        phone?:
+          | T
+          | {
+              number?: T;
+              id?: T;
+            };
+        address?: T;
+        email?: T;
+        mapLink?: T;
+      };
+  ctaContent?:
+    | T
+    | {
+        subheading?: T;
+        heading?: T;
+        description?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
   title?: T;
+  branch?: T;
   overview?:
     | T
     | {
         featuredImage?: T;
         linkLabel?: T;
         overviewDescription?: T;
+      };
+  serviceContent?:
+    | T
+    | {
+        image?: T;
+        heading?: T;
+        longDescription?: T;
+      };
+  whyChooseUs?:
+    | T
+    | {
+        heading?: T;
+        intro?: T;
+        benefits?:
+          | T
+          | {
+              benefit?: T;
+              id?: T;
+            };
+        endingParagraph?: T;
       };
   layout?:
     | T
@@ -2214,6 +3650,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'pages';
           value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
         } | null)
       | ({
           relationTo: 'services';

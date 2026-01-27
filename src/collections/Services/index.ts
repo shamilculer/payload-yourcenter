@@ -35,22 +35,42 @@ export const Services: CollectionConfig<'services'> = {
     slug: true,
   },
   admin: {
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'branch', 'slug', 'updatedAt'],
     // NOTE: Update collection to 'services' for preview path generation
     livePreview: {
-      url: ({ data, req }) =>
-        generatePreviewPath({
-          slug: data?.slug,
+      url: ({ data, req }) => {
+        // If service has a branch, use branch-specific URL
+        if (data?.branch && typeof data.branch === 'object' && 'slug' in data.branch && data.branch.slug) {
+          return generatePreviewPath({
+            slug: `${data.branch.slug}/services/${data.slug}`,
+            collection: 'services',
+            req,
+          })
+        }
+        // Otherwise use global service URL
+        return generatePreviewPath({
+          slug: `services/${data?.slug}`,
           collection: 'services',
           req,
-        }),
+        })
+      },
     },
-    preview: (data, { req }) =>
-      generatePreviewPath({
-        slug: data?.slug as string,
+    preview: (data, { req }) => {
+      // If service has a branch, use branch-specific URL
+      if (data?.branch && typeof data.branch === 'object' && 'slug' in data.branch && data.branch.slug) {
+        return generatePreviewPath({
+          slug: `${data.branch.slug}/services/${data.slug}`,
+          collection: 'services',
+          req,
+        })
+      }
+      // Otherwise use global service URL
+      return generatePreviewPath({
+        slug: `services/${data?.slug as string}`,
         collection: 'services',
         req,
-      }),
+      })
+    },
     useAsTitle: 'title',
   },
   fields: [
@@ -58,6 +78,17 @@ export const Services: CollectionConfig<'services'> = {
       name: 'title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'branch',
+      label: 'Branch Association',
+      type: 'relationship',
+      relationTo: 'branches',
+      required: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Leave empty for global services (homepage). Select a branch to make this service branch-specific.',
+      },
     },
     {
       type: 'tabs',
@@ -95,24 +126,123 @@ export const Services: CollectionConfig<'services'> = {
           ],
           label: 'Overview',
         },
-        // 2. CONTENT TAB (Same as Pages)
+        // 2. SERVICE CONTENT TAB
+        {
+          fields: [
+            {
+              name: 'serviceContent',
+              type: 'group',
+              label: 'Service Content',
+              fields: [
+                {
+                  name: 'image',
+                  label: 'Service Image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                  admin: {
+                    description: 'Main image displayed on the service page',
+                  },
+                },
+                {
+                  name: 'heading',
+                  label: 'Service Heading',
+                  type: 'text',
+                  required: true,
+                  admin: {
+                    description: 'Main heading for the service page (e.g., "Advanced MRI Scanning for Unparalleled Diagnostic Clarity")',
+                  },
+                },
+                {
+                  name: 'longDescription',
+                  label: 'Detailed Description',
+                  type: 'textarea',
+                  required: true,
+                  admin: {
+                    description: 'Comprehensive description of the service',
+                  },
+                },
+              ] as Field[],
+            },
+          ],
+          label: 'Service Content',
+        },
+        // 3. WHY CHOOSE US TAB
+        {
+          fields: [
+            {
+              name: 'whyChooseUs',
+              type: 'group',
+              label: 'Why Choose Us Section',
+              fields: [
+                {
+                  name: 'heading',
+                  label: 'Section Heading',
+                  type: 'text',
+                  required: true,
+                  defaultValue: 'Why Choose Your Center?',
+                  admin: {
+                    description: 'Heading for the "Why Choose Us" section',
+                  },
+                },
+                {
+                  name: 'intro',
+                  label: 'Introduction Paragraph',
+                  type: 'textarea',
+                  required: true,
+                  admin: {
+                    description: 'Brief introduction before the benefits list',
+                  },
+                },
+                {
+                  name: 'benefits',
+                  label: 'Benefits List',
+                  type: 'array',
+                  required: true,
+                  minRows: 3,
+                  maxRows: 10,
+                  fields: [
+                    {
+                      name: 'benefit',
+                      type: 'text',
+                      required: true,
+                    },
+                  ],
+                  admin: {
+                    description: 'List of key benefits or reasons to choose this service',
+                  },
+                },
+                {
+                  name: 'endingParagraph',
+                  label: 'Ending Paragraph',
+                  type: 'textarea',
+                  required: true,
+                  admin: {
+                    description: 'Concluding paragraph after the benefits list',
+                  },
+                },
+              ] as Field[],
+            },
+          ],
+          label: 'Why Choose Us',
+        },
+        // 4. CONTENT BLOCKS TAB (Optional additional content)
         {
           fields: [
             {
               name: 'layout',
               type: 'blocks',
-              // NOTE: If you used 'hero' in Pages, you might want to add 'hero' block here,
-              // but since you are replacing the Hero field/tab, we keep the blocks array from Pages.
               blocks: [IntroBlock, CallToAction, Content, MediaBlock, Archive],
-              required: true,
+              required: false,
               admin: {
                 initCollapsed: true,
+                description: 'Optional: Add additional content blocks if needed',
               },
             },
           ],
-          label: 'Content',
+          label: 'Additional Content',
         },
-        // 3. SEO TAB (Same as Pages)
+        // 5. SEO TAB
         {
           name: 'meta',
           label: 'SEO',
@@ -149,10 +279,10 @@ export const Services: CollectionConfig<'services'> = {
     slugField(),
   ],
   hooks: {
-    afterChange: [revalidateService], 
+    afterChange: [revalidateService],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateServiceDelete],
-},
+  },
   versions: {
     drafts: {
       autosave: {

@@ -17,48 +17,51 @@ export const IntroBlockComponent: React.FC<IntroBlock> = (props) => {
             <div className="container flex items-center max-lg:flex-col gap-10 sm:gap-24 z-10 relative">
                 <div className="w-full lg:w-1/2">
                     {/* Using the Payload-typed 'image' object */}
-                    {(() => {
-                        if (typeof image === 'object' && image !== null) {
-                            // Use Cloudinary URL if available
-                            if (image.cloudinary?.secure_url) {
-                                return (
-                                    <Image
-                                        src={image.cloudinary.secure_url}
-                                        width={800}
-                                        height={600}
-                                        alt={image.alt || heading}
-                                        className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
-                                    />
-                                );
+                    <div className="relative">
+                        {(() => {
+                            if (typeof image === 'object' && image !== null) {
+                                // Use Cloudinary URL if available
+                                if (image.cloudinary?.secure_url) {
+                                    return (
+                                        <Image
+                                            src={image.cloudinary.secure_url}
+                                            width={800}
+                                            height={600}
+                                            alt={image.alt || heading}
+                                            className="w-full h-80 md:h-[600px] object-cover rounded-2xl relative z-10"
+                                        />
+                                    );
+                                }
+                                // Fallback to constructing from public_id
+                                if (image.cloudinary?.public_id) {
+                                    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
+                                    return (
+                                        <Image
+                                            src={`https://res.cloudinary.com/${cloudName}/image/upload/${image.cloudinary.public_id}`}
+                                            width={800}
+                                            height={600}
+                                            alt={image.alt || heading}
+                                            className="w-full h-80 md:h-[600px] object-cover rounded-2xl relative z-10"
+                                        />
+                                    );
+                                }
+                                // Final fallback to local URL
+                                if ('url' in image && image.url) {
+                                    return (
+                                        <Image
+                                            src={image.url}
+                                            width={800}
+                                            height={600}
+                                            alt={image.alt || heading}
+                                            className="w-full h-80 md:h-[600px] object-cover rounded-2xl relative z-10"
+                                        />
+                                    );
+                                }
                             }
-                            // Fallback to constructing from public_id
-                            if (image.cloudinary?.public_id) {
-                                const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf';
-                                return (
-                                    <Image
-                                        src={`https://res.cloudinary.com/${cloudName}/image/upload/${image.cloudinary.public_id}`}
-                                        width={800}
-                                        height={600}
-                                        alt={image.alt || heading}
-                                        className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
-                                    />
-                                );
-                            }
-                            // Final fallback to local URL
-                            if ('url' in image && image.url) {
-                                return (
-                                    <Image
-                                        src={image.url}
-                                        width={800}
-                                        height={600}
-                                        alt={image.alt || heading}
-                                        className="w-full h-80 md:h-[600px] object-cover rounded-2xl"
-                                    />
-                                );
-                            }
-                        }
-                        return null;
-                    })()}
+                            return null;
+                        })()}
+                        <div className="absolute -bottom-20 -right-10 bg-primary/20 size-72 rounded-full z-0"></div>
+                    </div>
                 </div>
                 <div className="w-full lg:w-1/2 space-y-5">
                     <div>

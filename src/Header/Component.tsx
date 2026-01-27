@@ -178,7 +178,7 @@ export async function Header() {
     };
 
     return (
-        <header className="py-3 lg:py-4 w-full sticky top-0 shadow z-50 bg-white">
+        <header className="py-3 lg:py-4 w-full  shadow z-50 bg-white">
             <div className="container">
                 {/* Desktop Menu */}
                 <nav className="hidden justify-between items-center lg:flex">

@@ -1,18 +1,11 @@
 import React from "react"
 
-
+import type { Page } from '@/payload-types'
 import { Hero } from "@/heros/MainHero"
 import { LowImpactHero } from "@/heros/PageTitle"
 import { MediumImpactBanner } from "@/heros/MediumImpactBanner"
-import type { Slide } from "@/heros/MainHero"
 
-export type RenderHeroProps =
-  | { type: "none" }
-  | { type: "mainHero"; slides?: Slide[] }
-  | { type: "pageTitle"; richText?: any; media?: any; links?: any }
-  | { type: "mediumImpact"; richText?: any; media?: any; links?: any };
-
-export const RenderHero = (props: RenderHeroProps) => {
+export const RenderHero = (props: Page['hero']) => {
   const { type } = props;
 
   if (!type || type === "none") return null;
@@ -26,9 +19,11 @@ export const RenderHero = (props: RenderHeroProps) => {
     case "pageTitle": {
       return (
         <LowImpactHero
+          type="pageTitle"
           richText={props.richText ?? null}
           media={props.media ?? null}
           links={props.links ?? []}
+          title={props.title || undefined}
         />
       );
     }
@@ -36,9 +31,13 @@ export const RenderHero = (props: RenderHeroProps) => {
     case "mediumImpact": {
       return (
         <MediumImpactBanner
-          richText={props.richText ?? null}
+          type="mediumImpact"
+          richText={null}
           media={props.media ?? null}
           links={props.links ?? []}
+          heading={props.heading || undefined}
+          description={props.description || undefined}
+          eyebrow={props.eyebrow || undefined}
         />
       );
     }

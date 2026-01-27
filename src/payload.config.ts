@@ -14,6 +14,7 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Services } from './collections/Services'
+import { Branches } from './collections/Branches'
 import Footer from './Footer/config'
 import { Header } from './Header/config'
 import ContactDetails from './contact-details/config'
@@ -66,7 +67,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Services, Posts, Media, Categories, Users],
+  collections: [Pages, Branches, Services, Posts, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, ContactDetails],
   plugins: [
@@ -81,10 +82,10 @@ export default buildConfig({
       },
       collections: {
         // Apply Cloudinary storage to the 'media' collection
-        [Media.slug]: true, 
+        [Media.slug]: true,
       },
       // Optionally specify a folder in Cloudinary (will default to 'payload-media' if omitted)
-      folder: 'payload-cms-assets', 
+      folder: 'payload-cms-assets',
       // This is generally recommended to save disk space on your server
       disableLocalStorage: true,
     }),

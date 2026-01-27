@@ -10,6 +10,28 @@ import { IntroBlock as IntroBlockComponent } from './IntroBlock/Component'
 import ServicesBlock from './ServicesBlock/Component'
 import CalloutFormBlock from './Form/Component'
 
+import { AccordionBlock } from '@/blocks/AccordionBlock/Component'
+import { IconListBlock } from '@/blocks/IconListBlock/Component'
+import { IconBoxBlock } from '@/blocks/IconBoxBlock/Component'
+import { GridBlock } from '@/blocks/GridBlock/Component'
+
+import { StepsBlock } from './StepsBlock/Component'
+import { TestimonialsBlock } from './TestimonialsBlock/Component'
+import { BranchesBlock } from './BranchesBlock/Component'
+import { TitleBlock } from './TitleBlock/Component'
+import { FAQBlock } from './FAQBlock/Component'
+import { FAQItemsBlock } from './FAQItemsBlock/Component'
+import { CTACardBlock } from './CTACardBlock/Component'
+import { TwoColumnLayoutBlock } from './TwoColumnLayoutBlock/Component'
+import { PageCTABlock } from './PageCTABlock/Component'
+import { FeaturesBlock } from './FeaturesBlock/Component'
+import { ProcessBlock } from './ProcessBlock/Component'
+import { WhyUsBlock } from './WhyUsBlock/Component'
+import { PostGridBlock } from './PostGridBlock/Component'
+import { FormBlock } from './FormBlock/Component'
+import { MapBlock } from './MapBlock/Component'
+import { LayoutBlock } from './LayoutBlock/Component'
+
 const blockComponents = {
   archive: ArchiveBlock,
   content: ContentBlock,
@@ -18,12 +40,33 @@ const blockComponents = {
   intro: IntroBlockComponent,
   servicesSection: ServicesBlock,
   calloutForm: CalloutFormBlock,
+  accordion: AccordionBlock,
+  iconList: IconListBlock,
+  iconBox: IconBoxBlock,
+  grid: GridBlock,
+  steps: StepsBlock,
+  testimonials: TestimonialsBlock,
+  branches: BranchesBlock,
+  title: TitleBlock,
+  faq: FAQBlock,
+  faqItems: FAQItemsBlock,
+  ctaCard: CTACardBlock,
+  twoColumnLayout: TwoColumnLayoutBlock,
+  pageCta: PageCTABlock,
+  features: FeaturesBlock,
+  process: ProcessBlock,
+  whyUs: WhyUsBlock,
+  postGrid: PostGridBlock,
+  formBlock: FormBlock,
+  mapBlock: MapBlock,
+  layoutBlock: LayoutBlock,
 }
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][]
+  searchParams?: { [key: string]: string | string[] | undefined }
 }> = (props) => {
-  const { blocks } = props
+  const { blocks, searchParams } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -40,7 +83,7 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div key={index}>
-                  <Block {...(block as any)} />
+                  <Block {...(block as any)} searchParams={searchParams} />
                 </div>
               )
             }

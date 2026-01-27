@@ -23,7 +23,7 @@ export const Select: React.FC<
 > = ({ name, control, errors, label, options, required, width, defaultValue }) => {
   return (
     <Width width={width}>
-      <Label htmlFor={name}>
+      <Label htmlFor={name} className="sr-only">
         {label}
         {required && (
           <span className="required">
@@ -40,8 +40,8 @@ export const Select: React.FC<
 
           return (
             <SelectComponent onValueChange={(val) => onChange(val)} value={controlledValue?.value}>
-              <SelectTrigger className="w-full" id={name}>
-                <SelectValue placeholder={label} />
+              <SelectTrigger className="w-full bg-white h-10 sm:h-11" id={name}>
+                <SelectValue placeholder={label + (required ? '*' : '')} />
               </SelectTrigger>
               <SelectContent>
                 {options.map(({ label, value }) => {

@@ -77,7 +77,30 @@ export const hero: Field = {
       ],
     },
 
-    // --- For mediumImpact & pageTitle ---
+    // --- For mediumImpact ---
+    {
+      name: 'eyebrow',
+      type: 'text',
+      admin: {
+        condition: (_, { type } = {}) => type === 'mediumImpact',
+      },
+    },
+    {
+      name: 'heading',
+      type: 'text',
+      required: true,
+      admin: {
+        condition: (_, { type } = {}) => type === 'mediumImpact',
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      admin: {
+        condition: (_, { type } = {}) => type === 'mediumImpact',
+      },
+    },
+    // --- Rich Text (Legacy/Unused for now) ---
     {
       name: 'richText',
       type: 'richText',
@@ -91,8 +114,16 @@ export const hero: Field = {
       }),
       label: false,
       admin: {
-        condition: (_, { type } = {}) =>
-          ['mediumImpact', 'pageTitle'].includes(type),
+        condition: (_, { type } = {}) => false, // Hidden for now
+      },
+    },
+    // --- For pageTitle ---
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+      admin: {
+        condition: (_, { type } = {}) => type === 'pageTitle',
       },
     },
     linkGroup({
@@ -100,7 +131,7 @@ export const hero: Field = {
         maxRows: 2,
         admin: {
           condition: (_, { type } = {}) =>
-            ['mediumImpact', 'pageTitle'].includes(type),
+            ['mediumImpact'].includes(type),
         },
       },
     }),

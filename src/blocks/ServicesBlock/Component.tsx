@@ -162,7 +162,7 @@ export const ServicesBlock: React.FC<
 
                                     {/* Button - Now uses the service's linkLabel */}
                                     <Link href={serviceUrl}>
-                                        <Button className="bg-primary hover:bg-accent hover:shadow-lg transition-all">
+                                        <Button className="bg-primary hover:bg-secondary transition-colors duration-300">
                                             {linkLabel} <CircleArrowOutUpRight className="ml-2 w-4 h-4" />
                                         </Button>
                                     </Link>

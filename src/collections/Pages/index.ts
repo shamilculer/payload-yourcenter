@@ -10,6 +10,26 @@ import { hero } from '@/heros/config'
 import { IntroBlock } from '@/blocks/IntroBlock/config'
 import { ServicesBlock } from '@/blocks/ServicesBlock/config'
 import { CalloutForm } from '@/blocks/Form/config'
+import { AccordionBlock } from '@/blocks/AccordionBlock/config'
+import { IconListBlock } from '@/blocks/IconListBlock/config'
+import { IconBoxBlock } from '@/blocks/IconBoxBlock/config'
+import { GridBlock } from '@/blocks/GridBlock/config'
+import { StepsBlock } from '@/blocks/StepsBlock/config'
+import { TestimonialsBlock } from '@/blocks/TestimonialsBlock/config'
+import { BranchesBlock } from '@/blocks/BranchesBlock/config'
+import { TitleBlock } from '@/blocks/TitleBlock/config'
+import { FAQBlock } from '@/blocks/FAQBlock/config'
+import { FAQItemsBlock } from '@/blocks/FAQItemsBlock/config'
+import { CTACardBlock } from '@/blocks/CTACardBlock/config'
+import { TwoColumnLayoutBlock } from '@/blocks/TwoColumnLayoutBlock/config'
+import { PageCTABlock } from '@/blocks/PageCTABlock/config'
+import { FeaturesBlock } from '@/blocks/FeaturesBlock/config'
+import { ProcessBlock } from '@/blocks/ProcessBlock/config'
+import { WhyUsBlock } from '@/blocks/WhyUsBlock/config'
+import { PostGridBlock } from '@/blocks/PostGridBlock/config'
+import { FormBlock } from '@/blocks/FormBlock/config'
+import { MapBlock } from '@/blocks/MapBlock/config'
+import { LayoutBlock } from '@/blocks/LayoutBlock/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -74,7 +94,35 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [IntroBlock, ServicesBlock, CalloutForm, CallToAction, Content, MediaBlock, Archive],
+              blocks: [
+                IntroBlock,
+                ServicesBlock,
+                CalloutForm,
+                CallToAction,
+                Content,
+                MediaBlock,
+                Archive,
+                AccordionBlock,
+                IconListBlock,
+                IconBoxBlock,
+                GridBlock,
+                StepsBlock,
+                TestimonialsBlock,
+                BranchesBlock,
+                TitleBlock,
+                FAQBlock,
+                FAQItemsBlock,
+                CTACardBlock,
+                TwoColumnLayoutBlock,
+                PageCTABlock,
+                FeaturesBlock,
+                ProcessBlock,
+                WhyUsBlock,
+                PostGridBlock,
+                FormBlock,
+                MapBlock,
+                LayoutBlock,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

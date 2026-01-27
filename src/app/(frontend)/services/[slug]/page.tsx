@@ -1,17 +1,20 @@
 import React, { cache } from 'react'
 import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
+import Image from 'next/image'
+import Link from 'next/link'
+import { CircleCheckBig, Mail, PhoneCall } from 'lucide-react'
 
-// --- MOCK PAYLOAD IMPORTS & UTILITIES (Update paths as needed) ---
 import configPromise from '@payload-config'
-import { getPayload } from 'payload' // Using the standard 'payload' package import
+import { getPayload } from 'payload'
 import type { Service, Media } from '@/payload-types'
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import RichText from '@/components/RichText'
-import { generateMeta } from '@/utilities/generateMeta' // From Post example
-import { LivePreviewListener } from '@/components/LivePreviewListener' // From Post example
-import { PayloadRedirects } from '@/components/PayloadRedirects' // From Post example
-// --- END MOCK IMPORTS ---
+import { generateMeta } from '@/utilities/generateMeta'
+import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { PayloadRedirects } from '@/components/PayloadRedirects'
+import PageTitle from '@/components/PageTitle'
+import ServiceMenu from '@/components/ServiceMenu'
+import PageCTA from '@/components/PageCTA'
+import { Button } from '@/components/ui/button'
 
 // Helper to safely get the image URL
 const getImageUrl = (media: Media | string | undefined | null): string | undefined => {
@@ -33,23 +36,15 @@ const getImageUrl = (media: Media | string | undefined | null): string | undefin
   return undefined
 }
 
-// ------------------------------------
-// QUERY FUNCTION (CACHED)
-// ------------------------------------
-
-// Use the standard Next.js 'cache' utility for efficient data fetching
+// Query function (cached)
 const queryServiceBySlug = cache(async ({ slug }: { slug: string }) => {
-  // FIX: Await draftMode() before accessing properties like isEnabled
   const { isEnabled: draft } = await draftMode()
-
-  // Use the configPromise pattern from your Post example
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
     collection: 'services',
-    draft, // Honour draft mode for live preview
+    draft,
     limit: 1,
-    // CRITICAL: Increase depth to populate the 'featuredImage' field
     depth: 2,
     where: {
       slug: {
@@ -61,9 +56,7 @@ const queryServiceBySlug = cache(async ({ slug }: { slug: string }) => {
   return result.docs?.[0] || null
 })
 
-// ------------------------------------
-// 1. GENERATE STATIC PARAMS (SSG)
-// ------------------------------------
+// Generate static params
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
 
@@ -82,9 +75,7 @@ export async function generateStaticParams() {
   }))
 }
 
-// ------------------------------------
-// 2. GENERATE METADATA (SEO)
-// ------------------------------------
+// Generate metadata
 type Args = {
   params: Promise<{
     slug: string
@@ -95,59 +86,11 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug = '' } = await params
   const service = await queryServiceBySlug({ slug })
 
-  // Use the shared generateMeta utility from your Post example
   return generateMeta({ doc: service })
 }
 
-
-// ------------------------------------
-// 3. PAGE HEADER COMPONENT (Inline for simplicity)
-// ------------------------------------
-const ServiceHeader: React.FC<{ service: Service }> = ({ service }) => {
-  const { overview, title } = service
-  const featuredImage = overview?.featuredImage as Media | undefined
-  const imageUrl = getImageUrl(featuredImage)
-
-  return (
-    <header className="bg-white shadow-lg mb-16 pt-10">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-10 items-center py-10">
-
-          {/* Image (50% width on desktop) */}
-          {imageUrl && (
-            <div className="w-full lg:w-1/2 rounded-xl overflow-hidden shadow-2xl">
-              <img
-                src={imageUrl}
-                alt={featuredImage?.alt || `Featured image for ${title}`}
-                className="w-full h-80 object-cover"
-              />
-            </div>
-          )}
-
-          {/* Content (50% width on desktop) */}
-          <div className="w-full lg:w-1/2">
-            <h1 className="text-sm font-semibold uppercase tracking-widest text-indigo-600 mb-2">Service Details</h1>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-              {title}
-            </h2>
-            <div className="text-lg text-gray-700 space-y-4">
-              {/* Render the rich text overview description */}
-              {overview?.overviewDescription && (
-                <RichText data={overview.overviewDescription} /> // <-- FIX: Changed 'content' to 'data'
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  )
-}
-
-// ------------------------------------
-// 4. SERVICE PAGE COMPONENT
-// ------------------------------------
+// Service page component
 export default async function ServicePage({ params }: Args) {
-  // FIX: Await draftMode() before accessing properties like isEnabled
   const { isEnabled: draft } = await draftMode()
   const { slug = '' } = await params
   const url = '/services/' + slug
@@ -156,28 +99,150 @@ export default async function ServicePage({ params }: Args) {
 
   if (!service) return <PayloadRedirects url={url} />
 
-  const { layout } = service
+  const { title, serviceContent, whyChooseUs } = service
+  const segments = ['services', slug]
 
-  // --- Render the Page Content ---
+  // Get image URLs
+  const featuredImageUrl = getImageUrl(
+    serviceContent?.image as Media | undefined
+  )
+  const featuredImageAlt =
+    typeof serviceContent?.image === 'object'
+      ? serviceContent.image?.alt
+      : title
+
   return (
-    <article className="min-h-screen pt-24 pb-12 bg-gray-50">
-
-      {/* Allows redirects for valid pages too */}
+    <main>
       <PayloadRedirects disableNotFound url={url} />
-
-      {/* Draft Mode Listener for Live Preview */}
       {draft && <LivePreviewListener />}
 
-      {/* Service Header / Hero Section (using Overview data) */}
-      <ServiceHeader service={service} />
+      {/* Page Title / Hero */}
+      <PageTitle
+        image={featuredImageUrl || '/radiography.webp'}
+        title={title}
+        segments={segments}
+      />
 
-      {/* Main Content Layout */}
-      <div className="container mx-auto px-4">
-        {/* Render the flexible content blocks */}
-        {layout && layout.length > 0 && (
-          <RenderBlocks blocks={layout} />
-        )}
-      </div>
-    </article>
+      {/* Main Content Section */}
+      <section className="section-spacing">
+        <div className="container flex max-lg:flex-col gap-20">
+          {/* Left Column - Main Content (2/3 width) */}
+          <div className="w-full lg:w-2/3 space-y-4 sm:space-y-6">
+            {/* Service Image */}
+            {featuredImageUrl && (
+              <Image
+                src={featuredImageUrl}
+                alt={featuredImageAlt || 'Service Image'}
+                width={800}
+                height={420}
+                className="w-full h-[370px] sm:h-[420px] object-cover rounded-3xl"
+              />
+            )}
+
+            {/* Service Heading */}
+            <h2 className="max-sm:!text-3xl max-sm:!leading-9">
+              {serviceContent?.heading || title}
+            </h2>
+
+            {/* Long Description */}
+            <p>{serviceContent?.longDescription}</p>
+
+            {/* Why Choose Us Section */}
+            {whyChooseUs && (
+              <div className="space-y-4">
+                <h3 className="!text-3xl max-sm:!text-2xl">
+                  {whyChooseUs.heading}
+                </h3>
+                <p>{whyChooseUs.intro}</p>
+
+                {/* Benefits List */}
+                <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-10 mt-8">
+                  {whyChooseUs.benefits?.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      {/* Icon Container */}
+                      <div className="p-3 bg-primary/35 shadow flex-center [border-radius:70%_30%_30%_70%_/_60%_40%_60%_40%]">
+                        <CircleCheckBig
+                          className="w-5 h-5"
+                          fill="#C4C93B"
+                          stroke="#735D2B"
+                        />
+                      </div>
+
+                      {/* Content */}
+                      <div>
+                        <p className="!text-lg font-medium">{item.benefit}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Ending Paragraph */}
+            <p className="mt-8">{whyChooseUs?.endingParagraph}</p>
+
+            {/* Contact Button */}
+            <Button asChild>
+              <Link href="/contact">Contact Us Today</Link>
+            </Button>
+          </div>
+
+          {/* Right Column - Sidebar (1/3 width) */}
+          <div className="w-full lg:w-1/3 space-y-8">
+            {/* Service Menu */}
+            <ServiceMenu />
+
+            {/* Contact Card */}
+            <div className="border border-primary min-h-80 rounded-lg p-6 space-y-4 relative overflow-hidden">
+              <Image
+                alt="Contact Us"
+                height={290}
+                width={290}
+                src="/hero-banner-6.webp"
+                className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+              />
+
+              <Image
+                alt="Pattern"
+                height={90}
+                width={90}
+                src="/pattern-1.png"
+                className="absolute -top-5 -right-5 w-40 opacity-40 object-cover rounded-lg z-10"
+              />
+
+              <div className="absolute top-0 left-0 h-full w-full bg-accent/80 rounded-lg"></div>
+
+              <div className="space-y-8 z-20 relative">
+                <div className="size-24 flex-center border-2 rounded-full border-primary border-dashed">
+                  <div className="size-20 flex-center bg-primary rounded-full">
+                    <PhoneCall className="w-10 h-10 text-white" />
+                  </div>
+                </div>
+
+                <div className="ml-2">
+                  <h4 className="!text-white text-xl mb-6">Call Us Anytime</h4>
+                  <span className="text-3xl font-semibold text-white">
+                    +91 90610 60000
+                  </span>
+                  <span className="flex items-center gap-3 font-medium text-white mt-4">
+                    <div className="bg-primary rounded-2xl p-1">
+                      <Mail className="stroke-white" />
+                    </div>
+                    mail@yourcenter.in
+                  </span>
+
+                  <Button asChild className="mt-6 w-full">
+                    <Link href="tel:+919061060000">Contact Us</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Page CTA */}
+      <PageCTA />
+    </main>
   )
 }
