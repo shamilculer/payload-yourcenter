@@ -13,6 +13,8 @@ import RichText from '@/components/RichText'
 import type { FAQBlock as FAQBlockProps } from '@/payload-types'
 import { ArrowRightCircle } from "lucide-react"
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 export const FAQBlockComponent: React.FC<FAQBlockProps> = (props) => {
     const {
         eyebrow,
@@ -25,7 +27,10 @@ export const FAQBlockComponent: React.FC<FAQBlockProps> = (props) => {
         showPattern = true,
         theme = 'secondary',
         ctaBackground = 'secondary',
+        settings,
     } = props
+
+    const { className, style } = getBlockStyles(settings)
 
     // Theme color mappings
     const themeColors = {
@@ -45,7 +50,7 @@ export const FAQBlockComponent: React.FC<FAQBlockProps> = (props) => {
     const ctaBgColor = ctaBackgroundColors[ctaBackground as keyof typeof ctaBackgroundColors] || ctaBackgroundColors.secondary
 
     return (
-        <section className="section-spacing-b relative">
+        <section className={className} style={style}>
             {showPattern && (
                 <Image
                     src="/pattern-3.png"

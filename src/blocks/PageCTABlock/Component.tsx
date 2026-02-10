@@ -4,6 +4,7 @@ import Link from "next/link"
 import React from 'react'
 
 import { Button } from "@/components/ui/button"
+import { CMSLink } from '@/components/Link'
 import type { PageCTABlock as PageCTABlockProps } from '@/payload-types'
 
 export const PageCTABlockComponent: React.FC<PageCTABlockProps> = (props) => {
@@ -12,8 +13,8 @@ export const PageCTABlockComponent: React.FC<PageCTABlockProps> = (props) => {
         eyebrow,
         heading,
         description,
-        primaryButton,
-        secondaryButton,
+        ctaButton1,
+        ctaButton2,
     } = props
 
     return (
@@ -80,22 +81,24 @@ export const PageCTABlockComponent: React.FC<PageCTABlockProps> = (props) => {
 
                     {/* CTA Buttons */}
                     <div className="flex items-center gap-3 mt-6">
-                        {primaryButton && (
-                            <Button asChild>
-                                <Link href={`tel:${primaryButton.phoneNumber}`}>
-                                    <PhoneCall />
-                                    {primaryButton.label}
-                                </Link>
-                            </Button>
+                        {ctaButton1 && (
+                            <CMSLink
+                                {...ctaButton1}
+                                appearance="default"
+                                className="flex items-center gap-2"
+                            >
+                                <PhoneCall className="w-5 h-5" />
+                            </CMSLink>
                         )}
 
-                        {secondaryButton && (
-                            <Button asChild>
-                                <Link href={secondaryButton.url || '#'}>
-                                    <Send />
-                                    {secondaryButton.label}
-                                </Link>
-                            </Button>
+                        {ctaButton2 && (
+                            <CMSLink
+                                {...ctaButton2}
+                                appearance="default"
+                                className="flex items-center gap-2"
+                            >
+                                <Send className="w-5 h-5" />
+                            </CMSLink>
                         )}
                     </div>
                 </div>

@@ -73,6 +73,36 @@ export const plugins: Plugin[] = [
               }),
             }
           }
+
+          // Add rows field to textarea blocks
+          if ('name' in field && field.name === 'fields' && field.type === 'blocks') {
+            return {
+              ...field,
+              blocks: field.blocks?.map((block: any) => {
+                if (block.slug === 'textarea') {
+                  return {
+                    ...block,
+                    fields: [
+                      ...(block.fields || []),
+                      {
+                        name: 'rows',
+                        type: 'number',
+                        label: 'Textarea Height (Rows)',
+                        defaultValue: 3,
+                        min: 1,
+                        max: 20,
+                        admin: {
+                          description: 'Number of visible text lines (default: 3)',
+                        },
+                      },
+                    ],
+                  }
+                }
+                return block
+              }),
+            }
+          }
+
           return field
         })
       },

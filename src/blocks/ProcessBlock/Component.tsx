@@ -4,6 +4,8 @@ import { CMSLink } from '@/components/Link'
 import { cn } from '@/utilities/ui'
 import type { ProcessBlock as ProcessBlockProps } from '@/payload-types'
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 export const ProcessBlockComponent: React.FC<ProcessBlockProps> = (props) => {
     const {
         bannerImage,
@@ -16,7 +18,10 @@ export const ProcessBlockComponent: React.FC<ProcessBlockProps> = (props) => {
         processDescription,
         processImage,
         steps,
+        settings,
     } = props
+
+    const { className, style } = getBlockStyles(settings)
 
     // Helper for images
     const getImageSrc = (image: any) => {
@@ -37,7 +42,7 @@ export const ProcessBlockComponent: React.FC<ProcessBlockProps> = (props) => {
 
 
     return (
-        <section className="section-spacing-b">
+        <section className={className} style={style}>
             {/* Banner Section */}
             <div
                 className="w-full bg-cover bg-center bg-fixed relative"
@@ -113,12 +118,12 @@ export const ProcessBlockComponent: React.FC<ProcessBlockProps> = (props) => {
                         <div className="w-full lg:w-1/2 h-full flex flex-col gap-10 justify-center pr-16 max-sm:pb-16 max-lg:pb-24 max-lg:px-5">
                             {steps?.map((step, index) => (
                                 <div key={index} className="flex sm:items-center gap-5 bg-secondary py-3 px-4 rounded-2xl relative process-step">
-                                    <div className="size-12 min-w-12 rounded-full flex-center bg-white flex items-center justify-center">
+                                    <div className="size-12 rounded-full flex-center bg-white">
                                         <span className="font-bold text-3xl text-accent tracking-tighter">{step.number}</span>
                                     </div>
                                     <div className="w-3/4">
-                                        <h4 className="text-lg md:text-[20px] !text-white font-medium">{step.title}</h4>
-                                        <p className="text-white text-sm opacity-90">{step.description}</p>
+                                        <h4 className="text-lg md:text-[20px] !text-white">{step.title}</h4>
+                                        <p className="text-white">{step.description}</p>
                                     </div>
                                 </div>
                             ))}

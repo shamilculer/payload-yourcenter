@@ -2,10 +2,9 @@ import React, { Fragment } from 'react'
 
 import type { Page } from '@/payload-types'
 
-import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { ImageBlock } from '@/blocks/ImageBlock/Component'
 import { IntroBlock as IntroBlockComponent } from './IntroBlock/Component'
 import ServicesBlock from './ServicesBlock/Component'
 import CalloutFormBlock from './Form/Component'
@@ -17,7 +16,7 @@ import { GridBlock } from '@/blocks/GridBlock/Component'
 
 import { StepsBlock } from './StepsBlock/Component'
 import { TestimonialsBlock } from './TestimonialsBlock/Component'
-import { BranchesBlock } from './BranchesBlock/Component'
+import { TabsBlock } from './TabsBlock/Component'
 import { TitleBlock } from './TitleBlock/Component'
 import { FAQBlock } from './FAQBlock/Component'
 import { FAQItemsBlock } from './FAQItemsBlock/Component'
@@ -31,12 +30,12 @@ import { PostGridBlock } from './PostGridBlock/Component'
 import { FormBlock } from './FormBlock/Component'
 import { MapBlock } from './MapBlock/Component'
 import { LayoutBlock } from './LayoutBlock/Component'
+import { HeadingBlock } from './HeadingBlock/Component'
 
 const blockComponents = {
-  archive: ArchiveBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
-  mediaBlock: MediaBlock,
+  image: ImageBlock,
   intro: IntroBlockComponent,
   servicesSection: ServicesBlock,
   calloutForm: CalloutFormBlock,
@@ -46,7 +45,7 @@ const blockComponents = {
   grid: GridBlock,
   steps: StepsBlock,
   testimonials: TestimonialsBlock,
-  branches: BranchesBlock,
+  tabs: TabsBlock,
   title: TitleBlock,
   faq: FAQBlock,
   faqItems: FAQItemsBlock,
@@ -60,6 +59,7 @@ const blockComponents = {
   formBlock: FormBlock,
   mapBlock: MapBlock,
   layoutBlock: LayoutBlock,
+  heading: HeadingBlock,
 }
 
 export const RenderBlocks: React.FC<{

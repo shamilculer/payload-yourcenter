@@ -5,13 +5,17 @@ import { Carousel, CarouselItem } from '@/components/ui/carousel'
 import type { TestimonialsBlock as TestimonialsBlockProps } from '@/payload-types'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 export const TestimonialsBlock: React.FC<TestimonialsBlockProps> = (props) => {
-    const { title, eyebrow, testimonials } = props
+    const { title, eyebrow, testimonials, settings } = props
+
+    const { className, style } = getBlockStyles(settings)
 
     if (!testimonials || testimonials.length === 0) return null
 
     return (
-        <section className="section-spacing-b">
+        <section className={className} style={style}>
             <div className="container space-y-10 md:space-y-14">
                 {/* Section Heading */}
                 {(title || eyebrow) && (
@@ -39,6 +43,7 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockProps> = (props) => {
                             }
                         }}
                         loop={true}
+                        withPagination={false}
                         className="w-full"
                     >
                         {testimonials.map((item, index) => (
@@ -55,15 +60,17 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockProps> = (props) => {
 
                                     <div className="flex justify-between items-center gap-4 py-4 border-t border-gray-300 w-full mt-auto">
                                         <div className="flex items-center gap-3">
-                                            {item.image && typeof item.image === 'object' && (
-                                                <Image
-                                                    src={getMediaUrl(item.image) || ''}
-                                                    width={55}
-                                                    height={55}
-                                                    alt={item.author}
-                                                    className="size-14 rounded-full object-cover border border-gray-300"
-                                                />
-                                            )}
+                                            <Image
+                                                src={
+                                                    item.image && typeof item.image === 'object'
+                                                        ? getMediaUrl(item.image) || '/user-gray.png'
+                                                        : '/user-gray.png'
+                                                }
+                                                width={55}
+                                                height={55}
+                                                alt={item.author}
+                                                className="size-14 rounded-full object-cover border border-gray-300"
+                                            />
                                             <div>
                                                 <span className="font-semibold text-black max-sm:text-sm">
                                                     {item.author}

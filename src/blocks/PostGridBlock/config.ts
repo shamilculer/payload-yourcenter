@@ -1,45 +1,62 @@
 import type { Block } from 'payload'
+import { blockFields } from '@/fields/blockFields'
 
 export const PostGridBlock: Block = {
     slug: 'postGrid',
     interfaceName: 'PostGridBlock',
     fields: [
         {
-            name: 'categories',
-            type: 'relationship',
-            relationTo: 'categories',
-            hasMany: true,
-            label: 'Categories to Show',
-        },
-        {
-            name: 'limit',
-            type: 'number',
-            label: 'Posts Per Page',
-            defaultValue: 9,
-            required: true,
-            min: 1,
-            max: 100,
-        },
-        {
-            name: 'columns',
-            type: 'select',
-            label: 'Columns (Desktop)',
-            defaultValue: '3',
-            options: [
+            type: 'tabs',
+            tabs: [
                 {
-                    label: 'Two Columns',
-                    value: '2',
+                    label: 'Content',
+                    fields: [
+                        {
+                            name: 'categories',
+                            type: 'relationship',
+                            relationTo: 'categories',
+                            hasMany: true,
+                            label: 'Categories to Show',
+                        },
+                        {
+                            name: 'limit',
+                            type: 'number',
+                            label: 'Posts Per Page',
+                            defaultValue: 9,
+                            required: true,
+                            min: 1,
+                            max: 100,
+                        },
+                        {
+                            name: 'columns',
+                            type: 'select',
+                            label: 'Columns (Desktop)',
+                            defaultValue: '3',
+                            options: [
+                                {
+                                    label: 'Two Columns',
+                                    value: '2',
+                                },
+                                {
+                                    label: 'Three Columns',
+                                    value: '3',
+                                },
+                                {
+                                    label: 'Four Columns',
+                                    value: '4',
+                                },
+                            ],
+                        },
+                    ]
                 },
                 {
-                    label: 'Three Columns',
-                    value: '3',
-                },
-                {
-                    label: 'Four Columns',
-                    value: '4',
-                },
-            ],
-        },
+                    label: 'Settings',
+                    fields: [
+                        ...blockFields
+                    ]
+                }
+            ]
+        }
     ],
     labels: {
         plural: 'Post Grid Blocks',

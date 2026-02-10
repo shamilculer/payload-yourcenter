@@ -12,8 +12,12 @@ const RenderIcon = ({ name, className }: { name: string; className?: string }) =
     return <Icon className={className} />
 }
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 export const FeaturesBlockComponent: React.FC<FeaturesBlockProps> = (props) => {
-    const { features, columns = '4', gap = 'lg' } = props
+    const { features, columns = '4', gap = 'lg', settings } = props
+
+    const { className, style } = getBlockStyles(settings)
 
     if (!features || features.length === 0) return null
 
@@ -54,7 +58,7 @@ export const FeaturesBlockComponent: React.FC<FeaturesBlockProps> = (props) => {
     const gapClass = gapClasses[gap as keyof typeof gapClasses] || gapClasses.lg
 
     return (
-        <section className="section-spacing-b">
+        <section className={className} style={style}>
             <div className="container">
                 <div className={cn('grid grid-cols-1', gridClass, gapClass, 'max-sm:px-3')}>
                     {features.map((feature, index) => {
@@ -91,7 +95,7 @@ export const FeaturesBlockComponent: React.FC<FeaturesBlockProps> = (props) => {
                                     enableHoverEffect && hoverClass,
                                 )}
                                 style={{
-                                    backgroundColor: bgColor,
+                                    backgroundColor: bgColor || "transparent",
                                     ...(enableHoverEffect &&
                                         hoverBackgroundColor === 'custom' &&
                                         customHoverColor && {

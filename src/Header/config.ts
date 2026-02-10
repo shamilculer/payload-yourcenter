@@ -30,6 +30,12 @@ export const Header: GlobalConfig = {
     {
       name: 'navItems',
       type: 'array',
+      admin: {
+        initCollapsed: true,
+        components: {
+          RowLabel: '@/Header/RowLabel#RowLabel',
+        },
+      },
       fields: [
         {
           name: 'label',
@@ -53,6 +59,9 @@ export const Header: GlobalConfig = {
           admin: {
             condition: (_, siblingData) => siblingData?.hasDropdown === true,
             description: 'Add dropdown menu items',
+            components: {
+              RowLabel: '@/Header/RowLabel#RowLabel',
+            },
           },
           fields: [
             link({

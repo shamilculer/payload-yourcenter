@@ -42,6 +42,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
             defaultValue: 'reference',
             options: [
               {
+                label: 'None',
+                value: 'none',
+              },
+              {
                 label: 'Internal link',
                 value: 'reference',
               },
@@ -55,6 +59,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
             name: 'newTab',
             type: 'checkbox',
             admin: {
+              condition: (_, siblingData) => siblingData?.type !== 'none',
               style: {
                 alignSelf: 'flex-end',
               },
@@ -75,8 +80,8 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
       label: 'Document to link to',
-      relationTo: ['pages', 'services', 'posts'],
-      required: true,
+      relationTo: ['pages', 'services', 'posts', 'branches'],
+      required: false,
     },
     {
       name: 'url',
@@ -85,7 +90,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         condition: (_, siblingData) => siblingData?.type === 'custom',
       },
       label: 'Custom URL',
-      required: true,
+      required: false,
     },
   ]
 
@@ -106,10 +111,11 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           name: 'label',
           type: 'text',
           admin: {
+            condition: (_, siblingData) => siblingData?.type !== 'none',
             width: '50%',
           },
           label: 'Label',
-          required: true,
+          required: false,
         },
       ],
     })
@@ -128,6 +134,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       name: 'appearance',
       type: 'select',
       admin: {
+        condition: (_, siblingData) => siblingData?.type !== 'none',
         description: 'Choose how the link should be rendered.',
       },
       defaultValue: 'default',

@@ -7,12 +7,16 @@ import RichText from '@/components/RichText'
 import type { IntroBlock } from '@/payload-types' // Import generated type
 
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 export const IntroBlockComponent: React.FC<IntroBlock> = (props) => {
     // Destructure properties: CHANGED 'cta_buttons' to 'links'
-    const { heading, subheading, description, image, links } = props
+    const { heading, subheading, description, image, links, settings } = props
+
+    const { className, style } = getBlockStyles(settings)
 
     return (
-        <section className="section-spacing relative">
+        <section className={className} style={style}>
             <Image src="/pattern-2.png" width={300} height={40} alt="pattern" className="absolute top-0 left-0 opacity-25" />
             <div className="container flex items-center max-lg:flex-col gap-10 sm:gap-24 z-10 relative">
                 <div className="w-full lg:w-1/2">

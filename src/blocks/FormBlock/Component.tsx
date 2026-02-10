@@ -7,23 +7,31 @@ import RichText from '@/components/RichText'
 import { fields as FieldComponents } from '../Form/fields'
 import { FormBlock as FormBlockProps } from '@/payload-types'
 
-export const FormBlock = ({ heading, introContent, form }: FormBlockProps) => {
-    return (
-        <div className='bg-accent/10 p-6 sm:p-10 rounded-lg shadow-sm border border-accent/20'>
-            {heading && (
-                <h3 className="text-xl font-semibold mb-4 text-primary">{heading}</h3>
-            )}
-            {introContent && (
-                <div className="mb-6">
-                    <RichText data={introContent} enableGutter={false} />
-                </div>
-            )}
+import { getBlockStyles, getContainerStyles } from '@/utilities/getBlockStyles'
 
-            {form ? (
-                <DynamicFormRenderer form={form} />
-            ) : (
-                <p className="text-gray-500 italic">No form selected.</p>
-            )}
+export const FormBlock = ({ heading, introContent, form, settings }: FormBlockProps & { settings?: any }) => {
+    const { className, style } = getBlockStyles(settings)
+
+    return (
+        <div className={className} style={style}>
+            <div className={getContainerStyles(settings)}>
+                <div className='bg-accent/10 p-6 sm:p-10 rounded-lg shadow-sm border border-accent/20'>
+                    {heading && (
+                        <h3 className="text-xl font-semibold mb-4 text-primary">{heading}</h3>
+                    )}
+                    {introContent && (
+                        <div className="mb-6">
+                            <RichText data={introContent} enableGutter={false} />
+                        </div>
+                    )}
+
+                    {form ? (
+                        <DynamicFormRenderer form={form} />
+                    ) : (
+                        <p className="text-gray-500 italic">No form selected.</p>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }
@@ -132,7 +140,7 @@ function DynamicFormRenderer({ form }: { form: any }) {
                     // Assuming FieldComponents use shadcn UI components which have classes applied.
 
                     return (
-                        <div key={field.id ?? field.name ?? idx} className="bg-white">
+                        <div key={field.id ?? field.name ?? idx}>
                             <Component
                                 {...field}
                                 errors={methods.formState.errors}

@@ -3,7 +3,7 @@ import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import React from 'react'
 
-import type { Page, Post, Service } from '@/payload-types'
+import type { Page, Post, Service, Branch } from '@/payload-types'
 
 type CMSLinkType = {
   appearance?: 'inline' | 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | null
@@ -12,11 +12,11 @@ type CMSLinkType = {
   label?: string | null
   newTab?: boolean | null
   reference?: {
-    relationTo: 'pages' | 'posts' | 'services'
-    value: Page | Post | Service | string | number
+    relationTo: 'pages' | 'posts' | 'services' | 'branches'
+    value: Page | Post | Service | Branch | string | number
   } | null
   size?: 'default' | 'sm' | 'lg' | 'icon' | null
-  type?: 'custom' | 'reference' | null
+  type?: 'custom' | 'reference' | 'none' | null
   url?: string | null
 }
 
@@ -39,7 +39,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
       }`
       : url
 
-  if (!href) return null
+  if (!href || type === 'none') return null
 
   const size = appearance === 'link' ? 'default' : sizeFromProps
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}

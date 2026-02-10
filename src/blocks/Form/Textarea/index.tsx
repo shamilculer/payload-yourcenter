@@ -28,11 +28,11 @@ export const Textarea: React.FC<
       </Label>
 
       <TextAreaComponent
-        className="bg-white resize-none"
+        className="resize-none bg-white"
         defaultValue={defaultValue}
         placeholder={label + (required ? '*' : '')}
         id={name}
-        rows={rows}
+        rows={rows || 3}
         {...register(name, { required: required })}
       />
 

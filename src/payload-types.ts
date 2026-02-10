@@ -156,14 +156,42 @@ export interface Page {
     type: 'none' | 'mainHero' | 'mediumImpact' | 'pageTitle';
     slides?:
       | {
+          /**
+           * Use a new line to separate the normal text from the bold text (e.g. Line 1: Normal, Line 2: Bold)
+           */
           heading: string;
           subheading?: string | null;
           description?: string | null;
           image: string | Media;
           cta_buttons?:
             | {
-                label: string;
-                url: string;
+                link?: {
+                  type?: ('none' | 'reference' | 'custom') | null;
+                  newTab?: boolean | null;
+                  reference?:
+                    | ({
+                        relationTo: 'pages';
+                        value: string | Page;
+                      } | null)
+                    | ({
+                        relationTo: 'services';
+                        value: string | Service;
+                      } | null)
+                    | ({
+                        relationTo: 'posts';
+                        value: string | Post;
+                      } | null)
+                    | ({
+                        relationTo: 'branches';
+                        value: string | Branch;
+                      } | null);
+                  url?: string | null;
+                  label?: string | null;
+                  /**
+                   * Choose how the link should be rendered.
+                   */
+                  appearance?: ('default' | 'outline') | null;
+                };
                 id?: string | null;
               }[]
             | null;
@@ -191,8 +219,8 @@ export interface Page {
     title?: string | null;
     links?:
       | {
-          link: {
-            type?: ('reference' | 'custom') | null;
+          link?: {
+            type?: ('none' | 'reference' | 'custom') | null;
             newTab?: boolean | null;
             reference?:
               | ({
@@ -206,9 +234,13 @@ export interface Page {
               | ({
                   relationTo: 'posts';
                   value: string | Post;
+                } | null)
+              | ({
+                  relationTo: 'branches';
+                  value: string | Branch;
                 } | null);
             url?: string | null;
-            label: string;
+            label?: string | null;
             /**
              * Choose how the link should be rendered.
              */
@@ -225,15 +257,14 @@ export interface Page {
     | CalloutFormBlock
     | CallToActionBlock
     | ContentBlock
-    | MediaBlock
-    | ArchiveBlock
+    | ImageBlock
     | AccordionBlock
     | IconListBlock
     | IconBoxBlock
     | GridBlock
     | StepsBlock
     | TestimonialsBlock
-    | BranchesBlock
+    | TabsBlock
     | TitleBlock
     | FAQBlock
     | FAQItemsBlock
@@ -247,6 +278,7 @@ export interface Page {
     | FormBlock
     | MapBlock
     | LayoutBlock
+    | HeadingBlock
   )[];
   meta?: {
     title?: string | null;
@@ -487,7 +519,7 @@ export interface Service {
   /**
    * Optional: Add additional content blocks if needed
    */
-  layout?: (IntroBlock | CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock)[] | null;
+  layout?: (IntroBlock | CallToActionBlock | ContentBlock | ImageBlock)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -615,8 +647,8 @@ export interface IntroBlock {
   image: string | Media;
   links?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
+        link?: {
+          type?: ('none' | 'reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -630,9 +662,13 @@ export interface IntroBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
               } | null);
           url?: string | null;
-          label: string;
+          label?: string | null;
           /**
            * Choose how the link should be rendered.
            */
@@ -641,6 +677,39 @@ export interface IntroBlock {
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'intro';
@@ -766,8 +835,8 @@ export interface CallToActionBlock {
   } | null;
   links?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
+        link?: {
+          type?: ('none' | 'reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -781,9 +850,13 @@ export interface CallToActionBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
               } | null);
           url?: string | null;
-          label: string;
+          label?: string | null;
           /**
            * Choose how the link should be rendered.
            */
@@ -792,6 +865,39 @@ export interface CallToActionBlock {
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'cta';
@@ -821,7 +927,7 @@ export interface ContentBlock {
         } | null;
         enableLink?: boolean | null;
         link?: {
-          type?: ('reference' | 'custom') | null;
+          type?: ('none' | 'reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -835,9 +941,13 @@ export interface ContentBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
               } | null);
           url?: string | null;
-          label: string;
+          label?: string | null;
           /**
            * Choose how the link should be rendered.
            */
@@ -846,26 +956,54 @@ export interface ContentBlock {
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
+ * via the `definition` "ImageBlock".
  */
-export interface MediaBlock {
+export interface ImageBlock {
   media: string | Media;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
- */
-export interface ArchiveBlock {
-  introContent?: {
+  width?: string | null;
+  height?: string | null;
+  objectFit?: ('cover' | 'contain' | 'fill') | null;
+  hoverEffect?: ('none' | 'scale' | 'grayscale' | 'brighten') | null;
+  caption?: {
     root: {
       type: string;
       children: {
@@ -880,19 +1018,67 @@ export interface ArchiveBlock {
     };
     [k: string]: unknown;
   } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
-  categories?: (string | Category)[] | null;
-  limit?: number | null;
-  selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: string | Post;
-      }[]
-    | null;
+  /**
+   * Make the image clickable by adding a link
+   */
+  link?: {
+    type?: ('none' | 'reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
+        } | null);
+    url?: string | null;
+  };
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'archive';
+  blockType: 'image';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -904,10 +1090,46 @@ export interface ServicesSectionBlock {
    */
   eyebrow?: string | null;
   heading: string;
+  headingAlignment?: ('left' | 'center') | null;
   /**
-   * The maximum number of services to show in the grid. Set this to 3, 6, or 9 for a balanced display.
+   * The maximum number of services to show in the grid.
    */
   limit: number;
+  filterByBranch?: boolean | null;
+  selectedBranch?: (string | null) | Branch;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'servicesSection';
@@ -946,27 +1168,42 @@ export interface CalloutFormBlock {
      */
     formHeading: string;
     /**
-     * A short description or instruction for the user above the form.
-     */
-    formSubheading?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    /**
      * The form to display in the sidebar.
      */
     form: string | Form;
+  };
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -1082,6 +1319,10 @@ export interface Form {
             width?: number | null;
             defaultValue?: string | null;
             required?: boolean | null;
+            /**
+             * Number of visible text lines (default: 3)
+             */
+            rows?: number | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'textarea';
@@ -1172,6 +1413,39 @@ export interface AccordionBlock {
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'accordion';
@@ -1189,12 +1463,26 @@ export interface IconListBlock {
          */
         iconName?: string | null;
         iconImage?: (string | null) | Media;
+        iconColor?:
+          | (
+              | 'primary'
+              | 'secondary'
+              | 'accent'
+              | 'destructive'
+              | 'muted'
+              | 'message'
+              | 'success'
+              | 'warning'
+              | 'white'
+              | 'black'
+            )
+          | null;
         text: string;
         /**
          * Optional link for this item
          */
-        link: {
-          type?: ('reference' | 'custom') | null;
+        link?: {
+          type?: ('none' | 'reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -1208,17 +1496,49 @@ export interface IconListBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
               } | null);
           url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
         };
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'iconList';
@@ -1236,12 +1556,22 @@ export interface IconBoxBlock {
   iconName?: string | null;
   title: string;
   description?: string | null;
-  backgroundColor?: ('card' | 'orange' | 'cyan' | 'yellow' | 'green' | 'purple' | 'pink' | 'custom') | null;
+  padding?: ('small' | 'medium' | 'large') | null;
+  gap?: ('small' | 'medium' | 'large' | 'xl') | null;
+  cardBorderRadius?: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl') | null;
+  shadow?: ('none' | 'sm' | 'md' | 'lg') | null;
+  iconShape?: ('circle' | 'square' | 'organic') | null;
+  iconSize?: ('small' | 'medium' | 'large') | null;
+  backgroundColor?: ('white' | 'card' | 'orange' | 'cyan' | 'yellow' | 'green' | 'purple' | 'pink' | 'custom') | null;
   customBackgroundColor?: string | null;
   /**
-   * Leave empty for default primary color
+   * Leave empty for white (or default)
    */
   iconColor?: string | null;
+  /**
+   * Leave empty for primary color
+   */
+  iconBackgroundColor?: string | null;
   alignment?: ('left' | 'center') | null;
   /**
    * Changes background to hover color and text to white on hover
@@ -1252,8 +1582,8 @@ export interface IconBoxBlock {
   /**
    * Optional link
    */
-  link: {
-    type?: ('reference' | 'custom') | null;
+  link?: {
+    type?: ('none' | 'reference' | 'custom') | null;
     newTab?: boolean | null;
     reference?:
       | ({
@@ -1267,13 +1597,50 @@ export interface IconBoxBlock {
       | ({
           relationTo: 'posts';
           value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
         } | null);
     url?: string | null;
-    label: string;
+    label?: string | null;
     /**
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline') | null;
+  };
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -1286,24 +1653,294 @@ export interface IconBoxBlock {
 export interface GridBlock {
   columns?:
     | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        size?: number | null;
         blocks?:
           | (
+              | HeadingBlock
               | ContentBlock
               | AccordionBlock
               | IconListBlock
               | IconBoxBlock
               | CallToActionBlock
-              | MediaBlock
+              | ImageBlock
               | CalloutFormBlock
+              | FAQItemsBlock
+              | CTACardBlock
+              | StepsBlock
+              | TitleBlock
+              | MapBlock
+              | FormBlock
+              | LayoutBlock
             )[]
           | null;
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'grid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeadingBlock".
+ */
+export interface HeadingBlock {
+  text: string;
+  level?: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') | null;
+  /**
+   * e.g., #000000, rgb(0,0,0), red, inherit
+   */
+  color?: string | null;
+  align?: ('left' | 'center' | 'right') | null;
+  /**
+   * Make the heading clickable by adding a link
+   */
+  link?: {
+    type?: ('none' | 'reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
+        } | null);
+    url?: string | null;
+  };
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heading';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQItemsBlock".
+ */
+export interface FAQItemsBlock {
+  faqItems: {
+    question: string;
+    answer: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+  }[];
+  triggerStyle?: ('default' | 'primary' | 'secondary' | 'accent') | null;
+  contentBackground?: ('white' | 'muted' | 'transparent') | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqItems';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CTACardBlock".
+ */
+export interface CTACardBlock {
+  image?: (string | null) | Media;
+  heading: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  ctaButton?: {
+    type?: ('none' | 'reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
+        } | null);
+    url?: string | null;
+    label?: string | null;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  backgroundColor?: ('primary' | 'secondary' | 'accent' | 'muted' | 'white') | null;
+  borderRadius?: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl') | null;
+  /**
+   * Enter image height in pixels (e.g., 192, 300, 450). Default is 192px (h-48).
+   */
+  imageHeight?: string | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'ctaCard';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1318,43 +1955,42 @@ export interface StepsBlock {
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'steps';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TestimonialsBlock".
- */
-export interface TestimonialsBlock {
-  title?: string | null;
-  eyebrow?: string | null;
-  testimonials?:
-    | {
-        content: string;
-        author: string;
-        title?: string | null;
-        location?: string | null;
-        image?: (string | null) | Media;
-        rating?: number | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'testimonials';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BranchesBlock".
- */
-export interface BranchesBlock {
-  title?: string | null;
-  description?: string | null;
-  eyebrow?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'branches';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1365,9 +2001,391 @@ export interface TitleBlock {
   title: string;
   description?: string | null;
   align?: ('center' | 'left' | 'right') | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'title';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock".
+ */
+export interface MapBlock {
+  /**
+   * Paste the "src" URL from the Google Maps Embed code here.
+   */
+  mapUrl: string;
+  height?: string | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mapBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock".
+ */
+export interface FormBlock {
+  heading?: string | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Select the form directly to display.
+   */
+  form: string | Form;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LayoutBlock".
+ */
+export interface LayoutBlock {
+  structure?: ('1' | '1/1' | '1/2' | '2/1' | '1/1/1' | '1/1/1/1') | null;
+  column1?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | HeadingBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | ImageBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  column2?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | HeadingBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | ImageBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  column3?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | HeadingBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | ImageBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  column4?:
+    | (
+        | FAQItemsBlock
+        | CTACardBlock
+        | AccordionBlock
+        | IconListBlock
+        | IconBoxBlock
+        | GridBlock
+        | HeadingBlock
+        | StepsBlock
+        | TitleBlock
+        | ContentBlock
+        | ImageBlock
+        | CallToActionBlock
+        | FormBlock
+        | MapBlock
+      )[]
+    | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  gap?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
+  reverseOnMobile?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'layoutBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  title?: string | null;
+  eyebrow?: string | null;
+  testimonials?:
+    | {
+        title?: string | null;
+        author: string;
+        content: string;
+        location?: string | null;
+        image?: (string | null) | Media;
+        rating?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabsBlock".
+ */
+export interface TabsBlock {
+  eyebrow?: string | null;
+  title?: string | null;
+  description?: string | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  source?: ('manual' | 'branches') | null;
+  tabs?:
+    | {
+        label: string;
+        content?: unknown[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tabs';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1419,71 +2437,42 @@ export interface FAQBlock {
   };
   theme?: ('primary' | 'secondary' | 'accent') | null;
   ctaBackground?: ('primary' | 'secondary' | 'accent' | 'muted') | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'faq';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQItemsBlock".
- */
-export interface FAQItemsBlock {
-  faqItems: {
-    question: string;
-    answer: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    id?: string | null;
-  }[];
-  triggerStyle?: ('default' | 'primary' | 'secondary' | 'accent') | null;
-  contentBackground?: ('white' | 'muted' | 'transparent') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faqItems';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CTACardBlock".
- */
-export interface CTACardBlock {
-  image?: (string | null) | Media;
-  heading: string;
-  description: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  ctaButton: {
-    label: string;
-    url: string;
-  };
-  backgroundColor?: ('primary' | 'secondary' | 'accent' | 'muted' | 'white') | null;
-  borderRadius?: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'ctaCard';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1501,7 +2490,7 @@ export interface TwoColumnLayoutBlock {
         | StepsBlock
         | TitleBlock
         | ContentBlock
-        | MediaBlock
+        | ImageBlock
         | CallToActionBlock
         | FormBlock
         | MapBlock
@@ -1518,7 +2507,7 @@ export interface TwoColumnLayoutBlock {
         | StepsBlock
         | TitleBlock
         | ContentBlock
-        | MediaBlock
+        | ImageBlock
         | CallToActionBlock
         | FormBlock
         | MapBlock
@@ -1528,52 +2517,42 @@ export interface TwoColumnLayoutBlock {
   gap?: ('sm' | 'md' | 'lg' | 'xl') | null;
   verticalAlign?: ('top' | 'center' | 'bottom' | 'stretch') | null;
   reverseOnMobile?: boolean | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'twoColumnLayout';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormBlock".
- */
-export interface FormBlock {
-  heading?: string | null;
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Select the form directly to display.
-   */
-  form: string | Form;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'formBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MapBlock".
- */
-export interface MapBlock {
-  /**
-   * Paste the "src" URL from the Google Maps Embed code here.
-   */
-  mapUrl: string;
-  height?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mapBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1584,19 +2563,92 @@ export interface PageCTABlock {
   eyebrow?: string | null;
   heading: string;
   description: string;
-  primaryButton: {
-    label: string;
+  ctaButton1?: {
+    type?: ('none' | 'reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
+        } | null);
+    url?: string | null;
+    label?: string | null;
     /**
-     * Phone number in international format (e.g., +919061060000)
+     * Choose how the link should be rendered.
      */
-    phoneNumber: string;
+    appearance?: ('default' | 'outline') | null;
   };
-  secondaryButton: {
-    label: string;
+  ctaButton2?: {
+    type?: ('none' | 'reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
+        } | null);
+    url?: string | null;
+    label?: string | null;
     /**
-     * WhatsApp URL or any other messaging link
+     * Choose how the link should be rendered.
      */
-    url: string;
+    appearance?: ('default' | 'outline') | null;
+  };
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
   };
   id?: string | null;
   blockName?: string | null;
@@ -1626,8 +2678,8 @@ export interface FeaturesBlock {
     /**
      * Optional link for this feature card
      */
-    link: {
-      type?: ('reference' | 'custom') | null;
+    link?: {
+      type?: ('none' | 'reference' | 'custom') | null;
       newTab?: boolean | null;
       reference?:
         | ({
@@ -1641,9 +2693,13 @@ export interface FeaturesBlock {
         | ({
             relationTo: 'posts';
             value: string | Post;
+          } | null)
+        | ({
+            relationTo: 'branches';
+            value: string | Branch;
           } | null);
       url?: string | null;
-      label: string;
+      label?: string | null;
       /**
        * Choose how the link should be rendered.
        */
@@ -1651,6 +2707,39 @@ export interface FeaturesBlock {
     };
     id?: string | null;
   }[];
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'features';
@@ -1664,8 +2753,8 @@ export interface ProcessBlock {
   bannerEyebrow?: string | null;
   bannerHeading: string;
   bannerDescription: string;
-  bannerButton: {
-    type?: ('reference' | 'custom') | null;
+  bannerButton?: {
+    type?: ('none' | 'reference' | 'custom') | null;
     newTab?: boolean | null;
     reference?:
       | ({
@@ -1679,9 +2768,13 @@ export interface ProcessBlock {
       | ({
           relationTo: 'posts';
           value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
         } | null);
     url?: string | null;
-    label: string;
+    label?: string | null;
     /**
      * Choose how the link should be rendered.
      */
@@ -1697,6 +2790,39 @@ export interface ProcessBlock {
     description: string;
     id?: string | null;
   }[];
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'process';
@@ -1718,6 +2844,39 @@ export interface WhyUsBlock {
         id?: string | null;
       }[]
     | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'whyUs';
@@ -1730,93 +2889,42 @@ export interface PostGridBlock {
   categories?: (string | Category)[] | null;
   limit: number;
   columns?: ('2' | '3' | '4') | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'postGrid';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LayoutBlock".
- */
-export interface LayoutBlock {
-  structure?: ('1' | '1/1' | '1/2' | '2/1' | '1/1/1' | '1/1/1/1') | null;
-  column1?:
-    | (
-        | FAQItemsBlock
-        | CTACardBlock
-        | AccordionBlock
-        | IconListBlock
-        | IconBoxBlock
-        | GridBlock
-        | StepsBlock
-        | TitleBlock
-        | ContentBlock
-        | MediaBlock
-        | CallToActionBlock
-        | FormBlock
-        | MapBlock
-      )[]
-    | null;
-  column2?:
-    | (
-        | FAQItemsBlock
-        | CTACardBlock
-        | AccordionBlock
-        | IconListBlock
-        | IconBoxBlock
-        | GridBlock
-        | StepsBlock
-        | TitleBlock
-        | ContentBlock
-        | MediaBlock
-        | CallToActionBlock
-        | FormBlock
-        | MapBlock
-      )[]
-    | null;
-  column3?:
-    | (
-        | FAQItemsBlock
-        | CTACardBlock
-        | AccordionBlock
-        | IconListBlock
-        | IconBoxBlock
-        | GridBlock
-        | StepsBlock
-        | TitleBlock
-        | ContentBlock
-        | MediaBlock
-        | CallToActionBlock
-        | FormBlock
-        | MapBlock
-      )[]
-    | null;
-  column4?:
-    | (
-        | FAQItemsBlock
-        | CTACardBlock
-        | AccordionBlock
-        | IconListBlock
-        | IconBoxBlock
-        | GridBlock
-        | StepsBlock
-        | TitleBlock
-        | ContentBlock
-        | MediaBlock
-        | CallToActionBlock
-        | FormBlock
-        | MapBlock
-      )[]
-    | null;
-  width?: ('boxed' | 'full') | null;
-  gap?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
-  paddingTop?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
-  paddingBottom?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
-  backgroundColor?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
-  reverseOnMobile?: boolean | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'layoutBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2066,8 +3174,16 @@ export interface PagesSelect<T extends boolean = true> {
               cta_buttons?:
                 | T
                 | {
-                    label?: T;
-                    url?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          newTab?: T;
+                          reference?: T;
+                          url?: T;
+                          label?: T;
+                          appearance?: T;
+                        };
                     id?: T;
                   };
               id?: T;
@@ -2102,15 +3218,14 @@ export interface PagesSelect<T extends boolean = true> {
         calloutForm?: T | CalloutFormBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
         accordion?: T | AccordionBlockSelect<T>;
         iconList?: T | IconListBlockSelect<T>;
         iconBox?: T | IconBoxBlockSelect<T>;
         grid?: T | GridBlockSelect<T>;
         steps?: T | StepsBlockSelect<T>;
         testimonials?: T | TestimonialsBlockSelect<T>;
-        branches?: T | BranchesBlockSelect<T>;
+        tabs?: T | TabsBlockSelect<T>;
         title?: T | TitleBlockSelect<T>;
         faq?: T | FAQBlockSelect<T>;
         faqItems?: T | FAQItemsBlockSelect<T>;
@@ -2124,6 +3239,7 @@ export interface PagesSelect<T extends boolean = true> {
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
         layoutBlock?: T | LayoutBlockSelect<T>;
+        heading?: T | HeadingBlockSelect<T>;
       };
   meta?:
     | T
@@ -2163,6 +3279,34 @@ export interface IntroBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2173,7 +3317,38 @@ export interface IntroBlockSelect<T extends boolean = true> {
 export interface ServicesSectionBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
+  headingAlignment?: T;
   limit?: T;
+  filterByBranch?: T;
+  selectedBranch?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2194,8 +3369,35 @@ export interface CalloutFormBlockSelect<T extends boolean = true> {
     | T
     | {
         formHeading?: T;
-        formSubheading?: T;
         form?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
@@ -2220,6 +3422,34 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
               appearance?: T;
             };
         id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
@@ -2247,29 +3477,84 @@ export interface ContentBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock_select".
+ * via the `definition` "ImageBlock_select".
  */
-export interface MediaBlockSelect<T extends boolean = true> {
+export interface ImageBlockSelect<T extends boolean = true> {
   media?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
- */
-export interface ArchiveBlockSelect<T extends boolean = true> {
-  introContent?: T;
-  populateBy?: T;
-  relationTo?: T;
-  categories?: T;
-  limit?: T;
-  selectedDocs?: T;
+  width?: T;
+  height?: T;
+  objectFit?: T;
+  hoverEffect?: T;
+  caption?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2285,6 +3570,34 @@ export interface AccordionBlockSelect<T extends boolean = true> {
         content?: T;
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2299,6 +3612,7 @@ export interface IconListBlockSelect<T extends boolean = true> {
         iconType?: T;
         iconName?: T;
         iconImage?: T;
+        iconColor?: T;
         text?: T;
         link?:
           | T
@@ -2307,10 +3621,36 @@ export interface IconListBlockSelect<T extends boolean = true> {
               newTab?: T;
               reference?: T;
               url?: T;
-              label?: T;
-              appearance?: T;
             };
         id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
@@ -2325,9 +3665,16 @@ export interface IconBoxBlockSelect<T extends boolean = true> {
   iconName?: T;
   title?: T;
   description?: T;
+  padding?: T;
+  gap?: T;
+  cardBorderRadius?: T;
+  shadow?: T;
+  iconShape?: T;
+  iconSize?: T;
   backgroundColor?: T;
   customBackgroundColor?: T;
   iconColor?: T;
+  iconBackgroundColor?: T;
   alignment?: T;
   enableHoverEffect?: T;
   hoverBackgroundColor?: T;
@@ -2341,6 +3688,34 @@ export interface IconBoxBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
@@ -2357,15 +3732,196 @@ export interface GridBlockSelect<T extends boolean = true> {
         blocks?:
           | T
           | {
+              heading?: T | HeadingBlockSelect<T>;
               content?: T | ContentBlockSelect<T>;
               accordion?: T | AccordionBlockSelect<T>;
               iconList?: T | IconListBlockSelect<T>;
               iconBox?: T | IconBoxBlockSelect<T>;
               cta?: T | CallToActionBlockSelect<T>;
-              mediaBlock?: T | MediaBlockSelect<T>;
+              image?: T | ImageBlockSelect<T>;
               calloutForm?: T | CalloutFormBlockSelect<T>;
+              faqItems?: T | FAQItemsBlockSelect<T>;
+              ctaCard?: T | CTACardBlockSelect<T>;
+              steps?: T | StepsBlockSelect<T>;
+              title?: T | TitleBlockSelect<T>;
+              mapBlock?: T | MapBlockSelect<T>;
+              formBlock?: T | FormBlockSelect<T>;
+              layoutBlock?: T | LayoutBlockSelect<T>;
             };
         id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeadingBlock_select".
+ */
+export interface HeadingBlockSelect<T extends boolean = true> {
+  text?: T;
+  level?: T;
+  color?: T;
+  align?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQItemsBlock_select".
+ */
+export interface FAQItemsBlockSelect<T extends boolean = true> {
+  faqItems?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  triggerStyle?: T;
+  contentBackground?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CTACardBlock_select".
+ */
+export interface CTACardBlockSelect<T extends boolean = true> {
+  image?: T;
+  heading?: T;
+  description?: T;
+  ctaButton?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  backgroundColor?: T;
+  borderRadius?: T;
+  imageHeight?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
@@ -2383,6 +3939,262 @@ export interface StepsBlockSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TitleBlock_select".
+ */
+export interface TitleBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  align?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock_select".
+ */
+export interface MapBlockSelect<T extends boolean = true> {
+  mapUrl?: T;
+  height?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock_select".
+ */
+export interface FormBlockSelect<T extends boolean = true> {
+  heading?: T;
+  introContent?: T;
+  form?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LayoutBlock_select".
+ */
+export interface LayoutBlockSelect<T extends boolean = true> {
+  structure?: T;
+  column1?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        heading?: T | HeadingBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  column2?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        heading?: T | HeadingBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  column3?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        heading?: T | HeadingBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  column4?:
+    | T
+    | {
+        faqItems?: T | FAQItemsBlockSelect<T>;
+        ctaCard?: T | CTACardBlockSelect<T>;
+        accordion?: T | AccordionBlockSelect<T>;
+        iconList?: T | IconListBlockSelect<T>;
+        iconBox?: T | IconBoxBlockSelect<T>;
+        grid?: T | GridBlockSelect<T>;
+        heading?: T | HeadingBlockSelect<T>;
+        steps?: T | StepsBlockSelect<T>;
+        title?: T | TitleBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mapBlock?: T | MapBlockSelect<T>;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  gap?: T;
+  reverseOnMobile?: T;
   id?: T;
   blockName?: T;
 }
@@ -2396,37 +4208,90 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
   testimonials?:
     | T
     | {
-        content?: T;
-        author?: T;
         title?: T;
+        author?: T;
+        content?: T;
         location?: T;
         image?: T;
         rating?: T;
         id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BranchesBlock_select".
+ * via the `definition` "TabsBlock_select".
  */
-export interface BranchesBlockSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  eyebrow?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TitleBlock_select".
- */
-export interface TitleBlockSelect<T extends boolean = true> {
+export interface TabsBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   title?: T;
   description?: T;
-  align?: T;
+  introContent?: T;
+  source?: T;
+  tabs?:
+    | T
+    | {
+        label?: T;
+        content?: T | {};
+        id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2456,42 +4321,34 @@ export interface FAQBlockSelect<T extends boolean = true> {
       };
   theme?: T;
   ctaBackground?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQItemsBlock_select".
- */
-export interface FAQItemsBlockSelect<T extends boolean = true> {
-  faqItems?:
+  settings?:
     | T
     | {
-        question?: T;
-        answer?: T;
-        id?: T;
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
-  triggerStyle?: T;
-  contentBackground?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CTACardBlock_select".
- */
-export interface CTACardBlockSelect<T extends boolean = true> {
-  image?: T;
-  heading?: T;
-  description?: T;
-  ctaButton?:
-    | T
-    | {
-        label?: T;
-        url?: T;
-      };
-  backgroundColor?: T;
-  borderRadius?: T;
   id?: T;
   blockName?: T;
 }
@@ -2512,7 +4369,7 @@ export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
         steps?: T | StepsBlockSelect<T>;
         title?: T | TitleBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
@@ -2529,7 +4386,7 @@ export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
         steps?: T | StepsBlockSelect<T>;
         title?: T | TitleBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
@@ -2538,27 +4395,34 @@ export interface TwoColumnLayoutBlockSelect<T extends boolean = true> {
   gap?: T;
   verticalAlign?: T;
   reverseOnMobile?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormBlock_select".
- */
-export interface FormBlockSelect<T extends boolean = true> {
-  heading?: T;
-  introContent?: T;
-  form?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MapBlock_select".
- */
-export interface MapBlockSelect<T extends boolean = true> {
-  mapUrl?: T;
-  height?: T;
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2571,17 +4435,53 @@ export interface PageCTABlockSelect<T extends boolean = true> {
   eyebrow?: T;
   heading?: T;
   description?: T;
-  primaryButton?:
+  ctaButton1?:
     | T
     | {
-        label?: T;
-        phoneNumber?: T;
-      };
-  secondaryButton?:
-    | T
-    | {
-        label?: T;
+        type?: T;
+        newTab?: T;
+        reference?: T;
         url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  ctaButton2?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
   id?: T;
   blockName?: T;
@@ -2618,6 +4518,34 @@ export interface FeaturesBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2652,6 +4580,34 @@ export interface ProcessBlockSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2672,6 +4628,34 @@ export interface WhyUsBlockSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2683,89 +4667,34 @@ export interface PostGridBlockSelect<T extends boolean = true> {
   categories?: T;
   limit?: T;
   columns?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LayoutBlock_select".
- */
-export interface LayoutBlockSelect<T extends boolean = true> {
-  structure?: T;
-  column1?:
+  settings?:
     | T
     | {
-        faqItems?: T | FAQItemsBlockSelect<T>;
-        ctaCard?: T | CTACardBlockSelect<T>;
-        accordion?: T | AccordionBlockSelect<T>;
-        iconList?: T | IconListBlockSelect<T>;
-        iconBox?: T | IconBoxBlockSelect<T>;
-        grid?: T | GridBlockSelect<T>;
-        steps?: T | StepsBlockSelect<T>;
-        title?: T | TitleBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        formBlock?: T | FormBlockSelect<T>;
-        mapBlock?: T | MapBlockSelect<T>;
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
       };
-  column2?:
-    | T
-    | {
-        faqItems?: T | FAQItemsBlockSelect<T>;
-        ctaCard?: T | CTACardBlockSelect<T>;
-        accordion?: T | AccordionBlockSelect<T>;
-        iconList?: T | IconListBlockSelect<T>;
-        iconBox?: T | IconBoxBlockSelect<T>;
-        grid?: T | GridBlockSelect<T>;
-        steps?: T | StepsBlockSelect<T>;
-        title?: T | TitleBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        formBlock?: T | FormBlockSelect<T>;
-        mapBlock?: T | MapBlockSelect<T>;
-      };
-  column3?:
-    | T
-    | {
-        faqItems?: T | FAQItemsBlockSelect<T>;
-        ctaCard?: T | CTACardBlockSelect<T>;
-        accordion?: T | AccordionBlockSelect<T>;
-        iconList?: T | IconListBlockSelect<T>;
-        iconBox?: T | IconBoxBlockSelect<T>;
-        grid?: T | GridBlockSelect<T>;
-        steps?: T | StepsBlockSelect<T>;
-        title?: T | TitleBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        formBlock?: T | FormBlockSelect<T>;
-        mapBlock?: T | MapBlockSelect<T>;
-      };
-  column4?:
-    | T
-    | {
-        faqItems?: T | FAQItemsBlockSelect<T>;
-        ctaCard?: T | CTACardBlockSelect<T>;
-        accordion?: T | AccordionBlockSelect<T>;
-        iconList?: T | IconListBlockSelect<T>;
-        iconBox?: T | IconBoxBlockSelect<T>;
-        grid?: T | GridBlockSelect<T>;
-        steps?: T | StepsBlockSelect<T>;
-        title?: T | TitleBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        formBlock?: T | FormBlockSelect<T>;
-        mapBlock?: T | MapBlockSelect<T>;
-      };
-  width?: T;
-  gap?: T;
-  paddingTop?: T;
-  paddingBottom?: T;
-  backgroundColor?: T;
-  reverseOnMobile?: T;
   id?: T;
   blockName?: T;
 }
@@ -2876,8 +4805,7 @@ export interface ServicesSelect<T extends boolean = true> {
         intro?: T | IntroBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
       };
   meta?:
     | T
@@ -3200,6 +5128,7 @@ export interface FormsSelect<T extends boolean = true> {
               width?: T;
               defaultValue?: T;
               required?: T;
+              rows?: T;
               id?: T;
               blockName?: T;
             };
@@ -3332,8 +5261,8 @@ export interface Header {
          */
         dropdownItems?:
           | {
-              link: {
-                type?: ('reference' | 'custom') | null;
+              link?: {
+                type?: ('none' | 'reference' | 'custom') | null;
                 newTab?: boolean | null;
                 reference?:
                   | ({
@@ -3347,15 +5276,19 @@ export interface Header {
                   | ({
                       relationTo: 'posts';
                       value: string | Post;
+                    } | null)
+                  | ({
+                      relationTo: 'branches';
+                      value: string | Branch;
                     } | null);
                 url?: string | null;
-                label: string;
+                label?: string | null;
               };
               id?: string | null;
             }[]
           | null;
         link?: {
-          type?: ('reference' | 'custom') | null;
+          type?: ('none' | 'reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?:
             | ({
@@ -3369,6 +5302,10 @@ export interface Header {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
               } | null);
           url?: string | null;
         };
@@ -3388,7 +5325,7 @@ export interface Header {
      */
     ctaText?: string | null;
     link?: {
-      type?: ('reference' | 'custom') | null;
+      type?: ('none' | 'reference' | 'custom') | null;
       newTab?: boolean | null;
       reference?:
         | ({
@@ -3402,6 +5339,10 @@ export interface Header {
         | ({
             relationTo: 'posts';
             value: string | Post;
+          } | null)
+        | ({
+            relationTo: 'branches';
+            value: string | Branch;
           } | null);
       url?: string | null;
     };

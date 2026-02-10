@@ -8,22 +8,25 @@ import { GridBlock } from '../GridBlock/config'
 import { StepsBlock } from '../StepsBlock/config'
 import { TitleBlock } from '../TitleBlock/config'
 import { Content } from '../Content/config'
-import { MediaBlock } from '../MediaBlock/config'
+import { ImageBlock } from '../ImageBlock/config'
 import { CallToAction } from '../CallToAction/config'
 import { FormBlock } from '../FormBlock/config'
 import { MapBlock } from '../MapBlock/config'
+import { HeadingBlock } from '../HeadingBlock/config'
+import { blockFields } from '@/fields/blockFields'
 
-const columnBlocks = [
+const columnBlocks: Block[] = [
     FAQItemsBlock,
     CTACardBlock,
     AccordionBlock,
     IconListBlock,
     IconBoxBlock,
     GridBlock,
+    HeadingBlock,
     StepsBlock,
     TitleBlock,
     Content,
-    MediaBlock,
+    ImageBlock,
     CallToAction,
     FormBlock,
     MapBlock,
@@ -96,16 +99,7 @@ export const LayoutBlock: Block = {
                 {
                     label: 'Settings',
                     fields: [
-                        {
-                            name: 'width',
-                            type: 'select',
-                            label: 'Content Width',
-                            defaultValue: 'boxed',
-                            options: [
-                                { label: 'Boxed', value: 'boxed' },
-                                { label: 'Full Width', value: 'full' },
-                            ],
-                        },
+                        ...blockFields,
                         {
                             name: 'gap',
                             type: 'select',
@@ -120,47 +114,6 @@ export const LayoutBlock: Block = {
                             ],
                         },
                         {
-                            name: 'paddingTop',
-                            type: 'select',
-                            label: 'Padding Top',
-                            defaultValue: 'medium',
-                            options: [
-                                { label: 'None', value: 'none' },
-                                { label: 'Small', value: 'small' },
-                                { label: 'Medium', value: 'medium' },
-                                { label: 'Large', value: 'large' },
-                                { label: 'Extra Large', value: 'xl' },
-                            ],
-                        },
-                        {
-                            name: 'paddingBottom',
-                            type: 'select',
-                            label: 'Padding Bottom',
-                            defaultValue: 'medium',
-                            options: [
-                                { label: 'None', value: 'none' },
-                                { label: 'Small', value: 'small' },
-                                { label: 'Medium', value: 'medium' },
-                                { label: 'Large', value: 'large' },
-                                { label: 'Extra Large', value: 'xl' },
-                            ],
-                        },
-                        {
-                            name: 'backgroundColor',
-                            type: 'select',
-                            label: 'Background Color',
-                            defaultValue: 'transparent',
-                            options: [
-                                { label: 'Transparent', value: 'transparent' },
-                                { label: 'White', value: 'white' },
-                                { label: 'Light Gray', value: 'light-gray' },
-                                { label: 'Primary', value: 'primary' },
-                                { label: 'Secondary', value: 'secondary' },
-                                { label: 'Accent', value: 'accent' },
-                                { label: 'Dark', value: 'dark' },
-                            ],
-                        },
-                        {
                             name: 'reverseOnMobile',
                             type: 'checkbox',
                             label: 'Reverse Column Order on Mobile',
@@ -172,7 +125,9 @@ export const LayoutBlock: Block = {
         },
     ],
     labels: {
-        plural: 'Layout Sections',
-        singular: 'Layout Section',
+        plural: 'Containers',
+        singular: 'Container',
     },
 }
+
+

@@ -13,7 +13,9 @@ const RenderIcon = ({ name, className }: { name: string; className?: string }) =
     return <Icon className={className} />
 }
 
-export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
+import { getBlockStyles, getContainerStyles } from '@/utilities/getBlockStyles'
+
+export const IconBoxBlock: React.FC<IconBoxBlockProps & { settings?: any }> = (props) => {
     const {
         iconType,
         iconName,
@@ -21,17 +23,73 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
         title,
         description,
         link,
-        backgroundColor = 'card',
+        padding = 'medium',
+        gap = 'medium',
+        cardBorderRadius = 'xl',
+        shadow = 'sm',
+        iconShape = 'circle',
+        iconSize = 'medium',
+        backgroundColor = 'white',
         customBackgroundColor,
         iconColor,
+        iconBackgroundColor,
         enableHoverEffect = false,
         hoverBackgroundColor = 'primary',
         customHoverColor,
-        alignment = 'center',
+        alignment = 'left',
+        settings,
     } = props
 
-    // Preset background color mappings
+    // Padding mappings
+    const paddingClasses = {
+        small: 'p-4',
+        medium: 'p-6',
+        large: 'p-8',
+    }
+
+    // Gap mappings
+    const gapClasses = {
+        small: 'gap-3',
+        medium: 'gap-4',
+        large: 'gap-6',
+        xl: 'gap-9',
+    }
+
+    // Border radius mappings
+    const borderRadiusClasses = {
+        none: 'rounded-none',
+        sm: 'rounded-sm',
+        md: 'rounded-md',
+        lg: 'rounded-lg',
+        xl: 'rounded-xl',
+        '2xl': 'rounded-2xl',
+    }
+
+    // Shadow mappings
+    const shadowClasses = {
+        none: '',
+        sm: 'shadow-sm',
+        md: 'shadow-md',
+        lg: 'shadow-lg',
+    }
+
+    // Icon shape mappings
+    const iconShapeClasses = {
+        circle: 'rounded-full',
+        square: 'rounded-xl',
+        organic: '[border-radius:70%_30%_30%_70%_/_60%_40%_60%_40%]',
+    }
+
+    // Icon size mappings
+    const iconSizeClasses = {
+        small: 'w-8 h-8',
+        medium: 'w-12 h-12',
+        large: 'w-14 h-14',
+    }
+
+    // Background color mappings
     const backgroundColors = {
+        white: '#ffffff',
         card: 'bg-card',
         orange: '#fff7ed',
         cyan: '#ecfeff',
@@ -41,14 +99,12 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
         pink: '#fdf2f8',
     }
 
-    // Hover background color mappings
     const hoverBackgroundColors = {
         primary: 'hover:bg-primary',
         secondary: 'hover:bg-secondary',
         accent: 'hover:bg-accent',
     }
 
-    // Determine background
     const bgColor =
         backgroundColor === 'custom'
             ? customBackgroundColor
@@ -58,7 +114,6 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
 
     const bgClass = backgroundColor === 'card' ? backgroundColors.card : ''
 
-    // Determine hover class
     const hoverClass =
         enableHoverEffect && hoverBackgroundColor !== 'custom'
             ? hoverBackgroundColors[hoverBackgroundColor as keyof typeof hoverBackgroundColors]
@@ -67,9 +122,14 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
     const content = (
         <div
             className={cn(
-                'p-6 rounded-xl border shadow-sm flex flex-col gap-4 transition-all w-full duration-500',
+                'flex flex-col transition-all w-full duration-500 h-full',
+                paddingClasses[padding as keyof typeof paddingClasses],
+                gapClasses[gap as keyof typeof gapClasses],
+                borderRadiusClasses[cardBorderRadius as keyof typeof borderRadiusClasses],
+                shadowClasses[shadow as keyof typeof shadowClasses],
                 alignment === 'left' ? 'items-start text-left' : 'items-center text-center',
                 bgClass,
+                backgroundColor !== 'card' && 'border',
                 enableHoverEffect && 'group',
                 enableHoverEffect && hoverClass,
             )}
@@ -81,21 +141,16 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
             {/* Icon Container */}
             <div
                 className={cn(
-                    'rounded-full flex justify-center items-center transition-colors',
-                    backgroundColor === 'card' ? 'p-3 bg-primary/10 text-primary' : 'bg-white size-20',
-                    enableHoverEffect && backgroundColor !== 'card' && 'bg-white',
+                    'p-4 flex justify-center items-center transition-colors text-white',
+                    iconShapeClasses[iconShape as keyof typeof iconShapeClasses],
                 )}
                 style={{
-                    backgroundColor:
-                        backgroundColor === 'card' && !enableHoverEffect && iconColor
-                            ? `${iconColor}20`
-                            : undefined,
-                    color: backgroundColor === 'card' && iconColor ? iconColor : undefined,
+                    backgroundColor: iconBackgroundColor || 'var(--primary)',
+                    color: iconColor || '#ffffff',
                 }}
             >
                 {iconType === 'upload' && iconImage && typeof iconImage === 'object' ? (
                     (() => {
-                        // Use Cloudinary URL if available
                         if (iconImage.cloudinary?.secure_url) {
                             return (
                                 <Image
@@ -107,7 +162,6 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
                                 />
                             )
                         }
-                        // Fallback to constructing from public_id
                         if (iconImage.cloudinary?.public_id) {
                             const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf'
                             return (
@@ -120,7 +174,6 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
                                 />
                             )
                         }
-                        // Final fallback to local URL
                         if ('url' in iconImage && iconImage.url) {
                             return (
                                 <Image
@@ -137,7 +190,7 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
                 ) : (
                     <RenderIcon
                         name={iconName || 'Box'}
-                        className={backgroundColor === 'card' ? 'w-8 h-8' : 'w-14 h-14'}
+                        className={iconSizeClasses[iconSize as keyof typeof iconSizeClasses]}
                     />
                 )}
             </div>
@@ -172,13 +225,19 @@ export const IconBoxBlock: React.FC<IconBoxBlockProps> = (props) => {
         </div>
     )
 
-    if (link && (link.type === 'custom' ? link.url : link.reference)) {
-        return (
-            <CMSLink {...link} appearance="inline" label={null} className="no-underline w-full">
-                {content}
-            </CMSLink>
-        )
-    }
+    const { className, style } = getBlockStyles(settings)
 
-    return <div className="w-full">{content}</div>
+    return (
+        <div className={className} style={style}>
+            <div className={cn(getContainerStyles(settings), "h-full")}>
+                {link && (link.type === 'custom' ? link.url : link.reference) ? (
+                    <CMSLink {...link} appearance="inline" label={null} className="no-underline w-full h-full block">
+                        {content}
+                    </CMSLink>
+                ) : (
+                    content
+                )}
+            </div>
+        </div>
+    )
 }

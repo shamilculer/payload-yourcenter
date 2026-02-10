@@ -10,6 +10,8 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { fields as FieldComponents } from './fields'
 import RichText from '@/components/RichText'
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 type CalloutFormBlockProps = {
   contentGroup: {
     backgroundImage?: Media | string | null
@@ -19,12 +21,14 @@ type CalloutFormBlockProps = {
   }
   formGroup: {
     formHeading?: string | null
-    formSubheading?: any
     form?: any // Payload relationship: form document or ID
   }
+  settings?: any // Manually add settings type or import generic block props if possible. Actually Payload usually passes partial types. Let's assume settings is passed.
 }
 
-export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockProps) => {
+export const CalloutFormBlock = ({ contentGroup, formGroup, settings }: CalloutFormBlockProps) => {
+  const { className, style } = getBlockStyles(settings)
+
   const backgroundUrl = (() => {
     const media = contentGroup?.backgroundImage;
     if (media) {
@@ -35,7 +39,7 @@ export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockPr
   })()
 
   return (
-    <section className="section-spacing-b">
+    <section className={className} style={style}>
       <div className="container">
         <div className="relative w-full min-h-[600px] rounded-2xl sm:rounded-3xl overflow-hidden flex items-center lg:pt-16 lg:pl-16 sm:pt-6 sm:pl-6 pt-14 pl-4">
           {/* Background Image */}
@@ -62,9 +66,7 @@ export const CalloutFormBlock = ({ contentGroup, formGroup }: CalloutFormBlockPr
                 <h2 className="!text-white mt-4">{contentGroup.heading}</h2>
               )}
               {contentGroup?.description && (
-                <div className="text-white max-w-none [&_p]:text-white">
-                  {/* Render Lexical rich text state via the project's RichText renderer.
-                      If the CMS stored HTML (legacy), fall back to rendering raw HTML. */}
+                <div className="text-white text-left max-w-none [&_p]:text-white [&_p]:text-left">
                   {typeof contentGroup.description === 'string' ? (
                     <div dangerouslySetInnerHTML={{ __html: contentGroup.description }} />
                   ) : (

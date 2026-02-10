@@ -1,4 +1,4 @@
-import { Menu, PhoneCall } from "lucide-react";
+import { Menu, PhoneCall, ChevronDown } from "lucide-react";
 import {
     Accordion,
     AccordionContent,
@@ -33,7 +33,7 @@ import type { Header } from '@/payload-types';
 interface MenuItem {
     label: string;
     link: {
-        type: 'reference' | 'custom';
+        type: 'reference' | 'custom' | 'none';
         reference?: any;
         url?: string;
         newTab?: boolean;
@@ -41,11 +41,11 @@ interface MenuItem {
     hasDropdown?: boolean;
     dropdownItems?: Array<{
         link: {
-            type: 'reference' | 'custom';
+            type: 'reference' | 'custom' | 'none';
             reference?: any;
             url?: string;
             newTab?: boolean;
-            label: string;
+            label?: string;
         };
     }>;
 }
@@ -60,12 +60,38 @@ interface CTA {
     showCta: boolean;
     ctaText: string;
     link: {
-        type: 'reference' | 'custom';
+        type: 'reference' | 'custom' | 'none';
         reference?: any;
         url?: string;
         newTab?: boolean;
     };
 }
+
+// Helper function to get URL from link object
+const getLinkUrl = (link: any) => {
+    if (link.type === 'custom') {
+        return link.url || '#';
+    } else if (link.type === 'reference' && link.reference) {
+        // Handle polymorphic relationship structure: { value: { ... }, relationTo: ... }
+        const relationTo = link.reference.relationTo;
+        const ref = link.reference.value ? link.reference.value : link.reference;
+
+        if (ref && typeof ref === 'object' && ref.slug) {
+            switch (relationTo) {
+                case 'posts':
+                    return `/posts/${ref.slug}`;
+                case 'services':
+                    return `/services/${ref.slug}`;
+                case 'pages':
+                case 'branches':
+                default:
+                    return `/${ref.slug}`;
+            }
+        }
+        return '#';
+    }
+    return '#';
+};
 
 export async function Header() {
     // Fetch header global data
@@ -88,7 +114,7 @@ export async function Header() {
         const payload = await getPayload({ config: configPromise });
         headerData = await payload.findGlobal({
             slug: 'header',
-            depth: 1,
+            depth: 2,
         }) as Header;
 
 
@@ -163,19 +189,6 @@ export async function Header() {
     } catch {
         console.log('Could not fetch header data from Payload, using fallback');
     }
-
-    // Helper function to get URL from link object
-    const getLinkUrl = (link: any) => {
-        if (link.type === 'custom') {
-            return link.url || '#';
-        } else if (link.type === 'reference' && link.reference) {
-            if (link.reference.slug) {
-                return `/${link.reference.slug}`;
-            }
-            return '#';
-        }
-        return '#';
-    };
 
     return (
         <header className="py-3 lg:py-4 w-full  shadow z-50 bg-white">
@@ -289,7 +302,15 @@ const renderMenuItem = (item: MenuItem) => {
     if (item.hasDropdown && item.dropdownItems && item.dropdownItems.length > 0) {
         return (
             <NavigationMenuItem key={item.label}>
-                <NavigationMenuTrigger className="font-semibold">{item.label}</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="font-semibold" asChild>
+                    <Link href={getLinkUrl(item.link)} className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                        {item.label}
+                        <ChevronDown
+                            className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
+                            aria-hidden="true"
+                        />
+                    </Link>
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                     <ul className="grid w-[320px] gap-2 py-2">
                         {item.dropdownItems.map((subItem: any) => (
@@ -326,10 +347,22 @@ const renderMobileMenuItem = (item: MenuItem) => {
     if (item.hasDropdown && item.dropdownItems && item.dropdownItems.length > 0) {
         return (
             <AccordionItem key={item.label} value={item.label} className="border-b-0">
-                <AccordionTrigger className="!text-base text-foreground py-0 font-semibold hover:no-underline">
-                    {item.label}
-                </AccordionTrigger>
-                <AccordionContent className="mt-2 flex flex-col gap-2 pl-2">
+                <div className="flex items-center justify-between py-0 hover:no-underline">
+                    <Link
+                        href={getLinkUrl(item.link)}
+                        className="flex-1 !text-base text-foreground font-semibold py-4"
+                    >
+                        {item.label}
+                    </Link>
+                    <AccordionTrigger className="w-8 h-8 p-0 flex items-center justify-center">
+                        {/* Chevron handled by AccordionTrigger default or custom if needed, but usually AccordionTrigger contains children */}
+                        {/* If I empty AccordionTrigger it usually has chevron. If I prevent default on link, it works. */}
+                        {/* Actually AccordionTrigger IS the button. I should leave it empty or put an icon if the component expects it. */}
+                        {/* The user wants text to be link, icon to be toggle. */}
+                        <span className="sr-only">Toggle {item.label}</span>
+                    </AccordionTrigger>
+                </div>
+                <AccordionContent className="mt-0 flex flex-col gap-2 pl-2">
                     {item.dropdownItems.map((subItem: any) => (
                         <Link
                             key={subItem.link.label}
@@ -350,22 +383,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
             key={item.label}
             href={getLinkUrl(item.link)}
             target={item.link.newTab ? '_blank' : undefined}
-            className="text-md font-semibold"
+            className="text-md font-semibold py-4 block"
         >
             {item.label}
         </Link>
     );
-};
-
-// Helper function to get URL from link object
-const getLinkUrl = (link: any) => {
-    if (link.type === 'custom') {
-        return link.url || '#';
-    } else if (link.type === 'reference' && link.reference) {
-        if (link.reference.slug) {
-            return `/${link.reference.slug}`;
-        }
-        return '#';
-    }
-    return '#';
 };

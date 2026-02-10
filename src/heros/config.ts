@@ -39,8 +39,11 @@ export const hero: Field = {
       fields: [
         {
           name: 'heading',
-          type: 'text',
+          type: 'textarea',
           required: true,
+          admin: {
+            description: 'Use a new line to separate the normal text from the bold text (e.g. Line 1: Normal, Line 2: Bold)'
+          }
         },
         {
           name: 'subheading',
@@ -56,24 +59,13 @@ export const hero: Field = {
           relationTo: 'media',
           required: true,
         },
-        {
-          name: 'cta_buttons',
-          label: 'CTA Buttons (Max 2)',
-          type: 'array',
-          maxRows: 2,
-          fields: [
-            {
-              name: 'label',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'url',
-              type: 'text',
-              required: true,
-            },
-          ],
-        },
+        linkGroup({
+          overrides: {
+            name: 'cta_buttons',
+            label: 'CTA Buttons (Max 2)',
+            maxRows: 2,
+          }
+        }),
       ],
     },
 

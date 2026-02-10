@@ -27,7 +27,7 @@ export const Number: React.FC<
       <Input
         defaultValue={defaultValue}
         placeholder={label + (required ? '*' : '')}
-        className="bg-white h-10 sm:h-11"
+        className="h-10 sm:h-11 bg-white"
         id={name}
         type="number"
         {...register(name, { required })}

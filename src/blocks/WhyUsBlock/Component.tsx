@@ -3,8 +3,12 @@ import Image from 'next/image'
 import { cn } from '@/utilities/ui'
 import type { WhyUsBlock as WhyUsBlockProps } from '@/payload-types'
 
+import { getBlockStyles } from '@/utilities/getBlockStyles'
+
 export const WhyUsBlock: React.FC<WhyUsBlockProps> = (props) => {
-    const { eyebrow, heading, description, image, features } = props
+    const { eyebrow, heading, description, image, features, settings } = props
+
+    const { className, style } = getBlockStyles(settings)
 
     // Helper for images
     const getImageSrc = (image: any) => {
@@ -23,7 +27,7 @@ export const WhyUsBlock: React.FC<WhyUsBlockProps> = (props) => {
     const heroImageSrc = getImageSrc(image)
 
     return (
-        <section className="section-spacing-b relative">
+        <section className={className} style={style}>
             <Image
                 src="/pattern-3.png"
                 width={300}

@@ -1,11 +1,13 @@
 import Image from "next/image"
-import Link from "next/link"
 import React from 'react'
 
-import { Button } from "@/components/ui/button"
 import RichText from '@/components/RichText'
+import { CMSLink } from '@/components/Link'
 import type { CTACardBlock as CTACardBlockProps } from '@/payload-types'
 import { ArrowRightCircle } from "lucide-react"
+
+import { cn } from '@/utilities/ui'
+import { getBlockStyles } from '@/utilities/getBlockStyles'
 
 export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
     const {
@@ -15,7 +17,12 @@ export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
         ctaButton,
         backgroundColor = 'secondary',
         borderRadius = '2xl',
+        imageHeight = '192',
+        settings,
     } = props
+
+    const { className, style } = getBlockStyles(settings)
+
 
     // Background color mappings
     const backgroundColors = {
@@ -40,11 +47,14 @@ export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
     const bgColor = backgroundColors[backgroundColor as keyof typeof backgroundColors] || backgroundColors.secondary
     const radiusClass = borderRadiusClasses[borderRadius as keyof typeof borderRadiusClasses] || borderRadiusClasses['2xl']
 
+    // Parse image height - ensure it's a valid number
+    const imgHeight = parseInt(imageHeight || '192') || 192
+
     return (
-        <div className={`w-full ${bgColor} ${radiusClass} p-7 flex flex-col items-start gap-5`}>
-            {/* Optional Image */}
+        <div className={cn("bg-[#f3f3f3] p-4 rounded-3xl h-full flex flex-col justify-between gap-6", className)} style={style}>
+            {/* Image Section */}
             {image && typeof image === 'object' && (
-                <div className="w-full relative">
+                <div className="w-full h-1/2 relative flex-1">
                     {(() => {
                         // Use Cloudinary URL if available
                         if (image.cloudinary?.secure_url) {
@@ -52,9 +62,10 @@ export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
                                 <Image
                                     src={image.cloudinary.secure_url}
                                     width={400}
-                                    height={280}
+                                    height={imgHeight}
                                     alt={image.alt || heading}
-                                    className="w-full h-48 object-cover rounded-xl"
+                                    className="min-h-full object-cover w-full rounded-2xl h-[280px] sm:h-[var(--img-height)]"
+                                    style={{ '--img-height': `${imgHeight}px` } as React.CSSProperties}
                                 />
                             );
                         }
@@ -65,9 +76,10 @@ export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
                                 <Image
                                     src={`https://res.cloudinary.com/${cloudName}/image/upload/${image.cloudinary.public_id}`}
                                     width={400}
-                                    height={280}
+                                    height={imgHeight}
                                     alt={image.alt || heading}
-                                    className="w-full h-48 object-cover rounded-xl"
+                                    className="w-full object-cover rounded-xl h-[280px] sm:h-[var(--img-height)]"
+                                    style={{ '--img-height': `${imgHeight}px` } as React.CSSProperties}
                                 />
                             );
                         }
@@ -77,9 +89,10 @@ export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
                                 <Image
                                     src={image.url}
                                     width={400}
-                                    height={280}
+                                    height={imgHeight}
                                     alt={image.alt || heading}
-                                    className="w-full h-48 object-cover rounded-xl"
+                                    className="w-full object-cover rounded-xl h-[280px] sm:h-[var(--img-height)]"
+                                    style={{ '--img-height': `${imgHeight}px` } as React.CSSProperties}
                                 />
                             );
                         }
@@ -88,22 +101,27 @@ export const CTACardBlockComponent: React.FC<CTACardBlockProps> = (props) => {
                 </div>
             )}
 
-            {/* Heading */}
-            <h4 className="text-2xl !font-medium">{heading}</h4>
+            {/* Content Section */}
+            <div className="h-1/2 w-full bg-secondary/20 rounded-2xl p-7 flex flex-col items-start gap-5">
+                {/* Heading */}
+                <h4 className="text-2xl !font-medium">{heading}</h4>
 
-            {/* Description */}
-            {description && (
-                <RichText data={description} enableGutter={false} />
-            )}
+                {/* Description */}
+                {description && (
+                    <RichText data={description} enableGutter={false} />
+                )}
 
-            {/* CTA Button */}
-            {ctaButton && (
-                <Button asChild>
-                    <Link href={ctaButton.url || '#'}>
-                        <ArrowRightCircle /> {ctaButton.label}
-                    </Link>
-                </Button>
-            )}
+                {/* CTA Button */}
+                {ctaButton && (
+                    <CMSLink
+                        {...ctaButton}
+                        appearance="default"
+                        className="flex items-center gap-2"
+                    >
+                        <ArrowRightCircle className="w-5 h-5" />
+                    </CMSLink>
+                )}
+            </div>
         </div>
     )
 }

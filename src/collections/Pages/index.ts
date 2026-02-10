@@ -2,10 +2,9 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { ImageBlock } from '../../blocks/ImageBlock/config'
 import { hero } from '@/heros/config'
 import { IntroBlock } from '@/blocks/IntroBlock/config'
 import { ServicesBlock } from '@/blocks/ServicesBlock/config'
@@ -16,7 +15,7 @@ import { IconBoxBlock } from '@/blocks/IconBoxBlock/config'
 import { GridBlock } from '@/blocks/GridBlock/config'
 import { StepsBlock } from '@/blocks/StepsBlock/config'
 import { TestimonialsBlock } from '@/blocks/TestimonialsBlock/config'
-import { BranchesBlock } from '@/blocks/BranchesBlock/config'
+import { TabsBlock } from '@/blocks/TabsBlock/config'
 import { TitleBlock } from '@/blocks/TitleBlock/config'
 import { FAQBlock } from '@/blocks/FAQBlock/config'
 import { FAQItemsBlock } from '@/blocks/FAQItemsBlock/config'
@@ -30,6 +29,7 @@ import { PostGridBlock } from '@/blocks/PostGridBlock/config'
 import { FormBlock } from '@/blocks/FormBlock/config'
 import { MapBlock } from '@/blocks/MapBlock/config'
 import { LayoutBlock } from '@/blocks/LayoutBlock/config'
+import { HeadingBlock } from '@/blocks/HeadingBlock/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -100,15 +100,14 @@ export const Pages: CollectionConfig<'pages'> = {
                 CalloutForm,
                 CallToAction,
                 Content,
-                MediaBlock,
-                Archive,
+                ImageBlock,
                 AccordionBlock,
                 IconListBlock,
                 IconBoxBlock,
                 GridBlock,
                 StepsBlock,
                 TestimonialsBlock,
-                BranchesBlock,
+                TabsBlock,
                 TitleBlock,
                 FAQBlock,
                 FAQItemsBlock,
@@ -122,6 +121,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 FormBlock,
                 MapBlock,
                 LayoutBlock,
+                HeadingBlock,
               ],
               required: true,
               admin: {
