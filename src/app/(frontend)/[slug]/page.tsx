@@ -10,8 +10,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-
-import type { RenderHeroProps } from '@/heros/RenderHero'
+import type { Page } from '@/payload-types'
 
 // Import branch page component
 import BranchPageContent from './BranchPageContent'
@@ -98,7 +97,7 @@ export default async function Page({ params: paramsPromise, searchParams: search
 
       {draft && <LivePreviewListener />}
 
-      <RenderHero {...(hero as RenderHeroProps)} />
+      <RenderHero {...(hero as Page['hero'])} />
       <RenderBlocks blocks={layout} searchParams={searchParams} />
     </div>
   )

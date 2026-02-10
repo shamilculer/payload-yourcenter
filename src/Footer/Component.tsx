@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import { Mail, PhoneCall } from "lucide-react";
 // --- Essential Payload Imports ---
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
@@ -12,19 +13,14 @@ import type {
 
 // =================================================================
 // 1. MANUAL PAYLOAD TYPE DEFINITIONS
-// (Updated to allow 'null' for compatibility with Payload generated types)
 // =================================================================
 
 // Define the structure of a single dynamic navigation link item
 interface FooterLinkItem {
     link: {
         type: 'reference' | 'custom';
-        // Note: Payload's auto-generated types often include 'null' for optional relationships
         reference?: { relationTo: string, value: string, slug: string } | any;
-
-        // FIX: Changed to string | null | undefined to resolve the type error (url is optional/nullable in Payload)
         url?: string | null;
-
         newTab?: boolean;
         label: string;
     };
@@ -70,7 +66,6 @@ const DynamicLink = ({ item }: { item: FooterLinkItem }) => {
     if (!link || !link.label) return null;
 
     let href = '#';
-    // FIX: Added explicit check for link.url to ensure it's not null before assignment
     if (link.type === 'custom' && link.url) {
         href = link.url;
     } else if (link.type === 'reference' && typeof link.reference === 'object' && link.reference?.slug) {
@@ -103,7 +98,6 @@ const Footer = async () => {
         const payload = await getPayload({ config: configPromise });
 
         const [fetchedFooter, fetchedContact] = await Promise.all([
-            // Casting to the auto-generated types
             payload.findGlobal({ slug: 'footer', depth: 1 }) as Promise<FooterType>,
             payload.findGlobal({ slug: 'contact-details', depth: 0 }) as Promise<ContactDetailsType>,
         ]);
@@ -115,18 +109,16 @@ const Footer = async () => {
         console.error("Error fetching global data directly in Footer component:", error);
     }
 
-    // 1. Initial essential data check (No change)
     if (!footerData || !footerData.socialAndLogo) {
         return <footer className="border-t border-gray-300 py-4 text-center">Footer data not available.</footer>;
     }
 
     // Destructure and process required fields
     const { socialAndLogo, columns } = footerData;
-    // Use the reliable local helper for the logo URL
-    // NOTE: Casting socialAndLogo.logo to Media ensures Media.url and Media.alt are treated correctly.
     const logoUrl = getLocalMediaUrl(socialAndLogo.logo as Media);
-    const contactInfo = contactData?.locationGroup;
 
+    // Get current year for copyright
+    const currentYear = new Date().getFullYear();
 
     return (
         <footer className="section-spacing-t border-t border-gray-300 bg-accent/5">
@@ -135,15 +127,13 @@ const Footer = async () => {
                     {/* Top Section */}
                     <div className="flex flex-col gap-16 max-lg:flex-wrap md:flex-row lg:justify-between">
 
-                        {/* 1. Logo + Tagline + Social (Fixed First Column) */}
+                        {/* 1. Logo + Tagline (No Social Links) */}
                         <div className="w-full lg:w-[35%]">
                             <div className="flex items-center gap-2 lg:justify-start">
                                 <Link href="/" className="flex items-center gap-2">
                                     {logoUrl ? (
-                                        // Use 'yourcenter' or a check on socialAndLogo.logo.alt if logo is fully populated
-                                        <img src={logoUrl} alt={"yourcenter"} className="h-10" />
+                                        <img src={logoUrl} alt="Your Center" className="h-10" />
                                     ) : (
-                                        // Fallback if logo fails
                                         <span className="text-xl font-bold">Your Center</span>
                                     )}
                                 </Link>
@@ -151,32 +141,29 @@ const Footer = async () => {
                             <p className="mt-4 text-sm">
                                 {socialAndLogo.description}
                             </p>
-
-                            {/* Social Links */}
-                            <ul className="mt-6 flex space-x-4">
-                                {socialAndLogo.socialLinks && socialAndLogo.socialLinks.map((social, index) => (
-                                    <li key={index} className="hover:text-primary font-medium">
-                                        <a href={social.url} target="_blank" rel="noopener noreferrer">
-                                            {social.platform}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
 
                         {/* 2. DYNAMIC NAVIGATION COLUMNS */}
-                        {/* Now uses the manually defined FooterNavBlock type internally for safety */}
                         {columns && columns.map((column, index) => {
-                            // Cast the item as the manually defined block to access properties safely
-                            const navColumn = column as FooterNavBlock;
+                            const navColumn = column as FooterNavBlock & { columnWidth?: string };
 
                             if (navColumn.blockType !== 'navBlock' || !navColumn.navItems?.length) {
                                 return null;
                             }
 
+                            // Map column width to Tailwind classes
+                            const widthClasses = {
+                                '1/6': 'w-full md:w-1/3 lg:w-1/6',
+                                '1/4': 'w-full md:w-1/3 lg:w-1/4',
+                                '1/3': 'w-full md:w-1/3 lg:w-1/3',
+                                '2/6': 'w-full md:w-1/3 lg:w-2/6',
+                            };
+
+                            const widthClass = widthClasses[navColumn.columnWidth as keyof typeof widthClasses] || widthClasses['1/6'];
+
                             return (
-                                <div key={index} className="w-full md:w-1/3 lg:w-1/6">
-                                    <h4 className="mb-4 text-[22px]">{navColumn.title}</h4>
+                                <div key={index} className={widthClass}>
+                                    <h4 className="mb-4 text-[20px]">{navColumn.title}</h4>
                                     <ul className="text-muted-foreground space-y-4">
                                         {navColumn.navItems.map((item, itemIndex) => (
                                             <DynamicLink key={itemIndex} item={item as FooterLinkItem} />
@@ -186,48 +173,33 @@ const Footer = async () => {
                             );
                         })}
 
-                        {/* 3. CONTACT DETAILS (From ContactDetails Global) */}
+                        {/* 3. CONTACT DETAILS (With Icons) */}
                         {contactData && (
                             <div className="w-full md:w-1/3 lg:w-1/4">
-                                <h4 className="mb-4 text-[22px]">Get In Touch</h4>
+                                <h4 className="mb-4 text-[22px]">Contact</h4>
                                 <ul className="text-muted-foreground space-y-4">
-                                    {/* Helpline Number (Priority) */}
+                                    {/* Phone Numbers */}
                                     {contactData.helplineNumber && (
-                                        <li className="font-medium">
-                                            <a href={`tel:${contactData.helplineNumber}`} className="hover:text-primary text-red-600">
-                                                Helpline: {contactData.helplineNumber}
-                                            </a>
+                                        <li className="hover:text-primary font-medium">
+                                            <Link href={`tel:${contactData.helplineNumber}`} target="_blank" className="flex items-center gap-2.5">
+                                                <PhoneCall className="w-4 h-4 text-accent" /> {contactData.helplineNumber}
+                                            </Link>
                                         </li>
                                     )}
-
-                                    {/* Main Phone */}
                                     {contactData.mainPhoneNumber && (
-                                        <li className="font-medium">
-                                            <a href={`tel:${contactData.mainPhoneNumber}`} className="hover:text-primary">
-                                                Phone: {contactData.mainPhoneNumber}
-                                            </a>
+                                        <li className="hover:text-primary font-medium">
+                                            <Link href={`tel:${contactData.mainPhoneNumber}`} target="_blank" className="flex items-center gap-2.5">
+                                                <PhoneCall className="w-4 h-4 text-accent" /> {contactData.mainPhoneNumber}
+                                            </Link>
                                         </li>
                                     )}
 
-                                    {/* Main Email */}
+                                    {/* Email */}
                                     {contactData.mainEmailAddress && (
-                                        <li className="font-medium">
-                                            <a href={`mailto:${contactData.mainEmailAddress}`} className="hover:text-primary">
-                                                Email: {contactData.mainEmailAddress}
-                                            </a>
-                                        </li>
-                                    )}
-
-                                    {/* Location */}
-                                    {contactInfo?.addressLine1 && (
-                                        <li className="font-medium pt-2">
-                                            <p>Location:</p>
-                                            <p className="mt-1">
-                                                {contactInfo.addressLine1}
-                                                {contactInfo.addressLine2 && `, ${contactInfo.addressLine2}`}
-                                                <br />
-                                                {contactInfo.city}, {contactInfo.state} {contactInfo.zipCode}
-                                            </p>
+                                        <li className="hover:text-primary font-medium">
+                                            <Link href={`mailto:${contactData.mainEmailAddress}`} target="_blank" className="flex items-center gap-2.5">
+                                                <Mail className="w-4 h-4 text-accent" /> {contactData.mainEmailAddress}
+                                            </Link>
                                         </li>
                                     )}
                                 </ul>
@@ -236,8 +208,8 @@ const Footer = async () => {
                     </div>
 
                     {/* Bottom Row */}
-                    <div className="text-muted-foreground mt-24 flex flex-col justify-center gap-4 border-t border-gray-400 py-8 text-sm font-medium md:flex-row md:items-center">
-                        <p>© 2024 Your Center. All rights reserved.</p>
+                    <div className="flex-center text-muted-foreground mt-24 flex flex-col justify-center gap-4 border-t border-gray-400 py-8 text-sm font-medium">
+                        <p>© {currentYear} Your Center Diagnostics. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

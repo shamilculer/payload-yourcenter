@@ -80,6 +80,21 @@ const Footer: GlobalConfig = {
                             required: true,
                         },
                         {
+                            name: 'columnWidth',
+                            label: 'Column Width',
+                            type: 'select',
+                            defaultValue: '1/6',
+                            options: [
+                                { label: '1/6 (Narrow)', value: '1/6' },
+                                { label: '1/4 (Small)', value: '1/4' },
+                                { label: '1/3 (Medium)', value: '1/3' },
+                                { label: '2/6 (Wide)', value: '2/6' },
+                            ],
+                            admin: {
+                                description: 'Set the width of this column on large screens',
+                            },
+                        },
+                        {
                             name: 'navItems',
                             label: 'Navigation Items',
                             type: 'array',
@@ -120,7 +135,7 @@ const Footer: GlobalConfig = {
                                             name: 'reference',
                                             label: 'Page Reference',
                                             type: 'relationship',
-                                            relationTo: ['pages', 'services', 'posts'], // Adjust collections as needed
+                                            relationTo: ['pages', 'services', 'posts', 'branches'],
                                             maxDepth: 0,
                                             admin: {
                                                 condition: (_, siblingData) => siblingData.type === 'reference',

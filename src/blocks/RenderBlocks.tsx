@@ -31,6 +31,8 @@ import { FormBlock } from './FormBlock/Component'
 import { MapBlock } from './MapBlock/Component'
 import { LayoutBlock } from './LayoutBlock/Component'
 import { HeadingBlock } from './HeadingBlock/Component'
+import { ButtonBlock } from './ButtonBlock/Component'
+import { ButtonGroupBlock } from './ButtonGroupBlock/Component'
 
 const blockComponents = {
   content: ContentBlock,
@@ -60,6 +62,8 @@ const blockComponents = {
   mapBlock: MapBlock,
   layoutBlock: LayoutBlock,
   heading: HeadingBlock,
+  button: ButtonBlock,
+  buttonGroup: ButtonGroupBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -78,7 +82,7 @@ export const RenderBlocks: React.FC<{
           const { blockType } = block
 
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType] // No longer throws error
+            const Block = (blockComponents as any)[blockType]
 
             if (Block) {
               return (

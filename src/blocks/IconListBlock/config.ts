@@ -14,6 +14,21 @@ export const IconListBlock: Block = {
                     label: 'Content',
                     fields: [
                         {
+                            name: 'layout',
+                            type: 'select',
+                            defaultValue: 'oneColumn',
+                            options: [
+                                {
+                                    label: 'One Column',
+                                    value: 'oneColumn',
+                                },
+                                {
+                                    label: 'Two Columns',
+                                    value: 'twoColumns',
+                                },
+                            ],
+                        },
+                        {
                             name: 'iconListItems',
                             type: 'array',
                             fields: [

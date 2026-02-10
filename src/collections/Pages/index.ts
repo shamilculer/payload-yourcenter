@@ -30,6 +30,8 @@ import { FormBlock } from '@/blocks/FormBlock/config'
 import { MapBlock } from '@/blocks/MapBlock/config'
 import { LayoutBlock } from '@/blocks/LayoutBlock/config'
 import { HeadingBlock } from '@/blocks/HeadingBlock/config'
+import { ButtonBlock } from '@/blocks/ButtonBlock/config'
+import { ButtonGroupBlock } from '@/blocks/ButtonGroupBlock/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -122,6 +124,8 @@ export const Pages: CollectionConfig<'pages'> = {
                 MapBlock,
                 LayoutBlock,
                 HeadingBlock,
+                ButtonBlock,
+                ButtonGroupBlock,
               ],
               required: true,
               admin: {

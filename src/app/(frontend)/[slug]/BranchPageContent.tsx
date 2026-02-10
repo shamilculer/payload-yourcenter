@@ -130,9 +130,9 @@ export default async function BranchPageContent({ slug }: { slug: string }) {
     const ctaContentSafe = branch.ctaContent
         ? {
             ...branch.ctaContent,
-            heading: safeRender(branch.ctaContent.heading),
-            subheading: safeRender(branch.ctaContent.subheading),
-            description: safeRender(branch.ctaContent.description),
+            heading: String(safeRender(branch.ctaContent.heading) || ''),
+            subheading: String(safeRender(branch.ctaContent.subheading) || ''),
+            description: String(safeRender(branch.ctaContent.description) || ''),
         }
         : undefined
 

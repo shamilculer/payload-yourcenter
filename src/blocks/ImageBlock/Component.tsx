@@ -4,7 +4,7 @@ import React from 'react'
 import RichText from '@/components/RichText'
 import type { ImageBlock as ImageBlockProps } from '@/payload-types'
 import { Media } from '../../components/Media'
-import { getBlockStyles, getContainerStyles } from '@/utilities/getBlockStyles'
+import { getBlockStyles } from '@/utilities/getBlockStyles'
 import { CMSLink } from '@/components/Link'
 
 type Props = ImageBlockProps & {
@@ -15,6 +15,15 @@ type Props = ImageBlockProps & {
   imgClassName?: string
   staticImage?: StaticImageData
   disableInnerContainer?: boolean
+}
+
+// Helper to ensure valid CSS units
+const formatDimension = (value?: string | number | null) => {
+  if (!value) return undefined
+  const valStr = String(value)
+  // If it's just numbers, assuming px
+  if (/^\d+$/.test(valStr)) return `${valStr}px`
+  return valStr
 }
 
 export const ImageBlock: React.FC<Props & { settings?: any }> = (props) => {
@@ -62,56 +71,82 @@ export const ImageBlock: React.FC<Props & { settings?: any }> = (props) => {
   const fitClass = objectFitMap[objectFit || 'cover'] || 'object-cover'
   const hoverClass = hoverMap[hoverEffect || 'none'] || ''
 
-  const hasLink = link && (
-    (link.type === 'custom' && link.url) ||
+  const hasLink = !!(link && 'type' in link && (
+    (link.type === 'custom' && 'url' in link && link.url) ||
     (link.type === 'reference' && link.reference?.value)
-  )
-
-  const content = (
-    <div className={getContainerStyles(settings)}>
-      <div
-        className={cn("relative overflow-hidden")}
-        style={{
-          width: width || '100%',
-          height: height || 'auto',
-        }}
-      >
-        {(media || staticImage) && (
-          <Media
-            imgClassName={cn(fitClass, hoverClass, "w-full h-full", imgClassName)}
-            resource={media}
-            src={staticImage}
-          />
-        )}
-      </div>
-
-      {caption && (
-        <div
-          className={cn(
-            'mt-6',
-            captionClassName,
-          )}
-        >
-          <RichText data={caption} enableGutter={false} />
-        </div>
-      )}
-    </div>
-  )
+  ))
 
   return (
     <div
       className={cn(
         blockClass,
         className,
+        "w-full overflow-hidden"
       )}
       style={style}
     >
-      {hasLink ? (
-        <CMSLink {...link} className="block no-underline">
-          {content}
+      {hasLink && link ? (
+        <CMSLink {...(link as any)} className="block no-underline">
+          <div className="w-full">
+            <div
+              className={cn("relative overflow-hidden")}
+              style={{
+                width: formatDimension(width) || '100%',
+                height: formatDimension(height) || 'auto',
+              }}
+            >
+              {(media || staticImage) && (
+                <Media
+                  fill
+                  imgClassName={cn(fitClass, hoverClass, imgClassName)}
+                  resource={media}
+                  src={staticImage}
+                />
+              )}
+            </div>
+
+            {caption && (
+              <div
+                className={cn(
+                  'mt-6',
+                  captionClassName,
+                )}
+              >
+                <RichText data={caption} enableGutter={false} />
+              </div>
+            )}
+          </div>
         </CMSLink>
       ) : (
-        content
+        <div className="w-full">
+          <div
+            className={cn("relative overflow-hidden")}
+            style={{
+              width: formatDimension(width) || '100%',
+              height: formatDimension(height) || 'auto',
+            }}
+          >
+            {(media || staticImage) && (
+              <Media
+                fill
+                imgClassName={cn(fitClass, hoverClass, imgClassName)}
+                resource={media}
+                src={staticImage}
+              />
+            )}
+          </div>
+
+          {caption && (
+            <div
+              className={cn(
+                'mt-6',
+                captionClassName,
+              )}
+            >
+              <RichText data={caption} enableGutter={false} />
+            </div>
+          )}
+        </div>
       )}
     </div>
   )

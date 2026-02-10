@@ -9,16 +9,16 @@ import { CMSLink } from "@/components/Link";
 
 export type Slide = {
   heading: string;
-  subheading?: string;
-  description?: string;
-  image?: { url?: string; alt?: string } | null;
+  subheading?: string | null;
+  description?: string | null;
+  image?: string | any | null;
   cta_buttons?: Array<{
-    link: {
-      type?: 'reference' | 'custom' | null;
+    link?: {
+      type?: 'none' | 'reference' | 'custom' | null;
       newTab?: boolean | null;
       reference?: {
         value: string | any;
-        relationTo: 'pages' | 'posts' | 'services';
+        relationTo: 'pages' | 'posts' | 'services' | 'branches';
       } | null;
       url?: string | null;
       label?: string | null;

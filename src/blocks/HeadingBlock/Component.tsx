@@ -30,10 +30,10 @@ export const HeadingBlock: React.FC<HeadingBlockProps> = ({
         marginBottom: 0 // Reset default margins if any
     }
 
-    const hasLink = link && (
-        (link.type === 'custom' && link.url) ||
+    const hasLink = !!(link && 'type' in link && (
+        (link.type === 'custom' && 'url' in link && link.url) ||
         (link.type === 'reference' && link.reference?.value)
-    )
+    ))
 
     const content = (
         <Tag
@@ -46,8 +46,8 @@ export const HeadingBlock: React.FC<HeadingBlockProps> = ({
 
     return (
         <div className={cn("w-full", blockClass)} style={style}>
-            {hasLink ? (
-                <CMSLink {...link} className="block no-underline">
+            {hasLink && link ? (
+                <CMSLink {...(link as any)} className="block no-underline">
                     {content}
                 </CMSLink>
             ) : (

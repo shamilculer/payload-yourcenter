@@ -6,9 +6,18 @@ import Link from 'next/link'
 import type { IconListBlock as IconListBlockProps } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 
+// Helper to convert kebab-case to PascalCase (e.g., 'map-pin' -> 'MapPin')
+const kebabToPascal = (str: string) => {
+    return str
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('')
+}
+
 // Helper to render dynamic Lucide icon
 const RenderIcon = ({ name, className }: { name: string; className?: string }) => {
-    const Icon = (LucideIcons as any)[name]
+    const pascalName = kebabToPascal(name)
+    const Icon = (LucideIcons as any)[pascalName]
     if (!Icon) return <LucideIcons.HelpCircle className={className} />
     return <Icon className={className} />
 }
@@ -16,7 +25,7 @@ const RenderIcon = ({ name, className }: { name: string; className?: string }) =
 import { getBlockStyles } from '@/utilities/getBlockStyles'
 import { cn } from '@/utilities/ui'
 
-export const IconListBlock: React.FC<IconListBlockProps & { settings?: any }> = ({ iconListItems, settings }) => {
+export const IconListBlock: React.FC<IconListBlockProps & { layout?: 'oneColumn' | 'twoColumns'; settings?: any }> = ({ iconListItems, layout, settings }) => {
     if (!iconListItems) return null
 
     const { className, style } = getBlockStyles(settings)
@@ -24,7 +33,7 @@ export const IconListBlock: React.FC<IconListBlockProps & { settings?: any }> = 
     return (
         <div className={className} style={style}>
             <div className="w-full">
-                <ul className="space-y-4">
+                <ul className={cn("space-y-4", layout === 'twoColumns' && "grid md:grid-cols-2 gap-4 space-y-0")}>
                     {iconListItems.map((item, index) => {
                         // Helper for link wrapping
                         const hasLink = item.link && (item.link.type === 'custom' ? item.link.url : item.link.reference)

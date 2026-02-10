@@ -13,6 +13,8 @@ import { CallToAction } from '../CallToAction/config'
 import { FormBlock } from '../FormBlock/config'
 import { MapBlock } from '../MapBlock/config'
 import { HeadingBlock } from '../HeadingBlock/config'
+import { ButtonBlock } from '../ButtonBlock/config'
+import { ButtonGroupBlock } from '../ButtonGroupBlock/config'
 import { blockFields } from '@/fields/blockFields'
 
 const columnBlocks: Block[] = [
@@ -30,6 +32,8 @@ const columnBlocks: Block[] = [
     CallToAction,
     FormBlock,
     MapBlock,
+    ButtonBlock,
+    ButtonGroupBlock,
 ]
 
 export const LayoutBlock: Block = {

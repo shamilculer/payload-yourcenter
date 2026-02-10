@@ -21,7 +21,7 @@ export const Card: React.FC<{
   showCategories?: boolean
   title?: string
 }> = (props) => {
-  const { card, link } = useClickableCard<HTMLDivElement>({})
+  const { card } = useClickableCard<HTMLDivElement>({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
   const { slug, categories, meta, title, content, publishedAt, heroImage } = doc || {}

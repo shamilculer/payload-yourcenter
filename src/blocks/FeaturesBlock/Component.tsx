@@ -5,9 +5,18 @@ import { CMSLink } from '@/components/Link'
 import type { FeaturesBlock as FeaturesBlockProps } from '@/payload-types'
 import { cn } from '@/utilities/ui'
 
+// Helper to convert kebab-case to PascalCase (e.g., 'map-pin' -> 'MapPin')
+const kebabToPascal = (str: string) => {
+    return str
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('')
+}
+
 // Helper to render dynamic Lucide icon
 const RenderIcon = ({ name, className }: { name: string; className?: string }) => {
-    const Icon = (LucideIcons as any)[name]
+    const pascalName = kebabToPascal(name)
+    const Icon = (LucideIcons as any)[pascalName]
     if (!Icon) return <LucideIcons.HelpCircle className={className} />
     return <Icon className={className} />
 }

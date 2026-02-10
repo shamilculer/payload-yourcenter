@@ -81,7 +81,18 @@ export const ImageBlock: Block = {
                 label: 'Link (Optional)',
                 admin: {
                   description: 'Make the image clickable by adding a link'
-                }
+                },
+                fields: [
+                  {
+                    name: 'reference',
+                    type: 'relationship',
+                    relationTo: ['pages', 'services', 'posts', 'branches'],
+                    required: false,
+                    admin: {
+                      condition: (_, siblingData) => siblingData?.type === 'reference',
+                    },
+                  }
+                ]
               }
             })
           ]

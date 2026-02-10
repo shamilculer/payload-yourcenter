@@ -1,62 +1,62 @@
 "use client"
 
 import * as React from "react"
+import * as TabsPrimitive from "@radix-ui/react-tabs"
+
 import { cn } from "@/utilities/ui"
 
-const TabsContext = React.createContext<{
-    value: string
-    onValueChange: (value: string) => void
-} | null>(null)
+const Tabs = React.forwardRef<
+    React.ElementRef<typeof TabsPrimitive.Root>,
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+>(({ className, ...props }, ref) => (
+    <TabsPrimitive.Root
+        ref={ref}
+        className={cn("flex flex-col gap-2", className)}
+        {...props}
+    />
+))
+Tabs.displayName = TabsPrimitive.Root.displayName
 
-export const Tabs = ({
-    defaultValue,
-    className,
-    children,
-}: {
-    defaultValue: string
-    className?: string
-    children: React.ReactNode
-}) => {
-    const [value, setValue] = React.useState(defaultValue)
+const TabsList = React.forwardRef<
+    React.ElementRef<typeof TabsPrimitive.List>,
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+>(({ className, ...props }, ref) => (
+    <TabsPrimitive.List
+        ref={ref}
+        className={cn(
+            "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]",
+            className
+        )}
+        {...props}
+    />
+))
+TabsList.displayName = TabsPrimitive.List.displayName
 
-    return (
-        <TabsContext.Provider value={{ value, onValueChange: setValue }}>
-            <div className={cn("flex flex-col gap-2", className)}>{children}</div>
-        </TabsContext.Provider>
-    )
-}
+const TabsTrigger = React.forwardRef<
+    React.ElementRef<typeof TabsPrimitive.Trigger>,
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
+>(({ className, ...props }, ref) => (
+    <TabsPrimitive.Trigger
+        ref={ref}
+        className={cn(
+            "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+            className
+        )}
+        {...props}
+    />
+))
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 
-export const TabsList = ({ className, children }: { className?: string, children: React.ReactNode }) => (
-    <div className={cn("inline-flex items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground", className)}>
-        {children}
-    </div>
-)
+const TabsContent = React.forwardRef<
+    React.ElementRef<typeof TabsPrimitive.Content>,
+    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
+>(({ className, ...props }, ref) => (
+    <TabsPrimitive.Content
+        ref={ref}
+        className={cn("flex-1 outline-none", className)}
+        {...props}
+    />
+))
+TabsContent.displayName = TabsPrimitive.Content.displayName
 
-export const TabsTrigger = ({ value, className, children }: { value: string, className?: string, children: React.ReactNode }) => {
-    const context = React.useContext(TabsContext)
-    const isActive = context?.value === value
-    return (
-        <button
-            className={cn(
-                "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                isActive ? "bg-background text-foreground shadow" : "hover:bg-background/50",
-                className
-            )}
-            onClick={() => context?.onValueChange(value)}
-            // Radix UI data attribute for styling hook compatibility
-            data-state={isActive ? 'active' : 'inactive'}
-        >
-            {children}
-        </button>
-    )
-}
-
-export const TabsContent = ({ value, className, children }: { value: string, className?: string, children: React.ReactNode }) => {
-    const context = React.useContext(TabsContext)
-    if (context?.value !== value) return null
-    return (
-        <div className={cn("mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}>
-            {children}
-        </div>
-    )
-}
+export { Tabs, TabsList, TabsTrigger, TabsContent }

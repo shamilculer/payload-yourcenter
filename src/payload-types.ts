@@ -190,7 +190,7 @@ export interface Page {
                   /**
                    * Choose how the link should be rendered.
                    */
-                  appearance?: ('default' | 'outline') | null;
+                  appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
                 };
                 id?: string | null;
               }[]
@@ -244,7 +244,7 @@ export interface Page {
             /**
              * Choose how the link should be rendered.
              */
-            appearance?: ('default' | 'outline') | null;
+            appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
           };
           id?: string | null;
         }[]
@@ -279,6 +279,8 @@ export interface Page {
     | MapBlock
     | LayoutBlock
     | HeadingBlock
+    | ButtonBlock
+    | ButtonGroupBlock
   )[];
   meta?: {
     title?: string | null;
@@ -951,7 +953,7 @@ export interface ContentBlock {
           /**
            * Choose how the link should be rendered.
            */
-          appearance?: ('default' | 'outline') | null;
+          appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
         };
         id?: string | null;
       }[]
@@ -1022,8 +1024,6 @@ export interface ImageBlock {
    * Make the image clickable by adding a link
    */
   link?: {
-    type?: ('none' | 'reference' | 'custom') | null;
-    newTab?: boolean | null;
     reference?:
       | ({
           relationTo: 'pages';
@@ -1041,7 +1041,6 @@ export interface ImageBlock {
           relationTo: 'branches';
           value: string | Branch;
         } | null);
-    url?: string | null;
   };
   settings?: {
     theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
@@ -1455,6 +1454,7 @@ export interface AccordionBlock {
  * via the `definition` "IconListBlock".
  */
 export interface IconListBlock {
+  layout?: ('oneColumn' | 'twoColumns') | null;
   iconListItems?:
     | {
         iconType?: ('lucide' | 'upload') | null;
@@ -1607,7 +1607,7 @@ export interface IconBoxBlock {
     /**
      * Choose how the link should be rendered.
      */
-    appearance?: ('default' | 'outline') | null;
+    appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
   };
   settings?: {
     theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
@@ -1897,7 +1897,7 @@ export interface CTACardBlock {
     /**
      * Choose how the link should be rendered.
      */
-    appearance?: ('default' | 'outline') | null;
+    appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
   };
   backgroundColor?: ('primary' | 'secondary' | 'accent' | 'muted' | 'white') | null;
   borderRadius?: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl') | null;
@@ -2169,6 +2169,8 @@ export interface LayoutBlock {
         | CallToActionBlock
         | FormBlock
         | MapBlock
+        | ButtonBlock
+        | ButtonGroupBlock
       )[]
     | null;
   column2?:
@@ -2187,6 +2189,8 @@ export interface LayoutBlock {
         | CallToActionBlock
         | FormBlock
         | MapBlock
+        | ButtonBlock
+        | ButtonGroupBlock
       )[]
     | null;
   column3?:
@@ -2205,6 +2209,8 @@ export interface LayoutBlock {
         | CallToActionBlock
         | FormBlock
         | MapBlock
+        | ButtonBlock
+        | ButtonGroupBlock
       )[]
     | null;
   column4?:
@@ -2223,6 +2229,8 @@ export interface LayoutBlock {
         | CallToActionBlock
         | FormBlock
         | MapBlock
+        | ButtonBlock
+        | ButtonGroupBlock
       )[]
     | null;
   settings?: {
@@ -2263,6 +2271,153 @@ export interface LayoutBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'layoutBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ButtonBlock".
+ */
+export interface ButtonBlock {
+  link?: {
+    type?: ('none' | 'reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'services';
+          value: string | Service;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null)
+      | ({
+          relationTo: 'branches';
+          value: string | Branch;
+        } | null);
+    url?: string | null;
+    label?: string | null;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+  };
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  alignment?: ('start' | 'center' | 'end') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'button';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ButtonGroupBlock".
+ */
+export interface ButtonGroupBlock {
+  links?:
+    | {
+        link?: {
+          type?: ('none' | 'reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'services';
+                value: string | Service;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
+              } | null);
+          url?: string | null;
+          label?: string | null;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  layout?: ('row' | 'column') | null;
+  alignment?: ('start' | 'center' | 'end' | 'between') | null;
+  gap?: ('small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'buttonGroup';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2324,29 +2479,33 @@ export interface TestimonialsBlock {
  * via the `definition` "TabsBlock".
  */
 export interface TabsBlock {
-  eyebrow?: string | null;
-  title?: string | null;
-  description?: string | null;
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  source?: ('manual' | 'branches') | null;
   tabs?:
     | {
         label: string;
-        content?: unknown[] | null;
+        content?:
+          | (
+              | ContentBlock
+              | LayoutBlock
+              | ImageBlock
+              | FeaturesBlock
+              | MapBlock
+              | IconListBlock
+              | HeadingBlock
+              | CallToActionBlock
+              | AccordionBlock
+              | CTACardBlock
+              | FormBlock
+              | GridBlock
+              | IconBoxBlock
+              | StepsBlock
+              | TestimonialsBlock
+              | PostGridBlock
+              | IntroBlock
+              | ServicesSectionBlock
+              | ButtonBlock
+              | ButtonGroupBlock
+            )[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -2386,6 +2545,141 @@ export interface TabsBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'tabs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock".
+ */
+export interface FeaturesBlock {
+  columns?: ('2' | '3' | '4' | '6') | null;
+  gap?: ('sm' | 'md' | 'lg' | 'xl') | null;
+  features: {
+    iconType?: ('upload' | 'lucide') | null;
+    iconImage?: (string | null) | Media;
+    /**
+     * Find icon names at https://lucide.dev/icons (e.g., "Shield", "Zap")
+     */
+    iconName?: string | null;
+    title: string;
+    description: string;
+    backgroundColor?: ('orange' | 'cyan' | 'yellow' | 'green' | 'purple' | 'pink' | 'custom') | null;
+    customBackgroundColor?: string | null;
+    enableHoverEffect?: boolean | null;
+    hoverBackgroundColor?: ('primary' | 'secondary' | 'accent' | 'custom') | null;
+    customHoverColor?: string | null;
+    /**
+     * Optional link for this feature card
+     */
+    link?: {
+      type?: ('none' | 'reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: string | Page;
+          } | null)
+        | ({
+            relationTo: 'services';
+            value: string | Service;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: string | Post;
+          } | null)
+        | ({
+            relationTo: 'branches';
+            value: string | Branch;
+          } | null);
+      url?: string | null;
+      label?: string | null;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    };
+    id?: string | null;
+  }[];
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'features';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PostGridBlock".
+ */
+export interface PostGridBlock {
+  categories?: (string | Category)[] | null;
+  limit: number;
+  columns?: ('2' | '3' | '4') | null;
+  settings?: {
+    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
+    width?: ('boxed' | 'full') | null;
+    paddingTop?: string | null;
+    paddingRight?: string | null;
+    paddingBottom?: string | null;
+    paddingLeft?: string | null;
+    marginTop?: string | null;
+    marginRight?: string | null;
+    marginBottom?: string | null;
+    marginLeft?: string | null;
+    animation?:
+      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
+      | null;
+    animationDelay?: number | null;
+    /**
+     * Leave 0 for default
+     */
+    animationDuration?: number | null;
+    borderTopWidth?: string | null;
+    borderRightWidth?: string | null;
+    borderBottomWidth?: string | null;
+    borderLeftWidth?: string | null;
+    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
+    borderColor?:
+      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
+      | null;
+    borderCustomColor?: string | null;
+    borderTopLeftRadius?: string | null;
+    borderTopRightRadius?: string | null;
+    borderBottomRightRadius?: string | null;
+    borderBottomLeftRadius?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'postGrid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2588,7 +2882,7 @@ export interface PageCTABlock {
     /**
      * Choose how the link should be rendered.
      */
-    appearance?: ('default' | 'outline') | null;
+    appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
   };
   ctaButton2?: {
     type?: ('none' | 'reference' | 'custom') | null;
@@ -2615,7 +2909,7 @@ export interface PageCTABlock {
     /**
      * Choose how the link should be rendered.
      */
-    appearance?: ('default' | 'outline') | null;
+    appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
   };
   settings?: {
     theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
@@ -2656,96 +2950,6 @@ export interface PageCTABlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FeaturesBlock".
- */
-export interface FeaturesBlock {
-  columns?: ('2' | '3' | '4' | '6') | null;
-  gap?: ('sm' | 'md' | 'lg' | 'xl') | null;
-  features: {
-    iconType?: ('upload' | 'lucide') | null;
-    iconImage?: (string | null) | Media;
-    /**
-     * Find icon names at https://lucide.dev/icons (e.g., "Shield", "Zap")
-     */
-    iconName?: string | null;
-    title: string;
-    description: string;
-    backgroundColor?: ('orange' | 'cyan' | 'yellow' | 'green' | 'purple' | 'pink' | 'custom') | null;
-    customBackgroundColor?: string | null;
-    enableHoverEffect?: boolean | null;
-    hoverBackgroundColor?: ('primary' | 'secondary' | 'accent' | 'custom') | null;
-    customHoverColor?: string | null;
-    /**
-     * Optional link for this feature card
-     */
-    link?: {
-      type?: ('none' | 'reference' | 'custom') | null;
-      newTab?: boolean | null;
-      reference?:
-        | ({
-            relationTo: 'pages';
-            value: string | Page;
-          } | null)
-        | ({
-            relationTo: 'services';
-            value: string | Service;
-          } | null)
-        | ({
-            relationTo: 'posts';
-            value: string | Post;
-          } | null)
-        | ({
-            relationTo: 'branches';
-            value: string | Branch;
-          } | null);
-      url?: string | null;
-      label?: string | null;
-      /**
-       * Choose how the link should be rendered.
-       */
-      appearance?: ('default' | 'outline') | null;
-    };
-    id?: string | null;
-  }[];
-  settings?: {
-    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
-    width?: ('boxed' | 'full') | null;
-    paddingTop?: string | null;
-    paddingRight?: string | null;
-    paddingBottom?: string | null;
-    paddingLeft?: string | null;
-    marginTop?: string | null;
-    marginRight?: string | null;
-    marginBottom?: string | null;
-    marginLeft?: string | null;
-    animation?:
-      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
-      | null;
-    animationDelay?: number | null;
-    /**
-     * Leave 0 for default
-     */
-    animationDuration?: number | null;
-    borderTopWidth?: string | null;
-    borderRightWidth?: string | null;
-    borderBottomWidth?: string | null;
-    borderLeftWidth?: string | null;
-    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
-    borderColor?:
-      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
-      | null;
-    borderCustomColor?: string | null;
-    borderTopLeftRadius?: string | null;
-    borderTopRightRadius?: string | null;
-    borderBottomRightRadius?: string | null;
-    borderBottomLeftRadius?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'features';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ProcessBlock".
  */
 export interface ProcessBlock {
@@ -2778,7 +2982,7 @@ export interface ProcessBlock {
     /**
      * Choose how the link should be rendered.
      */
-    appearance?: ('default' | 'outline') | null;
+    appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
   };
   processEyebrow?: string | null;
   processHeading: string;
@@ -2880,51 +3084,6 @@ export interface WhyUsBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'whyUs';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PostGridBlock".
- */
-export interface PostGridBlock {
-  categories?: (string | Category)[] | null;
-  limit: number;
-  columns?: ('2' | '3' | '4') | null;
-  settings?: {
-    theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
-    width?: ('boxed' | 'full') | null;
-    paddingTop?: string | null;
-    paddingRight?: string | null;
-    paddingBottom?: string | null;
-    paddingLeft?: string | null;
-    marginTop?: string | null;
-    marginRight?: string | null;
-    marginBottom?: string | null;
-    marginLeft?: string | null;
-    animation?:
-      | ('none' | 'fade-in' | 'fade-in-up' | 'fade-in-down' | 'fade-in-left' | 'fade-in-right' | 'zoom-in' | 'zoom-out')
-      | null;
-    animationDelay?: number | null;
-    /**
-     * Leave 0 for default
-     */
-    animationDuration?: number | null;
-    borderTopWidth?: string | null;
-    borderRightWidth?: string | null;
-    borderBottomWidth?: string | null;
-    borderLeftWidth?: string | null;
-    borderStyle?: ('none' | 'solid' | 'dashed' | 'dotted' | 'double') | null;
-    borderColor?:
-      | ('transparent' | 'primary' | 'secondary' | 'accent' | 'dark' | 'white' | 'light-gray' | 'custom')
-      | null;
-    borderCustomColor?: string | null;
-    borderTopLeftRadius?: string | null;
-    borderTopRightRadius?: string | null;
-    borderBottomRightRadius?: string | null;
-    borderBottomLeftRadius?: string | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'postGrid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3240,6 +3399,8 @@ export interface PagesSelect<T extends boolean = true> {
         mapBlock?: T | MapBlockSelect<T>;
         layoutBlock?: T | LayoutBlockSelect<T>;
         heading?: T | HeadingBlockSelect<T>;
+        button?: T | ButtonBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
       };
   meta?:
     | T
@@ -3522,10 +3683,7 @@ export interface ImageBlockSelect<T extends boolean = true> {
   link?:
     | T
     | {
-        type?: T;
-        newTab?: T;
         reference?: T;
-        url?: T;
       };
   settings?:
     | T
@@ -3606,6 +3764,7 @@ export interface AccordionBlockSelect<T extends boolean = true> {
  * via the `definition` "IconListBlock_select".
  */
 export interface IconListBlockSelect<T extends boolean = true> {
+  layout?: T;
   iconListItems?:
     | T
     | {
@@ -4110,6 +4269,8 @@ export interface LayoutBlockSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
+        button?: T | ButtonBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
       };
   column2?:
     | T
@@ -4128,6 +4289,8 @@ export interface LayoutBlockSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
+        button?: T | ButtonBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
       };
   column3?:
     | T
@@ -4146,6 +4309,8 @@ export interface LayoutBlockSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
+        button?: T | ButtonBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
       };
   column4?:
     | T
@@ -4164,6 +4329,8 @@ export interface LayoutBlockSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         mapBlock?: T | MapBlockSelect<T>;
+        button?: T | ButtonBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
       };
   settings?:
     | T
@@ -4195,6 +4362,107 @@ export interface LayoutBlockSelect<T extends boolean = true> {
       };
   gap?: T;
   reverseOnMobile?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ButtonBlock_select".
+ */
+export interface ButtonBlockSelect<T extends boolean = true> {
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  alignment?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ButtonGroupBlock_select".
+ */
+export interface ButtonGroupBlockSelect<T extends boolean = true> {
+  links?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  layout?: T;
+  alignment?: T;
+  gap?: T;
   id?: T;
   blockName?: T;
 }
@@ -4252,18 +4520,138 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
  * via the `definition` "TabsBlock_select".
  */
 export interface TabsBlockSelect<T extends boolean = true> {
-  eyebrow?: T;
-  title?: T;
-  description?: T;
-  introContent?: T;
-  source?: T;
   tabs?:
     | T
     | {
         label?: T;
-        content?: T | {};
+        content?:
+          | T
+          | {
+              content?: T | ContentBlockSelect<T>;
+              layoutBlock?: T | LayoutBlockSelect<T>;
+              image?: T | ImageBlockSelect<T>;
+              features?: T | FeaturesBlockSelect<T>;
+              mapBlock?: T | MapBlockSelect<T>;
+              iconList?: T | IconListBlockSelect<T>;
+              heading?: T | HeadingBlockSelect<T>;
+              cta?: T | CallToActionBlockSelect<T>;
+              accordion?: T | AccordionBlockSelect<T>;
+              ctaCard?: T | CTACardBlockSelect<T>;
+              formBlock?: T | FormBlockSelect<T>;
+              grid?: T | GridBlockSelect<T>;
+              iconBox?: T | IconBoxBlockSelect<T>;
+              steps?: T | StepsBlockSelect<T>;
+              testimonials?: T | TestimonialsBlockSelect<T>;
+              postGrid?: T | PostGridBlockSelect<T>;
+              intro?: T | IntroBlockSelect<T>;
+              servicesSection?: T | ServicesSectionBlockSelect<T>;
+              button?: T | ButtonBlockSelect<T>;
+              buttonGroup?: T | ButtonGroupBlockSelect<T>;
+            };
         id?: T;
       };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock_select".
+ */
+export interface FeaturesBlockSelect<T extends boolean = true> {
+  columns?: T;
+  gap?: T;
+  features?:
+    | T
+    | {
+        iconType?: T;
+        iconImage?: T;
+        iconName?: T;
+        title?: T;
+        description?: T;
+        backgroundColor?: T;
+        customBackgroundColor?: T;
+        enableHoverEffect?: T;
+        hoverBackgroundColor?: T;
+        customHoverColor?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  settings?:
+    | T
+    | {
+        theme?: T;
+        width?: T;
+        paddingTop?: T;
+        paddingRight?: T;
+        paddingBottom?: T;
+        paddingLeft?: T;
+        marginTop?: T;
+        marginRight?: T;
+        marginBottom?: T;
+        marginLeft?: T;
+        animation?: T;
+        animationDelay?: T;
+        animationDuration?: T;
+        borderTopWidth?: T;
+        borderRightWidth?: T;
+        borderBottomWidth?: T;
+        borderLeftWidth?: T;
+        borderStyle?: T;
+        borderColor?: T;
+        borderCustomColor?: T;
+        borderTopLeftRadius?: T;
+        borderTopRightRadius?: T;
+        borderBottomRightRadius?: T;
+        borderBottomLeftRadius?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PostGridBlock_select".
+ */
+export interface PostGridBlockSelect<T extends boolean = true> {
+  categories?: T;
+  limit?: T;
+  columns?: T;
   settings?:
     | T
     | {
@@ -4488,69 +4876,6 @@ export interface PageCTABlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FeaturesBlock_select".
- */
-export interface FeaturesBlockSelect<T extends boolean = true> {
-  columns?: T;
-  gap?: T;
-  features?:
-    | T
-    | {
-        iconType?: T;
-        iconImage?: T;
-        iconName?: T;
-        title?: T;
-        description?: T;
-        backgroundColor?: T;
-        customBackgroundColor?: T;
-        enableHoverEffect?: T;
-        hoverBackgroundColor?: T;
-        customHoverColor?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
-      };
-  settings?:
-    | T
-    | {
-        theme?: T;
-        width?: T;
-        paddingTop?: T;
-        paddingRight?: T;
-        paddingBottom?: T;
-        paddingLeft?: T;
-        marginTop?: T;
-        marginRight?: T;
-        marginBottom?: T;
-        marginLeft?: T;
-        animation?: T;
-        animationDelay?: T;
-        animationDuration?: T;
-        borderTopWidth?: T;
-        borderRightWidth?: T;
-        borderBottomWidth?: T;
-        borderLeftWidth?: T;
-        borderStyle?: T;
-        borderColor?: T;
-        borderCustomColor?: T;
-        borderTopLeftRadius?: T;
-        borderTopRightRadius?: T;
-        borderBottomRightRadius?: T;
-        borderBottomLeftRadius?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ProcessBlock_select".
  */
 export interface ProcessBlockSelect<T extends boolean = true> {
@@ -4628,45 +4953,6 @@ export interface WhyUsBlockSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
-  settings?:
-    | T
-    | {
-        theme?: T;
-        width?: T;
-        paddingTop?: T;
-        paddingRight?: T;
-        paddingBottom?: T;
-        paddingLeft?: T;
-        marginTop?: T;
-        marginRight?: T;
-        marginBottom?: T;
-        marginLeft?: T;
-        animation?: T;
-        animationDelay?: T;
-        animationDuration?: T;
-        borderTopWidth?: T;
-        borderRightWidth?: T;
-        borderBottomWidth?: T;
-        borderLeftWidth?: T;
-        borderStyle?: T;
-        borderColor?: T;
-        borderCustomColor?: T;
-        borderTopLeftRadius?: T;
-        borderTopRightRadius?: T;
-        borderBottomRightRadius?: T;
-        borderBottomLeftRadius?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PostGridBlock_select".
- */
-export interface PostGridBlockSelect<T extends boolean = true> {
-  categories?: T;
-  limit?: T;
-  columns?: T;
   settings?:
     | T
     | {
@@ -5370,6 +5656,10 @@ export interface Footer {
   columns?:
     | {
         title: string;
+        /**
+         * Set the width of this column on large screens
+         */
+        columnWidth?: ('1/6' | '1/4' | '1/3' | '2/6') | null;
         navItems?:
           | {
               link: {
@@ -5388,6 +5678,10 @@ export interface Footer {
                   | ({
                       relationTo: 'posts';
                       value: string | Post;
+                    } | null)
+                  | ({
+                      relationTo: 'branches';
+                      value: string | Branch;
                     } | null);
                 newTab?: boolean | null;
               };
@@ -5521,6 +5815,7 @@ export interface FooterSelect<T extends boolean = true> {
           | T
           | {
               title?: T;
+              columnWidth?: T;
               navItems?:
                 | T
                 | {

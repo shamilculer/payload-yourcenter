@@ -3,7 +3,7 @@ import config from '@/payload.config'
 import './globals.css'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
-import type { RenderHeroProps } from '@/heros/RenderHero'
+import type { Page } from '@/payload-types'
 
 type Args = {
   searchParams: Promise<{
@@ -35,7 +35,7 @@ export default async function HomePage(props: Args) {
 
   return (
     <div>
-      <RenderHero {...(hero as RenderHeroProps)} />
+      <RenderHero {...(hero as Page['hero'])} />
       <RenderBlocks blocks={layout} searchParams={searchParams} />
     </div>
   )
