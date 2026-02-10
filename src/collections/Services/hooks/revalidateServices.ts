@@ -5,7 +5,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import type { Service } from '@/payload-types'
 
 // Define the base path for service pages
-const SERVICE_PATH_PREFIX = '/services' 
+const SERVICE_PATH_PREFIX = '/services'
 const SERVICE_TAG = 'services-sitemap'
 
 export const revalidateService: CollectionAfterChangeHook<Service> = ({
@@ -22,7 +22,7 @@ export const revalidateService: CollectionAfterChangeHook<Service> = ({
       payload.logger.info(`Revalidating service page at path: ${path}`)
 
       revalidatePath(path)
-      revalidateTag(SERVICE_TAG)
+      revalidateTag(SERVICE_TAG, 'max')
     }
 
     // 2. If the page was previously published, revalidate the old path
@@ -33,7 +33,7 @@ export const revalidateService: CollectionAfterChangeHook<Service> = ({
       payload.logger.info(`Revalidating old service page at path: ${oldPath}`)
 
       revalidatePath(oldPath)
-      revalidateTag(SERVICE_TAG)
+      revalidateTag(SERVICE_TAG, 'max')
     }
   }
   return doc
@@ -42,12 +42,12 @@ export const revalidateService: CollectionAfterChangeHook<Service> = ({
 export const revalidateServiceDelete: CollectionAfterDeleteHook<Service> = ({ doc, req: { context, payload } }) => {
   if (!context.disableRevalidate) {
     if (doc.slug) {
-        const path = `${SERVICE_PATH_PREFIX}/${doc.slug}`
+      const path = `${SERVICE_PATH_PREFIX}/${doc.slug}`
 
-        payload.logger.info(`Revalidating deleted service page at path: ${path}`)
-        
-        revalidatePath(path)
-        revalidateTag(SERVICE_TAG)
+      payload.logger.info(`Revalidating deleted service page at path: ${path}`)
+
+      revalidatePath(path)
+      revalidateTag(SERVICE_TAG, 'max')
     }
   }
 

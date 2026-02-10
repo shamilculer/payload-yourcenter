@@ -16,7 +16,7 @@ export const revalidateBranch: CollectionAfterChangeHook<Branch> = ({
             payload.logger.info(`Revalidating branch at path: ${path}`)
 
             revalidatePath(path)
-            revalidateTag('branches')
+            revalidateTag('branches', 'max')
         }
 
         // If the branch was previously published, but is now a draft, revalidate the old path
@@ -26,7 +26,7 @@ export const revalidateBranch: CollectionAfterChangeHook<Branch> = ({
             payload.logger.info(`Revalidating old branch path: ${oldPath}`)
 
             revalidatePath(oldPath)
-            revalidateTag('branches')
+            revalidateTag('branches', 'max')
         }
     }
 
@@ -41,7 +41,7 @@ export const revalidateBranchDelete: CollectionAfterDeleteHook<Branch> = ({
         const path = `/${doc?.slug}`
 
         revalidatePath(path)
-        revalidateTag('branches')
+        revalidateTag('branches', 'max')
     }
 
     return doc

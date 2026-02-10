@@ -34,11 +34,16 @@ const nextConfig = {
 
     return webpackConfig
   },
+  turbopack: {
+    // Turbopack configuration for Next.js 16+
+    // The webpack config above is kept for compatibility
+    resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+  },
   reactStrictMode: true,
   redirects,
 }
 
-export default withPayload(nextConfig, { 
+export default withPayload(nextConfig, {
   devBundleServerPackages: false,
   // Configure for serverless environments
   disableLocalStorage: process.env.NODE_ENV === 'production'
