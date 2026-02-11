@@ -103,10 +103,12 @@ export async function generateStaticParams() {
 
         // Add each service to params
         services.docs.forEach((serviceDoc) => {
-            params.push({
-                slug: branch.slug,
-                service: serviceDoc.slug,
-            })
+            if (typeof branch.slug === 'string' && typeof serviceDoc.slug === 'string') {
+                params.push({
+                    slug: branch.slug,
+                    service: serviceDoc.slug,
+                })
+            }
         })
     }
 

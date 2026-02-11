@@ -12,7 +12,11 @@ export const getCloudinaryUrl = (media?: Media | null): string => {
   if (media?.cloudinary?.public_id) {
     // Use the public_id which should contain the correct filename
     // The public_id includes the folder path and filename
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dpycn77pf'
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+    if (!cloudName) {
+      console.warn('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is not set, image delivery may fail.')
+      return ''
+    }
     return `https://res.cloudinary.com/${cloudName}/image/upload/${media.cloudinary.public_id}`
   }
 
