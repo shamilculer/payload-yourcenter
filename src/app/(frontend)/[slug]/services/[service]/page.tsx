@@ -159,7 +159,7 @@ export default async function BranchServicePage({ params }: Args) {
     const { isEnabled: draft } = await draftMode()
 
     const url = `/${branchSlug}/services/${serviceSlug}`
-    const segments = [branchSlug, 'services', serviceSlug]
+    const segments = [branchSlug, serviceSlug]
 
     const branch = await queryBranchBySlug({ slug: branchSlug })
 

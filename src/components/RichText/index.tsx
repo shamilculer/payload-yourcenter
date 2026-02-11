@@ -32,7 +32,7 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
     throw new Error('Expected value to be an object')
   }
   const slug = value.slug
-  return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
+  return relationTo === 'posts' ? `/blog/${slug}` : `/${slug}`
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
@@ -69,7 +69,7 @@ export default function RichText(props: Props) {
       className={cn(
         'payload-richtext',
         {
-          'prose md:prose-md dark:prose-invert max-w-none': enableProse,
+          '!prose !prose-lg dark:!prose-invert !max-w-none': enableProse,
         },
         className,
       )}

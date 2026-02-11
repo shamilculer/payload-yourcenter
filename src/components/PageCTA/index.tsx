@@ -3,22 +3,56 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+import { Media, Page, Post, Service, Branch } from "@/payload-types"
+import { CMSLink } from "../Link"
+
 interface PageCTAProps {
     ctaData?: {
         subheading?: string
         heading?: string
         description?: string
+        image?: string | Media | null
+        links?: {
+            link?: {
+                type?: "custom" | "reference" | "none" | null
+                newTab?: boolean | null
+                url?: string | null
+                label?: string | null
+                appearance?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "inline" | "link" | null
+                reference?: {
+                    relationTo: "pages" | "posts" | "services" | "branches"
+                    value: string | number | Page | Post | Service | Branch
+                } | null
+            }
+            id?: string | null
+        }[] | null
     }
+    image?: string | Media | null
 }
 
-const PageCTA: React.FC<PageCTAProps> = ({ ctaData }) => {
+const PageCTA: React.FC<PageCTAProps> = ({ ctaData, image }) => {
+    let imageUrl = "/hero-banner-2.webp"
+
+    // Priority: ctaData.image > props.image > default
+    const imageSource = ctaData?.image || image
+
+    if (imageSource) {
+        if (typeof imageSource === 'string') {
+            imageUrl = imageSource
+        } else if (typeof imageSource === 'object' && imageSource?.url) {
+            imageUrl = imageSource.url
+        } else if (typeof imageSource === 'object' && imageSource?.cloudinary?.secure_url) {
+            imageUrl = imageSource.cloudinary.secure_url
+        }
+    }
+
     return (
         <section className="w-full py-10 min-h-[420px] relative flex-center">
             <Image
                 height={300}
                 width={1400}
                 alt="About yourcenter"
-                src={"/hero-banner-2.webp"}
+                src={imageUrl}
                 className="w-full h-full object-cover absolute top-0 left-0"
             />
 
@@ -41,19 +75,28 @@ const PageCTA: React.FC<PageCTAProps> = ({ ctaData }) => {
                     </div>
 
                     <div className="flex items-center gap-3 mt-6">
-                        <Button asChild>
-                            <Link href={"tel:+919061060000"}>
-                                <PhoneCall />
-                                Give us a Call
-                            </Link>
-                        </Button>
+                        {ctaData?.links && ctaData.links.length > 0 ? (
+                            ctaData.links.map(({ link }, i) => {
+                                if (!link) return null
+                                return <CMSLink key={i} {...link} />
+                            })
+                        ) : (
+                            <>
+                                <Button asChild>
+                                    <Link href={"tel:+919061060000"}>
+                                        <PhoneCall />
+                                        Give us a Call
+                                    </Link>
+                                </Button>
 
-                        <Button asChild>
-                            <Link href={"https://wa.me/919061060000?text=Hello%20Your%20Center"}>
-                                <Send />
-                                Leave Us A Message
-                            </Link>
-                        </Button>
+                                <Button asChild>
+                                    <Link href={"https://wa.me/919061060000?text=Hello%20Your%20Center"}>
+                                        <Send />
+                                        Leave Us A Message
+                                    </Link>
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

@@ -19,6 +19,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'; // Needed for the overview description
+import { link } from '@/fields/link'
 
 export const Services: CollectionConfig<'services'> = {
   slug: 'services',
@@ -160,6 +161,29 @@ export const Services: CollectionConfig<'services'> = {
                   admin: {
                     description: 'Comprehensive description of the service',
                   },
+                },
+                {
+                  name: 'actions',
+                  type: 'array',
+                  label: 'Service Actions',
+                  defaultValue: [
+                    {
+                      link: {
+                        type: 'custom',
+                        url: '/contact',
+                        label: 'Contact Us Today',
+                        appearance: 'default',
+                      },
+                    },
+                  ],
+                  admin: {
+                    description: 'Add buttons to the bottom of the service content. These will replace the Default "Contact Us" button.',
+                  },
+                  fields: [
+                    link({
+                      appearances: ['default', 'outline', 'secondary'],
+                    }),
+                  ],
                 },
               ] as Field[],
             },

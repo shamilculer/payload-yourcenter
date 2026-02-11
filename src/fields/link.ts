@@ -158,6 +158,47 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       defaultValue: 'default',
       options: appearanceOptionsToUse,
     })
+
+    linkResult.fields.push({
+      name: 'showIcon',
+      type: 'checkbox',
+      label: 'Show Icon',
+      defaultValue: false,
+      admin: {
+        condition: (_, siblingData) => siblingData?.type !== 'none',
+        description: 'Display an icon with the link.',
+      },
+    })
+
+    linkResult.fields.push({
+      type: 'row',
+      fields: [
+        {
+          name: 'icon',
+          type: 'text',
+          label: 'Icon Name',
+          admin: {
+            condition: (_, siblingData) => siblingData?.showIcon,
+            width: '50%',
+            description: 'Lucide icon name (e.g. ArrowRight)',
+          },
+        },
+        {
+          name: 'iconPosition',
+          type: 'select',
+          label: 'Icon Position',
+          defaultValue: 'right',
+          options: [
+            { label: 'Left', value: 'left' },
+            { label: 'Right', value: 'right' },
+          ],
+          admin: {
+            condition: (_, siblingData) => siblingData?.showIcon,
+            width: '50%',
+          },
+        },
+      ],
+    })
   }
 
   return deepMerge(linkResult, overrides)

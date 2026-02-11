@@ -15,6 +15,7 @@ import PageTitle from '@/components/PageTitle'
 import ServiceMenu from '@/components/ServiceMenu'
 import PageCTA from '@/components/PageCTA'
 import { Button } from '@/components/ui/button'
+import { CMSLink } from '@/components/Link'
 
 // Helper to safely get the image URL
 const getImageUrl = (media: Media | string | undefined | null): string | undefined => {
@@ -70,9 +71,11 @@ export async function generateStaticParams() {
     },
   })
 
-  return services.docs.map((service) => ({
-    slug: service.slug,
-  }))
+  return services.docs
+    .filter((service) => service.slug)
+    .map((service) => ({
+      slug: service.slug,
+    }))
 }
 
 // Generate metadata
@@ -99,7 +102,7 @@ export default async function ServicePage({ params }: Args) {
 
   if (!service) return <PayloadRedirects url={url} />
 
-  const { title, serviceContent, whyChooseUs } = service
+  const { title, serviceContent, whyChooseUs, overview } = service
   const segments = ['services', slug]
 
   // Get image URLs
@@ -118,7 +121,10 @@ export default async function ServicePage({ params }: Args) {
 
       {/* Page Title / Hero */}
       <PageTitle
-        image={featuredImageUrl || '/radiography.webp'}
+        image={
+          (typeof overview?.featuredImage === 'object' && overview?.featuredImage?.url) ||
+          '/radiography.webp'
+        }
         title={title}
         segments={segments}
       />
@@ -181,10 +187,18 @@ export default async function ServicePage({ params }: Args) {
             {/* Ending Paragraph */}
             <p className="mt-8">{whyChooseUs?.endingParagraph}</p>
 
-            {/* Contact Button */}
-            <Button asChild>
-              <Link href="/contact">Contact Us Today</Link>
-            </Button>
+            {/* Actions / Contact Button */}
+            {serviceContent?.actions && serviceContent.actions.length > 0 ? (
+              <div className="flex flex-wrap gap-4 mt-8">
+                {serviceContent.actions.map((action, index) => (
+                  <CMSLink key={index} {...action.link} />
+                ))}
+              </div>
+            ) : (
+              <Button asChild className="mt-8">
+                <Link href="/contact">Contact Us Today</Link>
+              </Button>
+            )}
           </div>
 
           {/* Right Column - Sidebar (1/3 width) */}
@@ -242,7 +256,7 @@ export default async function ServicePage({ params }: Args) {
       </section>
 
       {/* Page CTA */}
-      <PageCTA />
+      <PageCTA image={overview?.featuredImage} />
     </main>
   )
 }

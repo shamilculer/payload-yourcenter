@@ -13,10 +13,14 @@ export const PostGridBlock: Block = {
                     fields: [
                         {
                             name: 'categories',
-                            type: 'relationship',
-                            relationTo: 'categories',
-                            hasMany: true,
+                            type: 'array',
                             label: 'Categories to Show',
+                            fields: [
+                                {
+                                    name: 'title',
+                                    type: 'text',
+                                },
+                            ],
                         },
                         {
                             name: 'limit',

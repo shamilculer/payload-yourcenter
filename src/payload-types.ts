@@ -72,7 +72,6 @@ export interface Config {
     services: Service;
     posts: Post;
     media: Media;
-    categories: Category;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -90,7 +89,6 @@ export interface Config {
     services: ServicesSelect<false> | ServicesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -192,6 +190,15 @@ export interface Page {
                    * Choose how the link should be rendered.
                    */
                   appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+                  /**
+                   * Display an icon with the link.
+                   */
+                  showIcon?: boolean | null;
+                  /**
+                   * Lucide icon name (e.g. ArrowRight)
+                   */
+                  icon?: string | null;
+                  iconPosition?: ('left' | 'right') | null;
                 };
                 id?: string | null;
               }[]
@@ -246,6 +253,15 @@ export interface Page {
              * Choose how the link should be rendered.
              */
             appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+            /**
+             * Display an icon with the link.
+             */
+            showIcon?: boolean | null;
+            /**
+             * Lucide icon name (e.g. ArrowRight)
+             */
+            icon?: string | null;
+            iconPosition?: ('left' | 'right') | null;
           };
           id?: string | null;
         }[]
@@ -497,6 +513,50 @@ export interface Service {
      * Comprehensive description of the service
      */
     longDescription: string;
+    /**
+     * Add buttons to the bottom of the service content. These will replace the Default "Contact Us" button.
+     */
+    actions?:
+      | {
+          link?: {
+            type?: ('none' | 'reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?:
+              | ({
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null)
+              | ({
+                  relationTo: 'services';
+                  value: string | Service;
+                } | null)
+              | ({
+                  relationTo: 'posts';
+                  value: string | Post;
+                } | null)
+              | ({
+                  relationTo: 'branches';
+                  value: string | Branch;
+                } | null);
+            url?: string | null;
+            label?: string | null;
+            /**
+             * Choose how the link should be rendered.
+             */
+            appearance?: ('default' | 'outline' | 'secondary') | null;
+            /**
+             * Display an icon with the link.
+             */
+            showIcon?: boolean | null;
+            /**
+             * Lucide icon name (e.g. ArrowRight)
+             */
+            icon?: string | null;
+            iconPosition?: ('left' | 'right') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
   };
   whyChooseUs: {
     /**
@@ -563,6 +623,50 @@ export interface Branch {
    * Brief overview text in hero section
    */
   overview: string;
+  /**
+   * Add buttons to the hero section
+   */
+  heroLinks?:
+    | {
+        link?: {
+          type?: ('none' | 'reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'services';
+                value: string | Service;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'branches';
+                value: string | Branch;
+              } | null);
+          url?: string | null;
+          label?: string | null;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline' | 'secondary') | null;
+          /**
+           * Display an icon with the link.
+           */
+          showIcon?: boolean | null;
+          /**
+           * Lucide icon name (e.g. ArrowRight)
+           */
+          icon?: string | null;
+          iconPosition?: ('left' | 'right') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
   intro: {
     image: string | Media;
     /**
@@ -574,7 +678,52 @@ export interface Branch {
      * HTML content is supported
      */
     description: string;
+    links?:
+      | {
+          link?: {
+            type?: ('none' | 'reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?:
+              | ({
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null)
+              | ({
+                  relationTo: 'services';
+                  value: string | Service;
+                } | null)
+              | ({
+                  relationTo: 'posts';
+                  value: string | Post;
+                } | null)
+              | ({
+                  relationTo: 'branches';
+                  value: string | Branch;
+                } | null);
+            url?: string | null;
+            label?: string | null;
+            /**
+             * Choose how the link should be rendered.
+             */
+            appearance?: ('default' | 'outline' | 'secondary') | null;
+            /**
+             * Display an icon with the link.
+             */
+            showIcon?: boolean | null;
+            /**
+             * Lucide icon name (e.g. ArrowRight)
+             */
+            icon?: string | null;
+            iconPosition?: ('left' | 'right') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
   };
+  /**
+   * Small text above the heading
+   */
+  serviceEyebrow?: string | null;
   /**
    * Heading for the services section. Note: Services are automatically filtered based on their branch association. To add services to this branch, edit the service and select this branch in the "Branch Association" field.
    */
@@ -606,6 +755,48 @@ export interface Branch {
     subheading: string;
     heading: string;
     description: string;
+    image?: (string | null) | Media;
+    links?:
+      | {
+          link?: {
+            type?: ('none' | 'reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?:
+              | ({
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null)
+              | ({
+                  relationTo: 'services';
+                  value: string | Service;
+                } | null)
+              | ({
+                  relationTo: 'posts';
+                  value: string | Post;
+                } | null)
+              | ({
+                  relationTo: 'branches';
+                  value: string | Branch;
+                } | null);
+            url?: string | null;
+            label?: string | null;
+            /**
+             * Choose how the link should be rendered.
+             */
+            appearance?: ('default' | 'outline' | 'secondary') | null;
+            /**
+             * Display an icon with the link.
+             */
+            showIcon?: boolean | null;
+            /**
+             * Lucide icon name (e.g. ArrowRight)
+             */
+            icon?: string | null;
+            iconPosition?: ('left' | 'right') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
   };
   meta?: {
     title?: string | null;
@@ -616,6 +807,57 @@ export interface Branch {
     description?: string | null;
   };
   publishedAt?: string | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: string;
+  title: string;
+  heroImage?: (string | null) | Media;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  relatedPosts?: (string | Post)[] | null;
+  categories?:
+    | {
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (string | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -624,6 +866,32 @@ export interface Branch {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  name?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -676,6 +944,15 @@ export interface IntroBlock {
            * Choose how the link should be rendered.
            */
           appearance?: ('default' | 'outline') | null;
+          /**
+           * Display an icon with the link.
+           */
+          showIcon?: boolean | null;
+          /**
+           * Lucide icon name (e.g. ArrowRight)
+           */
+          icon?: string | null;
+          iconPosition?: ('left' | 'right') | null;
         };
         id?: string | null;
       }[]
@@ -716,106 +993,6 @@ export interface IntroBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'intro';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
- */
-export interface Post {
-  id: string;
-  title: string;
-  heroImage?: (string | null) | Media;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  relatedPosts?: (string | Post)[] | null;
-  categories?: (string | Category)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  authors?: (string | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: string;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  parent?: (string | null) | Category;
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: string;
-  name?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -865,6 +1042,15 @@ export interface CallToActionBlock {
            * Choose how the link should be rendered.
            */
           appearance?: ('default' | 'outline') | null;
+          /**
+           * Display an icon with the link.
+           */
+          showIcon?: boolean | null;
+          /**
+           * Lucide icon name (e.g. ArrowRight)
+           */
+          icon?: string | null;
+          iconPosition?: ('left' | 'right') | null;
         };
         id?: string | null;
       }[]
@@ -956,6 +1142,15 @@ export interface ContentBlock {
            * Choose how the link should be rendered.
            */
           appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+          /**
+           * Display an icon with the link.
+           */
+          showIcon?: boolean | null;
+          /**
+           * Lucide icon name (e.g. ArrowRight)
+           */
+          icon?: string | null;
+          iconPosition?: ('left' | 'right') | null;
         };
         id?: string | null;
       }[]
@@ -1610,6 +1805,15 @@ export interface IconBoxBlock {
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    /**
+     * Display an icon with the link.
+     */
+    showIcon?: boolean | null;
+    /**
+     * Lucide icon name (e.g. ArrowRight)
+     */
+    icon?: string | null;
+    iconPosition?: ('left' | 'right') | null;
   };
   settings?: {
     theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
@@ -1900,6 +2104,15 @@ export interface CTACardBlock {
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    /**
+     * Display an icon with the link.
+     */
+    showIcon?: boolean | null;
+    /**
+     * Lucide icon name (e.g. ArrowRight)
+     */
+    icon?: string | null;
+    iconPosition?: ('left' | 'right') | null;
   };
   backgroundColor?: ('primary' | 'secondary' | 'accent' | 'muted' | 'white') | null;
   borderRadius?: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl') | null;
@@ -2305,6 +2518,15 @@ export interface ButtonBlock {
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    /**
+     * Display an icon with the link.
+     */
+    showIcon?: boolean | null;
+    /**
+     * Lucide icon name (e.g. ArrowRight)
+     */
+    icon?: string | null;
+    iconPosition?: ('left' | 'right') | null;
   };
   settings?: {
     theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
@@ -2377,6 +2599,15 @@ export interface ButtonGroupBlock {
            * Choose how the link should be rendered.
            */
           appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+          /**
+           * Display an icon with the link.
+           */
+          showIcon?: boolean | null;
+          /**
+           * Lucide icon name (e.g. ArrowRight)
+           */
+          icon?: string | null;
+          iconPosition?: ('left' | 'right') | null;
         };
         id?: string | null;
       }[]
@@ -2598,6 +2829,15 @@ export interface FeaturesBlock {
        * Choose how the link should be rendered.
        */
       appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+      /**
+       * Display an icon with the link.
+       */
+      showIcon?: boolean | null;
+      /**
+       * Lucide icon name (e.g. ArrowRight)
+       */
+      icon?: string | null;
+      iconPosition?: ('left' | 'right') | null;
     };
     id?: string | null;
   }[];
@@ -2643,7 +2883,12 @@ export interface FeaturesBlock {
  * via the `definition` "PostGridBlock".
  */
 export interface PostGridBlock {
-  categories?: (string | Category)[] | null;
+  categories?:
+    | {
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   limit: number;
   columns?: ('2' | '3' | '4') | null;
   settings?: {
@@ -2885,6 +3130,15 @@ export interface PageCTABlock {
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    /**
+     * Display an icon with the link.
+     */
+    showIcon?: boolean | null;
+    /**
+     * Lucide icon name (e.g. ArrowRight)
+     */
+    icon?: string | null;
+    iconPosition?: ('left' | 'right') | null;
   };
   ctaButton2?: {
     type?: ('none' | 'reference' | 'custom') | null;
@@ -2912,6 +3166,15 @@ export interface PageCTABlock {
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    /**
+     * Display an icon with the link.
+     */
+    showIcon?: boolean | null;
+    /**
+     * Lucide icon name (e.g. ArrowRight)
+     */
+    icon?: string | null;
+    iconPosition?: ('left' | 'right') | null;
   };
   settings?: {
     theme?: ('transparent' | 'white' | 'light-gray' | 'primary' | 'secondary' | 'accent' | 'dark') | null;
@@ -2985,6 +3248,15 @@ export interface ProcessBlock {
      * Choose how the link should be rendered.
      */
     appearance?: ('default' | 'outline' | 'secondary' | 'ghost' | 'destructive') | null;
+    /**
+     * Display an icon with the link.
+     */
+    showIcon?: boolean | null;
+    /**
+     * Lucide icon name (e.g. ArrowRight)
+     */
+    icon?: string | null;
+    iconPosition?: ('left' | 'right') | null;
   };
   processEyebrow?: string | null;
   processHeading: string;
@@ -3267,10 +3539,6 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'categories';
-        value: string | Category;
-      } | null)
-    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
@@ -3357,6 +3625,9 @@ export interface PagesSelect<T extends boolean = true> {
                           url?: T;
                           label?: T;
                           appearance?: T;
+                          showIcon?: T;
+                          icon?: T;
+                          iconPosition?: T;
                         };
                     id?: T;
                   };
@@ -3379,6 +3650,9 @@ export interface PagesSelect<T extends boolean = true> {
                     url?: T;
                     label?: T;
                     appearance?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    iconPosition?: T;
                   };
               id?: T;
             };
@@ -3452,6 +3726,9 @@ export interface IntroBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              showIcon?: T;
+              icon?: T;
+              iconPosition?: T;
             };
         id?: T;
       };
@@ -3596,6 +3873,9 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              showIcon?: T;
+              icon?: T;
+              iconPosition?: T;
             };
         id?: T;
       };
@@ -3650,6 +3930,9 @@ export interface ContentBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              showIcon?: T;
+              icon?: T;
+              iconPosition?: T;
             };
         id?: T;
       };
@@ -3862,6 +4145,9 @@ export interface IconBoxBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+        showIcon?: T;
+        icon?: T;
+        iconPosition?: T;
       };
   settings?:
     | T
@@ -4065,6 +4351,9 @@ export interface CTACardBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+        showIcon?: T;
+        icon?: T;
+        iconPosition?: T;
       };
   backgroundColor?: T;
   borderRadius?: T;
@@ -4394,6 +4683,9 @@ export interface ButtonBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+        showIcon?: T;
+        icon?: T;
+        iconPosition?: T;
       };
   settings?:
     | T
@@ -4444,6 +4736,9 @@ export interface ButtonGroupBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              showIcon?: T;
+              icon?: T;
+              iconPosition?: T;
             };
         id?: T;
       };
@@ -4625,6 +4920,9 @@ export interface FeaturesBlockSelect<T extends boolean = true> {
               url?: T;
               label?: T;
               appearance?: T;
+              showIcon?: T;
+              icon?: T;
+              iconPosition?: T;
             };
         id?: T;
       };
@@ -4664,7 +4962,12 @@ export interface FeaturesBlockSelect<T extends boolean = true> {
  * via the `definition` "PostGridBlock_select".
  */
 export interface PostGridBlockSelect<T extends boolean = true> {
-  categories?: T;
+  categories?:
+    | T
+    | {
+        title?: T;
+        id?: T;
+      };
   limit?: T;
   columns?: T;
   settings?:
@@ -4847,6 +5150,9 @@ export interface PageCTABlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+        showIcon?: T;
+        icon?: T;
+        iconPosition?: T;
       };
   ctaButton2?:
     | T
@@ -4857,6 +5163,9 @@ export interface PageCTABlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+        showIcon?: T;
+        icon?: T;
+        iconPosition?: T;
       };
   settings?:
     | T
@@ -4907,6 +5216,9 @@ export interface ProcessBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         appearance?: T;
+        showIcon?: T;
+        icon?: T;
+        iconPosition?: T;
       };
   processEyebrow?: T;
   processHeading?: T;
@@ -5008,6 +5320,24 @@ export interface BranchesSelect<T extends boolean = true> {
   image?: T;
   heading?: T;
   overview?: T;
+  heroLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+              showIcon?: T;
+              icon?: T;
+              iconPosition?: T;
+            };
+        id?: T;
+      };
   intro?:
     | T
     | {
@@ -5015,7 +5345,26 @@ export interface BranchesSelect<T extends boolean = true> {
         subheading?: T;
         heading?: T;
         description?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    iconPosition?: T;
+                  };
+              id?: T;
+            };
       };
+  serviceEyebrow?: T;
   serviceHeading?: T;
   whyChooseUs?:
     | T
@@ -5051,6 +5400,25 @@ export interface BranchesSelect<T extends boolean = true> {
         subheading?: T;
         heading?: T;
         description?: T;
+        image?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    iconPosition?: T;
+                  };
+              id?: T;
+            };
       };
   meta?:
     | T
@@ -5060,7 +5428,6 @@ export interface BranchesSelect<T extends boolean = true> {
         description?: T;
       };
   publishedAt?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -5086,6 +5453,24 @@ export interface ServicesSelect<T extends boolean = true> {
         image?: T;
         heading?: T;
         longDescription?: T;
+        actions?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                    showIcon?: T;
+                    icon?: T;
+                    iconPosition?: T;
+                  };
+              id?: T;
+            };
       };
   whyChooseUs?:
     | T
@@ -5131,7 +5516,12 @@ export interface PostsSelect<T extends boolean = true> {
   heroImage?: T;
   content?: T;
   relatedPosts?: T;
-  categories?: T;
+  categories?:
+    | T
+    | {
+        title?: T;
+        id?: T;
+      };
   meta?:
     | T
     | {
@@ -5263,26 +5653,6 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  generateSlug?: T;
-  slug?: T;
-  parent?: T;
-  breadcrumbs?:
-    | T
-    | {
-        doc?: T;
-        url?: T;
-        label?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

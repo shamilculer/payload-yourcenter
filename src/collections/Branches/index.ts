@@ -3,7 +3,8 @@ import type { Field } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { slugField } from 'payload'
+import formatSlug from '../../utilities/formatSlug'
+import { link } from '../../fields/link'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateBranch, revalidateBranchDelete } from './hooks/revalidateBranches'
@@ -88,6 +89,19 @@ export const Branches: CollectionConfig<'branches'> = {
                                 description: 'Brief overview text in hero section',
                             },
                         },
+                        {
+                            name: 'heroLinks',
+                            type: 'array',
+                            label: 'Hero Buttons',
+                            fields: [
+                                link({
+                                    appearances: ['default', 'outline', 'secondary'],
+                                }),
+                            ],
+                            admin: {
+                                description: 'Add buttons to the hero section',
+                            },
+                        },
                     ],
                     label: 'Basic Information',
                 },
@@ -130,6 +144,16 @@ export const Branches: CollectionConfig<'branches'> = {
                                         description: 'HTML content is supported',
                                     },
                                 },
+                                {
+                                    name: 'links',
+                                    type: 'array',
+                                    label: 'Intro Buttons',
+                                    fields: [
+                                        link({
+                                            appearances: ['default', 'outline', 'secondary'],
+                                        }),
+                                    ],
+                                },
                             ] as Field[],
                         },
                     ],
@@ -138,6 +162,15 @@ export const Branches: CollectionConfig<'branches'> = {
                 // 3. SERVICES TAB
                 {
                     fields: [
+                        {
+                            name: 'serviceEyebrow',
+                            label: 'Eyebrow Text',
+                            type: 'text',
+                            defaultValue: 'Advanced Diagnostics',
+                            admin: {
+                                description: 'Small text above the heading',
+                            },
+                        },
                         {
                             name: 'serviceHeading',
                             label: 'Services Section Heading',
@@ -285,6 +318,22 @@ export const Branches: CollectionConfig<'branches'> = {
                                     type: 'textarea',
                                     required: true,
                                 },
+                                {
+                                    name: 'image',
+                                    label: 'CTA Background Image',
+                                    type: 'upload',
+                                    relationTo: 'media',
+                                },
+                                {
+                                    name: 'links',
+                                    type: 'array',
+                                    label: 'CTA Buttons',
+                                    fields: [
+                                        link({
+                                            appearances: ['default', 'outline', 'secondary'],
+                                        }),
+                                    ],
+                                },
                             ] as Field[],
                         },
                     ],
@@ -323,7 +372,18 @@ export const Branches: CollectionConfig<'branches'> = {
                 position: 'sidebar',
             },
         },
-        slugField(),
+        {
+            name: 'slug',
+            label: 'Slug',
+            type: 'text',
+            index: true,
+            admin: {
+                position: 'sidebar',
+            },
+            hooks: {
+                beforeValidate: [formatSlug('name')],
+            },
+        },
     ],
     hooks: {
         afterChange: [revalidateBranch],

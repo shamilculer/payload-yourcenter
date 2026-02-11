@@ -51,8 +51,12 @@ export const ServicesBlock: React.FC<
         }
 
         if (filterByBranch && selectedBranch) {
+            // If filtering by branch, show only services for that specific branch
             const branchId = typeof selectedBranch === 'object' ? selectedBranch.id : selectedBranch
             whereQuery.branch = { equals: branchId }
+        } else {
+            // If not filtering by branch, show only global services (no branch association)
+            whereQuery.branch = { exists: false }
         }
 
         const fetchedServices = await payload.find({

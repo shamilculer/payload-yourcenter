@@ -7,8 +7,10 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { CircleCheckBig, PhoneCall, Send, MapPin, Mail } from 'lucide-react'
+import { CircleCheckBig, PhoneCall, Send, MapPin, Mail, CircleArrowOutUpRight } from 'lucide-react'
+import { cn } from '@/utilities/ui'
 import PageCTA from '@/components/PageCTA'
+import { CMSLink } from '@/components/Link'
 
 // Fetch branch data by slug
 const queryBranchBySlug = cache(async ({ slug }: { slug: string }) => {
@@ -136,6 +138,21 @@ export default async function BranchPageContent({ slug }: { slug: string }) {
         }
         : undefined
 
+    const cleanDescription = (data: any): string => {
+        if (
+            data &&
+            data.root &&
+            Array.isArray(data.root.children) &&
+            data.root.children.length > 0 &&
+            Array.isArray(data.root.children[0].children) &&
+            data.root.children[0].children.length > 0 &&
+            typeof data.root.children[0].children[0].text === 'string'
+        ) {
+            return data.root.children[0].children[0].text.replace(/<[^>]*>?/gm, '')
+        }
+        return 'Click to learn more about this service.'
+    }
+
     return (
         <main>
             <PayloadRedirects disableNotFound url={url} />
@@ -165,21 +182,29 @@ export default async function BranchPageContent({ slug }: { slug: string }) {
                             </div>
 
                             <div className="flex items-center gap-3 mt-6">
-                                <Button asChild>
-                                    <Link href={`tel:+91${mainPhone}`}>
-                                        <PhoneCall />
-                                        Give us a Call
-                                    </Link>
-                                </Button>
+                                {branch.heroLinks && branch.heroLinks.length > 0 ? (
+                                    branch.heroLinks.map(({ link }, i) => {
+                                        return <CMSLink key={i} {...link} />
+                                    })
+                                ) : (
+                                    <>
+                                        <Button asChild>
+                                            <Link href={`tel:+91${mainPhone}`}>
+                                                <PhoneCall />
+                                                Give us a Call
+                                            </Link>
+                                        </Button>
 
-                                <Button asChild>
-                                    <Link
-                                        href={`https://wa.me/91${mainPhone}?text=Hello%20Your%20Center%20${encodeURIComponent(branch.name)}`}
-                                    >
-                                        <Send />
-                                        Leave Us A Message
-                                    </Link>
-                                </Button>
+                                        <Button asChild>
+                                            <Link
+                                                href={`https://wa.me/91${mainPhone}?text=Hello%20Your%20Center%20${encodeURIComponent(branch.name)}`}
+                                            >
+                                                <Send />
+                                                Leave Us A Message
+                                            </Link>
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -213,91 +238,134 @@ export default async function BranchPageContent({ slug }: { slug: string }) {
                         </div>
 
                         <div className="flex items-center gap-4 mt-5">
-                            <Button asChild>
-                                <Link href="/about" className="text-white">
-                                    Know More About Us
-                                </Link>
-                            </Button>
+                            {branch.intro?.links && branch.intro.links.length > 0 ? (
+                                branch.intro.links.map(({ link }, i) => {
+                                    return <CMSLink key={i} {...link} />
+                                })
+                            ) : (
+                                <>
+                                    <Button asChild>
+                                        <Link href="/about" className="text-white">
+                                            Know More About Us
+                                        </Link>
+                                    </Button>
 
-                            <Button asChild className="bg-accent">
-                                <Link href="/contact" className="text-white">
-                                    Contact Us
-                                </Link>
-                            </Button>
+                                    <Button asChild className="bg-accent">
+                                        <Link href="/contact" className="text-white">
+                                            Contact Us
+                                        </Link>
+                                    </Button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* SERVICES SECTION */}
-            <section className="pb-14">
-                <div className="container space-y-7 sm:space-y-12">
-                    {/* Section Header */}
-                    <div className="w-full flex items-end gap-20 justify-center">
-                        <div className="flex-center flex-col text-center w-full lg:w-2/3">
-                            <span className="py-1.5 px-3 rounded-3xl uppercase font-medium text-accent border border-gray-300 bg-primary/20 max-sm:text-sm">
-                                Advanced Diagnostics
-                            </span>
-                            <h2 className="mt-4">{safeRender(branch.serviceHeading)}</h2>
+            {services.length > 0 && (
+                <section className="pb-14">
+                    <div className="container space-y-7 sm:space-y-12">
+                        {/* Section Header */}
+                        <div className="w-full flex items-end gap-20 justify-center">
+                            <div className="flex-center flex-col text-center w-full lg:w-2/3">
+                                <span className="py-1.5 px-3 rounded-3xl uppercase font-medium text-accent border border-gray-300 bg-primary/20 max-sm:text-sm">
+                                    {safeRender(branch.serviceEyebrow || 'Advanced Diagnostics')}
+                                </span>
+                                <h2 className="mt-4">{safeRender(branch.serviceHeading)}</h2>
+                            </div>
+                        </div>
+
+                        {/* Services Grid */}
+                        <div
+                            className={cn(
+                                'w-full gap-y-14 gap-x-12 max-sm:px-3',
+                                services.length < 3
+                                    ? 'flex flex-wrap justify-center'
+                                    : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+                            )}
+                        >
+                            {services.map((service) => {
+                                const featuredMedia = service.overview?.featuredImage
+                                const imageUrl = (() => {
+                                    if (typeof featuredMedia === 'object' && featuredMedia) {
+                                        if (featuredMedia.cloudinary?.secure_url)
+                                            return featuredMedia.cloudinary.secure_url
+                                        if (featuredMedia.cloudinary?.public_id) {
+                                            const cloudName =
+                                                process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+                                                'dpycn77pf'
+                                            return `https://res.cloudinary.com/${cloudName}/image/upload/${featuredMedia.cloudinary.public_id}`
+                                        }
+                                        return (
+                                            featuredMedia?.sizes?.medium?.url || featuredMedia?.url
+                                        )
+                                    }
+                                    return ''
+                                })()
+                                const imageAlt =
+                                    (typeof featuredMedia === 'object' && featuredMedia?.alt) ||
+                                    service.title
+                                const serviceUrl = `/${slug}/services/${service.slug}`
+                                const descriptionText = cleanDescription(
+                                    service.overview?.overviewDescription,
+                                )
+                                const linkLabel = service.overview?.linkLabel || 'Read More'
+
+                                return (
+                                    <article
+                                        key={service.id}
+                                        className={cn(
+                                            'group bg-accent min-h-96 rounded-[2rem] max-sm:py-5 max-sm:px-4 sm:p-5 space-y-5 sm:space-y-3 transition-all delay-200 shadow-xl w-full',
+                                            services.length < 3 && 'max-w-96',
+                                        )}
+                                    >
+                                        {/* Image Wrapper */}
+                                        <div className="w-full h-68 relative">
+                                            {imageUrl ? (
+                                                <Image
+                                                    src={imageUrl}
+                                                    fill
+                                                    className="object-cover rounded-3xl"
+                                                    alt={imageAlt}
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-500 rounded-3xl flex items-center justify-center text-white">
+                                                    No Image
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="mt-6 space-y-3 px-1">
+                                            <h3 className="!text-white text-xl font-semibold">
+                                                {service.title}
+                                            </h3>
+                                            <p className="text-gray-200 line-clamp-3">
+                                                {descriptionText}
+                                            </p>
+
+                                            <Button
+                                                asChild
+                                                className="bg-primary hover:bg-secondary transition-colors duration-300"
+                                            >
+                                                <Link
+                                                    href={serviceUrl}
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    {linkLabel}{' '}
+                                                    <CircleArrowOutUpRight className="w-4 h-4" />
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    </article>
+                                )
+                            })}
                         </div>
                     </div>
-
-                    {/* Services Grid */}
-                    <div
-                        className={`w-full gap-y-14 gap-x-12 max-sm:px-3 ${services.length < 3
-                            ? 'flex justify-center'
-                            : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                            }`}
-                    >
-                        {services.map((service) => {
-                            const serviceImageUrl =
-                                typeof service.overview?.featuredImage === 'object' &&
-                                    service.overview.featuredImage &&
-                                    'url' in service.overview.featuredImage
-                                    ? service.overview.featuredImage.url
-                                    : '/radiography.webp'
-
-                            return (
-                                <article
-                                    key={service.id}
-                                    className={`group bg-accent min-h-96 rounded-4xl max-sm:py-5 max-sm:px-4 sm:p-5 space-y-5 sm:space-y-3 transition-all delay-200 shadow-xl ${services.length < 3 ? 'max-w-96' : ''
-                                        }`}
-                                >
-                                    {/* Image Container */}
-                                    <div className="w-full h-68 relative">
-                                        <Image
-                                            src={serviceImageUrl || '/radiography.webp'}
-                                            fill
-                                            className="object-cover rounded-3xl"
-                                            alt={service.title}
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        />
-                                    </div>
-                                    {/* Content Block */}
-                                    <div className="mt-6 space-y-3 px-1">
-                                        <h3 className="!text-white">{service.title}</h3>
-                                        <p className="text-gray-200">
-                                            {/* Extract text from Lexical rich text */}
-                                            Learn more about this service
-                                        </p>
-                                        <Button
-                                            asChild
-                                            className="bg-primary hover:bg-secondary transition-colors duration-300"
-                                        >
-                                            <Link
-                                                href={`/${slug}/services/${service.slug}`}
-                                                className="flex items-center gap-2"
-                                            >
-                                                Know More
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                </article>
-                            )
-                        })}
-                    </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* WHY CHOOSE US SECTION */}
             <section className="section-spacing-b relative">
@@ -346,10 +414,10 @@ export default async function BranchPageContent({ slug }: { slug: string }) {
                         />
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* CONTACT INFO SECTION */}
-            <section className="container -mt-16 sm:-mt-20 z-20 relative mb-16">
+            < section className="container -mt-16 sm:-mt-20 z-20 relative mb-16" >
                 <div className="bg-white p-6 md:p-10 shadow-xl rounded-xl border-t-4 border-primary grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
                     {/* Address Card */}
                     <div className="flex lg:justify-center items-start gap-4">
@@ -404,10 +472,10 @@ export default async function BranchPageContent({ slug }: { slug: string }) {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* CTA SECTION */}
-            <PageCTA ctaData={ctaContentSafe} />
-        </main>
+            < PageCTA ctaData={ctaContentSafe} />
+        </main >
     )
 }

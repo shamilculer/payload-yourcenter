@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { CircleCheckBig, PhoneCall, Send, MapPin, Mail } from 'lucide-react'
 import PageCTA from '@/components/PageCTA'
 import type { Branch, Service } from '@/payload-types'
+import { cn } from '@/utilities/ui'
 
 type Args = {
     params: Promise<{
@@ -266,10 +267,12 @@ export default async function BranchPage({ params }: Args) {
 
                     {/* Services Grid */}
                     <div
-                        className={`w-full gap-y-14 gap-x-12 max-sm:px-3 ${services.length < 3
-                                ? 'flex justify-center'
+                        className={cn(
+                            "w-full gap-y-14 gap-x-12 max-sm:px-3",
+                            services.length < 3
+                                ? 'flex flex-wrap justify-center'
                                 : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                            }`}
+                        )}
                     >
                         {services.map((service) => {
                             const serviceImageUrl =
@@ -279,11 +282,31 @@ export default async function BranchPage({ params }: Args) {
                                     ? service.overview.featuredImage.url
                                     : '/radiography.webp'
 
+                            // Extract description from Lexical rich text
+                            const cleanDescription = (data: any): string => {
+                                if (
+                                    data &&
+                                    data.root &&
+                                    Array.isArray(data.root.children) &&
+                                    data.root.children.length > 0 &&
+                                    Array.isArray(data.root.children[0].children) &&
+                                    data.root.children[0].children.length > 0 &&
+                                    typeof data.root.children[0].children[0].text === 'string'
+                                ) {
+                                    return data.root.children[0].children[0].text.replace(/<[^>]*>?/gm, '');
+                                }
+                                return "Learn more about this service";
+                            }
+
+                            const descriptionText = cleanDescription(service.overview?.overviewDescription)
+
                             return (
                                 <article
                                     key={service.id}
-                                    className={`group bg-accent min-h-96 rounded-4xl max-sm:py-5 max-sm:px-4 sm:p-5 space-y-5 sm:space-y-3 transition-all delay-200 shadow-xl ${services.length < 3 ? 'max-w-96' : ''
-                                        }`}
+                                    className={cn(
+                                        "group bg-accent min-h-96 rounded-[2rem] max-sm:py-5 max-sm:px-4 sm:p-5 space-y-5 sm:space-y-3 transition-all delay-200 shadow-xl w-full",
+                                        services.length < 3 && "max-w-96"
+                                    )}
                                 >
                                     {/* Image Container */}
                                     <div className="w-full h-68 relative">
@@ -297,10 +320,9 @@ export default async function BranchPage({ params }: Args) {
                                     </div>
                                     {/* Content Block */}
                                     <div className="mt-6 space-y-3 px-1">
-                                        <h3 className="!text-white">{service.title}</h3>
-                                        <p className="text-gray-200">
-                                            {/* Extract text from Lexical rich text */}
-                                            Learn more about this service
+                                        <h3 className="!text-white text-xl font-semibold">{service.title}</h3>
+                                        <p className="text-gray-200 line-clamp-3">
+                                            {descriptionText}
                                         </p>
                                         <Button
                                             asChild

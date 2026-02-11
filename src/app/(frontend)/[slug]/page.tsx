@@ -44,15 +44,17 @@ export async function generateStaticParams() {
 
   const pageParams = pages.docs
     ?.filter((doc) => {
-      return doc.slug !== 'home'
+      return doc.slug !== 'home' && doc.slug
     })
     .map(({ slug }) => {
       return { slug }
     })
 
-  const branchParams = branches.docs?.map(({ slug }) => {
-    return { slug }
-  })
+  const branchParams = branches.docs
+    ?.filter((doc) => doc.slug)
+    .map(({ slug }) => {
+      return { slug }
+    })
 
   return [...(pageParams || []), ...(branchParams || [])]
 }

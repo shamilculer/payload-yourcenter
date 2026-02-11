@@ -1,7 +1,7 @@
 {
-  "name": "",
+  "name": "yourcenter",
   "version": "1.0.0",
-  "description": "Website template for Payload",
+  "description": "YourCenter",
   "license": "MIT",
   "type": "module",
   "scripts": {
