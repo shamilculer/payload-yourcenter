@@ -1200,6 +1200,10 @@ export interface ImageBlock {
   media: string | Media;
   width?: string | null;
   height?: string | null;
+  /**
+   * Optional: Set a different height for mobile devices (e.g., 300px, 50vh)
+   */
+  mobileHeight?: string | null;
   objectFit?: ('cover' | 'contain' | 'fill') | null;
   hoverEffect?: ('none' | 'scale' | 'grayscale' | 'brighten') | null;
   caption?: {
@@ -2483,6 +2487,9 @@ export interface LayoutBlock {
   };
   gap?: ('none' | 'small' | 'medium' | 'large' | 'xl') | null;
   reverseOnMobile?: boolean | null;
+  alignItems?: ('start' | 'center' | 'end' | 'stretch' | 'baseline') | null;
+  height?: ('default' | 'full') | null;
+  justifyContent?: ('start' | 'center' | 'end' | 'between' | 'around' | 'evenly') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'layoutBlock';
@@ -3316,7 +3323,14 @@ export interface WhyUsBlock {
   image: string | Media;
   features?:
     | {
-        icon: string | Media;
+        iconType?: ('upload' | 'lucide') | null;
+        icon?: (string | null) | Media;
+        /**
+         * Find icon names at https://lucide.dev/icons (e.g., "Shield", "Zap")
+         */
+        iconName?: string | null;
+        iconColor?: ('primary' | 'secondary' | 'accent' | 'white' | 'black' | 'custom') | null;
+        customIconColor?: string | null;
         title: string;
         description: string;
         id?: string | null;
@@ -3975,6 +3989,7 @@ export interface ImageBlockSelect<T extends boolean = true> {
   media?: T;
   width?: T;
   height?: T;
+  mobileHeight?: T;
   objectFit?: T;
   hoverEffect?: T;
   caption?: T;
@@ -4666,6 +4681,9 @@ export interface LayoutBlockSelect<T extends boolean = true> {
       };
   gap?: T;
   reverseOnMobile?: T;
+  alignItems?: T;
+  height?: T;
+  justifyContent?: T;
   id?: T;
   blockName?: T;
 }
@@ -5275,7 +5293,11 @@ export interface WhyUsBlockSelect<T extends boolean = true> {
   features?:
     | T
     | {
+        iconType?: T;
         icon?: T;
+        iconName?: T;
+        iconColor?: T;
+        customIconColor?: T;
         title?: T;
         description?: T;
         id?: T;

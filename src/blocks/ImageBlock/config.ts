@@ -42,6 +42,20 @@ export const ImageBlock: Block = {
               type: 'row',
               fields: [
                 {
+                  name: 'mobileHeight',
+                  type: 'text',
+                  label: 'Mobile Height (Override)',
+                  admin: {
+                    width: '50%',
+                    description: 'Optional: Set a different height for mobile devices (e.g., 300px, 50vh)'
+                  },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
                   name: 'objectFit',
                   type: 'select',
                   label: 'Object Fit',

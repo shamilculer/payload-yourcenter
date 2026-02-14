@@ -100,7 +100,7 @@ export const FeaturesBlockComponent: React.FC<FeaturesBlockProps> = (props) => {
                         const content = (
                             <div
                                 className={cn(
-                                    'group relative w-full rounded-2xl p-4 transition-all duration-500 max-md:mx-auto',
+                                    'group relative w-full rounded-2xl p-4 transition-all duration-500 max-md:mx-auto h-full flex flex-col',
                                     enableHoverEffect && hoverClass,
                                 )}
                                 style={{
@@ -190,14 +190,14 @@ export const FeaturesBlockComponent: React.FC<FeaturesBlockProps> = (props) => {
                                     {...link}
                                     appearance="inline"
                                     label={null}
-                                    className="no-underline w-full"
+                                    className="no-underline w-full h-full !flex !items-stretch"
                                 >
                                     {content}
                                 </CMSLink>
                             )
                         }
 
-                        return <div key={index}>{content}</div>
+                        return <div key={index} className="h-full">{content}</div>
                     })}
                 </div>
             </div>

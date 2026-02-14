@@ -47,11 +47,59 @@ export const WhyUsBlock: Block = {
                             minRows: 1,
                             fields: [
                                 {
+                                    name: 'iconType',
+                                    type: 'select',
+                                    defaultValue: 'upload',
+                                    options: [
+                                        {
+                                            label: 'Upload Image',
+                                            value: 'upload',
+                                        },
+                                        {
+                                            label: 'Lucide Icon',
+                                            value: 'lucide',
+                                        },
+                                    ],
+                                },
+                                {
                                     name: 'icon',
                                     type: 'upload',
                                     relationTo: 'media',
                                     label: 'Icon (Square format recommended)',
-                                    required: true,
+                                    admin: {
+                                        condition: (_, siblingData) => siblingData.iconType === 'upload' || !siblingData.iconType,
+                                    },
+                                },
+                                {
+                                    name: 'iconName',
+                                    type: 'text',
+                                    label: 'Lucide Icon Name',
+                                    admin: {
+                                        description: 'Find icon names at https://lucide.dev/icons (e.g., "Shield", "Zap")',
+                                        condition: (_, siblingData) => siblingData.iconType === 'lucide',
+                                    },
+                                },
+                                {
+                                    name: 'iconColor',
+                                    type: 'select',
+                                    defaultValue: 'primary',
+                                    options: [
+                                        { label: 'Primary', value: 'primary' },
+                                        { label: 'Secondary', value: 'secondary' },
+                                        { label: 'Accent', value: 'accent' },
+                                        { label: 'White', value: 'white' },
+                                        { label: 'Black', value: 'black' },
+                                        { label: 'Custom', value: 'custom' },
+                                    ],
+                                },
+                                {
+                                    name: 'customIconColor',
+                                    type: 'text',
+                                    label: 'Custom Icon Color (Hex)',
+                                    admin: {
+                                        placeholder: '#F59E0B',
+                                        condition: (_, siblingData) => siblingData.iconColor === 'custom',
+                                    },
                                 },
                                 {
                                     name: 'title',

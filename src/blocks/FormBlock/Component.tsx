@@ -15,7 +15,7 @@ export const FormBlock = ({ heading, introContent, form, settings }: FormBlockPr
     return (
         <div className={className} style={style}>
             <div className={getContainerStyles(settings)}>
-                <div className='bg-accent/10 p-6 sm:p-10 rounded-lg shadow-sm border border-accent/20'>
+                <div className='bg-accent/10 p-3 sm:p-10 rounded-lg shadow-sm border border-accent/20'>
                     {heading && (
                         <h3 className="text-xl font-semibold mb-4 text-primary">{heading}</h3>
                     )}

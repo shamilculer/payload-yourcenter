@@ -36,7 +36,7 @@ export const ImageBlock: React.FC<Props & { settings?: any }> = (props) => {
     disableInnerContainer,
     width,
     height,
-
+    mobileHeight,
     objectFit,
     hoverEffect,
     caption: captionOverride,
@@ -89,10 +89,17 @@ export const ImageBlock: React.FC<Props & { settings?: any }> = (props) => {
         <CMSLink {...(link as any)} className="block no-underline">
           <div className="w-full">
             <div
-              className={cn("relative overflow-hidden")}
+              className={cn(
+                "relative overflow-hidden",
+                mobileHeight && "h-[var(--mobile-height)] md:h-[var(--desktop-height)]"
+              )}
               style={{
                 width: formatDimension(width) || '100%',
-                height: formatDimension(height) || 'auto',
+                ...(!mobileHeight ? { height: formatDimension(height) || 'auto' } : {}),
+                ...(mobileHeight ? {
+                  '--mobile-height': formatDimension(mobileHeight),
+                  '--desktop-height': formatDimension(height) || 'auto',
+                } as React.CSSProperties : {}),
               }}
             >
               {(media || staticImage) && (
@@ -120,10 +127,17 @@ export const ImageBlock: React.FC<Props & { settings?: any }> = (props) => {
       ) : (
         <div className="w-full">
           <div
-            className={cn("relative overflow-hidden")}
+            className={cn(
+              "relative overflow-hidden",
+              mobileHeight && "h-[var(--mobile-height)] md:h-[var(--desktop-height)]"
+            )}
             style={{
               width: formatDimension(width) || '100%',
-              height: formatDimension(height) || 'auto',
+              ...(!mobileHeight ? { height: formatDimension(height) || 'auto' } : {}),
+              ...(mobileHeight ? {
+                '--mobile-height': formatDimension(mobileHeight),
+                '--desktop-height': formatDimension(height) || 'auto',
+              } as React.CSSProperties : {}),
             }}
           >
             {(media || staticImage) && (
@@ -147,7 +161,8 @@ export const ImageBlock: React.FC<Props & { settings?: any }> = (props) => {
             </div>
           )}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 }

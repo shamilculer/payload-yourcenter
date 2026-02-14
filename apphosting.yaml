@@ -1,0 +1,89 @@
+# Settings for Backend (on Cloud Run).
+# See https://firebase.google.com/docs/app-hosting/configure#cloud-run
+runConfig:
+  minInstances: 0
+  # maxInstances: 100
+  # concurrency: 80
+  # cpu: 1
+  # memoryMiB: 512
+
+  # Environment variables and secrets.
+  # Grant access to secrets in Cloud Secret Manager.
+  # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
+  env:
+    # Database Configuration
+    - variable: DATABASE_URI
+      secret: DATABASE_URI
+      availability:
+        - RUNTIME
+    
+    # Payload Configuration
+    - variable: PAYLOAD_SECRET
+      secret: PAYLOAD_SECRET
+      availability:
+        - RUNTIME
+    
+    - variable: NEXT_PUBLIC_SERVER_URL
+      secret: NEXT_PUBLIC_SERVER_URL
+      availability:
+        - BUILD
+        - RUNTIME
+    
+    - variable: CRON_SECRET
+      secret: CRON_SECRET
+      availability:
+        - RUNTIME
+    
+    - variable: PREVIEW_SECRET
+      secret: PREVIEW_SECRET
+      availability:
+        - RUNTIME
+    
+    # Cloudinary Configuration (Server-Side)
+    - variable: CLOUDINARY_CLOUD_NAME
+      secret: CLOUDINARY_CLOUD_NAME
+      availability:
+        - RUNTIME
+    
+    - variable: CLOUDINARY_API_KEY
+      secret: CLOUDINARY_API_KEY
+      availability:
+        - RUNTIME
+    
+    - variable: CLOUDINARY_API_SECRET
+      secret: CLOUDINARY_API_SECRET
+      availability:
+        - RUNTIME
+    
+    # Cloudinary Configuration (Client-Side)
+    - variable: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+      secret: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+      availability:
+        - BUILD
+        - RUNTIME
+    
+    # Email Configuration
+    - variable: SMTP_HOST
+      secret: SMTP_HOST
+      availability:
+        - RUNTIME
+    
+    - variable: SMTP_PORT
+      secret: SMTP_PORT
+      availability:
+        - RUNTIME
+    
+    - variable: SMTP_USER
+      secret: SMTP_USER
+      availability:
+        - RUNTIME
+    
+    - variable: SMTP_PASS
+      secret: SMTP_PASS
+      availability:
+        - RUNTIME
+    
+    - variable: EMAIL_TO
+      secret: EMAIL_TO
+      availability:
+        - RUNTIME

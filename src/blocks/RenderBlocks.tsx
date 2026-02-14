@@ -86,9 +86,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div key={index}>
-                  <Block {...(block as any)} searchParams={searchParams} />
-                </div>
+                <Block key={index} {...(block as any)} searchParams={searchParams} />
               )
             }
           }

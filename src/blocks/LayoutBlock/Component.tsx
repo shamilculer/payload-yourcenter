@@ -13,6 +13,9 @@ export const LayoutBlock = (props: LayoutBlockProps) => {
         column4,
         gap = 'medium',
         reverseOnMobile = false,
+        alignItems = 'start',
+        justifyContent = 'start',
+        height = 'default',
         settings,
     } = props
 
@@ -26,6 +29,25 @@ export const LayoutBlock = (props: LayoutBlockProps) => {
         medium: 'gap-6 sm:gap-10',
         large: 'gap-8 sm:gap-20',
         xl: 'gap-10 sm:gap-32',
+    }
+
+    // Align Items Map
+    const alignItemsMap = {
+        start: 'items-start',
+        center: 'items-center',
+        end: 'items-end',
+        stretch: 'items-stretch',
+        baseline: 'items-baseline',
+    }
+
+    // Justify Content Map
+    const justifyContentMap = {
+        start: 'justify-start',
+        center: 'justify-center',
+        end: 'justify-end',
+        between: 'justify-between',
+        around: 'justify-around',
+        evenly: 'justify-evenly',
     }
 
     // Column Structure
@@ -70,6 +92,8 @@ export const LayoutBlock = (props: LayoutBlockProps) => {
 
     const columns = getColumns()
     const activeGap = gapMap[gap as keyof typeof gapMap] || gapMap.medium
+    const activeAlignItems = alignItemsMap[alignItems as keyof typeof alignItemsMap] || 'items-start'
+    const activeJustifyContent = justifyContentMap[justifyContent as keyof typeof justifyContentMap] || 'justify-start'
 
     // Grid column classes based on structure
     const getGridClass = () => {
@@ -105,7 +129,7 @@ export const LayoutBlock = (props: LayoutBlockProps) => {
 
     return (
         <section
-            className={className}
+            className={cn(className, height === 'full' && "h-full flex flex-col")}
             style={style}
         >
             <div className={cn(
@@ -113,11 +137,14 @@ export const LayoutBlock = (props: LayoutBlockProps) => {
                 'grid',
                 getGridClass(),
                 activeGap,
-                reverseOnMobile ? 'max-md:flex max-md:flex-col-reverse' : ''
+                activeAlignItems,
+                activeJustifyContent,
+                reverseOnMobile ? 'max-md:flex max-md:flex-col-reverse' : '',
+                height === 'full' && "h-full flex-1"
             )}>
                 {columns.map((col, index) => {
                     return (
-                        <div key={index} className={cn(getColumnSpan(index), "h-full")}>
+                        <div key={index} className={cn(getColumnSpan(index), "w-full h-full")}>
                             {col.content && <RenderBlocks blocks={col.content} />}
                         </div>
                     )

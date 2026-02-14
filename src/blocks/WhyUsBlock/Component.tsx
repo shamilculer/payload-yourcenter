@@ -1,9 +1,26 @@
 import React from 'react'
+import * as LucideIcons from 'lucide-react'
 import Image from 'next/image'
 import { cn } from '@/utilities/ui'
 import type { WhyUsBlock as WhyUsBlockProps } from '@/payload-types'
 
 import { getBlockStyles } from '@/utilities/getBlockStyles'
+
+// Helper to convert kebab-case to PascalCase (e.g., 'map-pin' -> 'MapPin')
+const kebabToPascal = (str: string) => {
+    return str
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('')
+}
+
+// Helper to render dynamic Lucide icon
+const RenderIcon = ({ name, className }: { name: string; className?: string }) => {
+    const pascalName = kebabToPascal(name)
+    const Icon = (LucideIcons as any)[pascalName]
+    if (!Icon) return <LucideIcons.HelpCircle className={className} />
+    return <Icon className={className} />
+}
 
 export const WhyUsBlock: React.FC<WhyUsBlockProps> = (props) => {
     const { eyebrow, heading, description, image, features, settings } = props
@@ -51,17 +68,40 @@ export const WhyUsBlock: React.FC<WhyUsBlockProps> = (props) => {
                     <ul className="space-y-2 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-10">
                         {features?.map((feature: any, index: number) => {
                             const iconSrc = getImageSrc(feature.icon)
+
+                            // Icon Color Logic
+                            const iconColors = {
+                                primary: 'text-primary',
+                                secondary: 'text-secondary',
+                                accent: 'text-accent',
+                                white: 'text-white',
+                                black: 'text-black',
+                                custom: '',
+                            }
+                            const selectedColorClass = iconColors[feature.iconColor as keyof typeof iconColors] || 'text-primary'
+                            const customColorStyle = feature.iconColor === 'custom' ? { color: feature.customIconColor } : {}
+
                             return (
                                 <li key={index} className="flex flex-col items-start gap-3">
-                                    <div className="p-3 min-h-12 bg-primary/35 shadow flex-center [border-radius:70%_30%_30%_70%_/_60%_40%_60%_40%]">
-                                        {iconSrc && (
-                                            <Image
-                                                src={iconSrc}
-                                                width={28}
-                                                height={28}
-                                                alt={feature.title}
-                                                className="w-7 h-7"
-                                            />
+                                    <div
+                                        className={cn(
+                                            "p-3 min-h-12 bg-primary/35 shadow flex-center [border-radius:70%_30%_30%_70%_/_60%_40%_60%_40%] transition-colors",
+                                            selectedColorClass
+                                        )}
+                                        style={customColorStyle}
+                                    >
+                                        {feature.iconType === 'lucide' ? (
+                                            <RenderIcon name={feature.iconName || 'Box'} className="w-7 h-7" />
+                                        ) : (
+                                            iconSrc && (
+                                                <Image
+                                                    src={iconSrc}
+                                                    width={28}
+                                                    height={28}
+                                                    alt={feature.title}
+                                                    className="w-7 h-7"
+                                                />
+                                            )
                                         )}
                                     </div>
                                     <div>

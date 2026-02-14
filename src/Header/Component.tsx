@@ -244,8 +244,8 @@ export async function Header() {
                             {cta.showCta && (
                                 <Button size="sm" asChild>
                                     <Link href={getLinkUrl(cta.link)} target={cta.link.newTab ? '_blank' : undefined}>
-                                        <PhoneCall className="w-4 h-4 mr-2" />
-                                        {cta.ctaText}
+                                        <PhoneCall className="mr-1 h-4 w-4" />
+                                        Call Us
                                     </Link>
                                 </Button>
                             )}
@@ -347,22 +347,10 @@ const renderMobileMenuItem = (item: MenuItem) => {
     if (item.hasDropdown && item.dropdownItems && item.dropdownItems.length > 0) {
         return (
             <AccordionItem key={item.label} value={item.label} className="border-b-0">
-                <div className="flex items-center justify-between py-0 hover:no-underline">
-                    <Link
-                        href={getLinkUrl(item.link)}
-                        className="flex-1 !text-base text-foreground font-semibold py-4"
-                    >
-                        {item.label}
-                    </Link>
-                    <AccordionTrigger className="w-8 h-8 p-0 flex items-center justify-center">
-                        {/* Chevron handled by AccordionTrigger default or custom if needed, but usually AccordionTrigger contains children */}
-                        {/* If I empty AccordionTrigger it usually has chevron. If I prevent default on link, it works. */}
-                        {/* Actually AccordionTrigger IS the button. I should leave it empty or put an icon if the component expects it. */}
-                        {/* The user wants text to be link, icon to be toggle. */}
-                        <span className="sr-only">Toggle {item.label}</span>
-                    </AccordionTrigger>
-                </div>
-                <AccordionContent className="mt-0 flex flex-col gap-2 pl-2">
+                <AccordionTrigger className="!text-base text-foreground py-0 font-semibold hover:no-underline">
+                    {item.label}
+                </AccordionTrigger>
+                <AccordionContent className="mt-2 flex flex-col gap-2 pl-2">
                     {item.dropdownItems.map((subItem: any) => (
                         <Link
                             key={subItem.link.label}
@@ -383,7 +371,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
             key={item.label}
             href={getLinkUrl(item.link)}
             target={item.link.newTab ? '_blank' : undefined}
-            className="text-md font-semibold py-4 block"
+            className="text-md font-semibold"
         >
             {item.label}
         </Link>
